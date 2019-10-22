@@ -34,7 +34,8 @@ WantedBy=network-online.target
 ```
 
 ## Usage
-```
+
+```text
 FL1PBOT'S COMMANDS
 
 #Basic
