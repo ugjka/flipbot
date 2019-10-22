@@ -29,29 +29,14 @@ var memo = hbot.Trigger{
 		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, "!memo ")
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		rec := ""
-		msg := ""
-		if len(strings.Split(m.Content, " ")) < 3 {
-			irc.Reply(m, fmt.Sprintf("%s: Not enough arguments", m.Name))
-			return false
-		}
-		for i, v := range strings.Split(m.Content, " ") {
-			if i == 0 {
-				continue
-			}
-			if i == 1 {
-				rec = v
-				continue
-			}
-			msg += v + " "
-		}
-		if rec == "" {
-			irc.Reply(m, fmt.Sprintf("%s : Error, extra space between !memo and nick", m.Name))
-			return false
-		}
+		msg := strings.TrimPrefix(m.Content, "!memo ")
+		msg = whitespace.ReplaceAllString(msg, " ")
+		args := strings.Split(msg, " ")
+		nick := strings.ToLower(args[0])
+		msg = strings.Join(args[1:], " ")
 		memoCTR.Lock()
 		defer memoCTR.Unlock()
-		memoCTR.store[strings.ToLower(rec)] = append(memoCTR.store[strings.ToLower(rec)], memoStruct{m.Name, msg})
+		memoCTR.store[nick] = append(memoCTR.store[nick], memoStruct{m.Name, msg})
 		tmp, err := json.Marshal(memoCTR.store)
 		if err == nil {
 			err := memoCTR.Truncate(0)
@@ -60,7 +45,7 @@ var memo = hbot.Trigger{
 				return false
 			}
 			if _, err = memoCTR.WriteAt(tmp, 0); err == nil {
-				irc.Reply(m, fmt.Sprintf("%s's memo will be sent to %s when I see them join or post", m.Name, rec))
+				irc.Reply(m, fmt.Sprintf("%s's memo will be sent to %s when I see them join or post", m.Name, nick))
 				return false
 			}
 			log.Crit("Could not write to memo file in memo", "error", err)

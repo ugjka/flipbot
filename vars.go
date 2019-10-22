@@ -3,6 +3,7 @@ package main
 import (
 	cookiejar "flipbot/jar"
 	"net/http"
+	"regexp"
 	"time"
 
 	"github.com/ugjka/remindme"
@@ -43,3 +44,5 @@ var jar *cookiejar.Jar
 var meditations []string
 
 const textLimit = 300
+
+var whitespace = regexp.MustCompile(`\s+`)
