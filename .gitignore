@@ -1,0 +1,7 @@
+flipbot
+flipbot2
+.directory
+play
+*.json
+messages.log
+for_sz_markov.txt
