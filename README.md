@@ -55,7 +55,6 @@ FL1PBOT'S COMMANDS
 !dict <word> : look up definitions of the given word
 !syn <word> : look up synonyms of the given word
 !calc <query> : calculate things
-!ugjka <text> : send an email to ugjka
 !flip <text> :flips the given text (ascii only)
 !hug <nick> :hug someone
 !seen <nick> :show the last time fl1pbot saw the given nick online
