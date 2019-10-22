@@ -40,7 +40,7 @@ FL1PBOT'S COMMANDS
 !flip :flips the table
 !unflip :unflips the table
 !ping :replies with pong (useful to see if your connection has stalled)
-!random :get random madcotto talk
+!random :get random advaita talk
 !sleep :sleep emoticon
 !cat :random cat emoticon
 !shrug :shrug emoticon
