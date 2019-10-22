@@ -13,6 +13,7 @@ const emailVar = "FLIPBOT_EMAIL"
 const youtubeAPIKeyVar = "FLIPBOT_YOUTUBE"
 const subredditVar = "FLIPBOT_SUB"
 const ircServerVar = "FLIPBOT_SERVER"
+const ircPortVar = "FLIPBOT_PORT"
 const ircNickVar = "FLIPBOT_NICK"
 const ircPasswordVar = "FLIPBOT_PASS"
 const ircChannelVar = "FLIPBOT_CHAN"
@@ -21,6 +22,7 @@ const opVar = "FLIPBOT_OP"
 const serverEmailVar = "FLIPBOT_SERVER_MAIL"
 const wolframAPIKeyVar = "FLIPBOT_WOLF"
 
+var ircPort string
 var email string
 var youtubeAPIKey string
 var subreddit string

@@ -20,10 +20,10 @@ require (
 	github.com/stretchr/testify v1.4.0 // indirect
 	github.com/ugjka/catrand v0.0.0-20181113133205-3f6473988b0e
 	github.com/ugjka/hellabot v0.0.0-20181123123543-c11787775958
-	github.com/ugjka/remindme v0.0.0-20181113132921-abd3d6412732
+	github.com/ugjka/remindme v0.0.0-20191022160222-1c4760301f8d
 	github.com/ugjka/reverse v0.0.2
 	golang.org/x/net v0.0.0-20191021144547-ec77196f6094 // indirect
-	golang.org/x/sys v0.0.0-20191020212454-3e7259c5e7c2 // indirect
+	golang.org/x/sys v0.0.0-20191022100944-742c48ecaeb7 // indirect
 	golang.org/x/text v0.3.2 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df

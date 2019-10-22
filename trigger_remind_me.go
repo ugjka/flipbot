@@ -39,7 +39,7 @@ var getreminder = hbot.Trigger{
 			strings.HasPrefix(m.Content, "!reminder ")
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		r, err := remindme.Parse(m.Content[10:])
+		r, err := remindme.Parse(strings.TrimPrefix(m.Content, "!reminder "))
 		if err != nil {
 			irc.Reply(m, fmt.Sprintf("%s: %s", m.Name, err))
 			return false

@@ -32,8 +32,10 @@ func main() {
 	check(youtubeAPIKey, youtubeAPIKeyVar)
 	subreddit = os.Getenv(subredditVar)
 	check(subreddit, subredditVar)
-	ircServer = os.Getenv(ircChannelVar)
+	ircServer = os.Getenv(ircServerVar)
 	check(ircServer, ircServerVar)
+	ircPort = os.Getenv(ircPortVar)
+	check(ircPort, ircPasswordVar)
 	ircNick = os.Getenv(ircNickVar)
 	check(ircNick, ircNickVar)
 	ircPassword = os.Getenv(ircPasswordVar)
@@ -64,7 +66,6 @@ func main() {
 	signal.Notify(stop, os.Interrupt)
 	signal.Notify(stop, os.Kill)
 	signal.Notify(stop, syscall.SIGTERM)
-	signal.Notify(stop, syscall.SIGHUP)
 
 	hijackSession := func(bot *hbot.Bot) {
 		bot.HijackSession = true
@@ -74,7 +75,7 @@ func main() {
 	channels := func(bot *hbot.Bot) {
 		bot.Channels = []string{ircChannel}
 	}
-	irc, err := hbot.NewBot(ircServer, ircNick, channels, hijackSession)
+	irc, err := hbot.NewBot(fmt.Sprintf("%s:%s", ircServer, ircPort), ircNick, channels, hijackSession)
 	if err != nil {
 		panic(err)
 	}
