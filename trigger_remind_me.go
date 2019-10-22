@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 	"sync"
@@ -11,7 +10,6 @@ import (
 
 	hbot "github.com/ugjka/hellabot"
 	"github.com/ugjka/remindme"
-	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var remindOnce sync.Once
@@ -27,28 +25,6 @@ var reminder = hbot.Trigger{
 					case x := <-remind.Receive:
 						text := fmt.Sprintf("%s's reminder: %s", x.Name, x.Message)
 						irc.Msg(ircChannel, text)
-						onlineCTR.RLock()
-						if _, ok := onlineCTR.db[x.Name]; !ok {
-							memoCTR.Lock()
-							memoCTR.store[strings.ToLower(x.Name)] = append(memoCTR.store[strings.ToLower(x.Name)],
-								memoStruct{ircNick, fmt.Sprintf("Your reminder: %s", x.Message)})
-							tmp, err := json.Marshal(memoCTR.store)
-							if err == nil {
-								err := memoCTR.Truncate(0)
-								if err != nil {
-									log.Crit("Could not truncate memo file", "error", err)
-									goto exit
-								}
-								if _, err := memoCTR.WriteAt(tmp, 0); err == nil {
-									goto exit
-								} else {
-									log.Crit("Could not write to memo file in memo", "error", err)
-								}
-							exit:
-							}
-							memoCTR.Unlock()
-						}
-						onlineCTR.RUnlock()
 					}
 				}
 			}()
@@ -60,7 +36,7 @@ var reminder = hbot.Trigger{
 var getreminder = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.To == ircChannel && m.Command == "PRIVMSG" &&
-			strings.HasPrefix(m.Content, "!remindme ")
+			strings.HasPrefix(m.Content, "!reminder ")
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		r, err := remindme.Parse(m.Content[10:])
