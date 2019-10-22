@@ -2,6 +2,10 @@
 
 The bot for #rschizophrenia on freenode
 
+## depends
+
+Needs [translate-shell](https://github.com/soimort/translate-shell) and [googler](https://github.com/jarun/googler) package
+
 ## systemd configuration example
 
 ```ini
