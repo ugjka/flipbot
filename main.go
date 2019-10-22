@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"flag"
 	cookiejar "flipbot/jar"
 	"flipbot/subwatch"
 	"fmt"
@@ -20,21 +19,36 @@ import (
 )
 
 func main() {
+	check := func(value, env string) {
+		if value == "" {
+			fmt.Fprintf(os.Stderr, "%s evnironment variable is not set\n", env)
+			os.Exit(1)
+		}
+	}
 	//Get env
 	email = os.Getenv(emailVar)
+	check(email, emailVar)
 	youtubeAPIKey = os.Getenv(youtubeAPIKeyVar)
+	check(youtubeAPIKey, youtubeAPIKeyVar)
 	subreddit = os.Getenv(subredditVar)
+	check(subreddit, subredditVar)
 	ircServer = os.Getenv(ircChannelVar)
+	check(ircServer, ircServerVar)
 	ircNick = os.Getenv(ircNickVar)
+	check(ircNick, ircNickVar)
 	ircPassword = os.Getenv(ircPasswordVar)
+	check(ircPassword, ircPasswordVar)
 	ircChannel = os.Getenv(ircChannelVar)
+	check(ircChannel, ircChannelVar)
 	openWeatherMapAPIKey = os.Getenv(openWeatherMapAPIKeyVar)
+	check(openWeatherMapAPIKey, openWeatherMapAPIKeyVar)
 	op = os.Getenv(opVar)
+	check(op, opVar)
 	serverEmail = os.Getenv(serverEmailVar)
+	check(serverEmail, serverEmailVar)
 	wolframAPIKey = os.Getenv(wolframAPIKeyVar)
-
+	check(wolframAPIKey, wolframAPIKeyVar)
 	grmon.Start()
-	flag.Parse()
 
 	meddata, _ := ioutil.ReadFile("meditations.txt")
 	meditations = strings.Split(strings.TrimSpace(string(meddata)), "\n")
@@ -60,7 +74,7 @@ func main() {
 	channels := func(bot *hbot.Bot) {
 		bot.Channels = []string{ircChannel}
 	}
-	irc, err := hbot.NewBot(*serv, *nick, channels, hijackSession)
+	irc, err := hbot.NewBot(ircServer, ircNick, channels, hijackSession)
 	if err != nil {
 		panic(err)
 	}

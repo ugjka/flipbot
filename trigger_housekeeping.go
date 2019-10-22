@@ -20,7 +20,7 @@ var setmodes = hbot.Trigger{
 			go func(irc *hbot.Bot) {
 				for {
 					time.Sleep(time.Second * 30)
-					irc.Send("PING " + *serv)
+					irc.Send("PING " + ircServer)
 				}
 			}(irc)
 			log.Info("setting modes for self", "modes", "+RQi")

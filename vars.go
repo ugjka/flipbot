@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	cookiejar "flipbot/jar"
 	"net/http"
 	"time"
@@ -33,8 +32,6 @@ var op string
 var serverEmail string
 var wolframAPIKey string
 
-var serv = flag.String("server", ircServer, "hostname and port for irc server to connect to")
-var nick = flag.String("nick", ircNick, "nickname for the bot")
 var remind = remindme.New(ircNick)
 
 //Default for all requests
