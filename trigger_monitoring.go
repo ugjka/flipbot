@@ -135,9 +135,9 @@ var seen = hbot.Trigger{
 			if k, ok := seenCTR.db[strings.ToLower(v)]; ok {
 				dur := durafmt.Parse(time.Now().UTC().Sub(k.Seen))
 				if k.LastMSG != "" {
-					irc.Reply(m, fmt.Sprintf("%s: I saw %s %s ago. Their last message was: %s", m.Name, v, removeMilliseconds(dur.String()), k.LastMSG))
+					irc.Reply(m, fmt.Sprintf("%s: I saw %s %s ago. Their last message was: %s", m.Name, v, roundDuration(dur.String()), k.LastMSG))
 				} else {
-					irc.Reply(m, fmt.Sprintf("%s: I saw %s %s ago", m.Name, v, removeMilliseconds(dur.String())))
+					irc.Reply(m, fmt.Sprintf("%s: I saw %s %s ago", m.Name, v, roundDuration(dur.String())))
 				}
 			} else {
 				irc.Reply(m, fmt.Sprintf("%s: I haven't seen that nick before", m.Name))
@@ -148,13 +148,12 @@ var seen = hbot.Trigger{
 	},
 }
 
-func removeMilliseconds(dur string) string {
-	reg := regexp.MustCompile(`\s\d+\smilliseconds?`)
-	split := reg.Split(dur, -1)
-	if len(split) >= 1 {
-		return split[0]
+func roundDuration(dur string) string {
+	arr := strings.Split(dur, " ")
+	if len(arr) > 2 {
+		return strings.Join(arr[:4], " ")
 	}
-	return dur
+	return strings.Join(arr[:2], " ")
 }
 
 var watcher = hbot.Trigger{

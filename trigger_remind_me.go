@@ -48,7 +48,7 @@ var getreminder = hbot.Trigger{
 		remind.Add(r)
 		delta := r.Target.Sub(time.Now())
 		dur := durafmt.Parse(delta)
-		irc.Reply(m, fmt.Sprintf("%s: Your reminder will fire %s from now", m.Name, removeMilliseconds(dur.String())))
+		irc.Reply(m, fmt.Sprintf("%s: Your reminder will fire %s from now", m.Name, roundDuration(dur.String())))
 		return false
 	},
 }
