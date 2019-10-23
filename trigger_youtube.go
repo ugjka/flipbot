@@ -11,7 +11,7 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-var youtubeIDReg = regexp.MustCompile(`(?:https?\://)?(?:www\.)?youtu(?:be\.com/watch\?v=|\.be/)([0-9A-Za-z_-]{11}).*`)
+var youtubeIDReg = regexp.MustCompile(`(?:http[s]?\://)?(?:www\.)?youtu(?:be\.com/watch\?v=|\.be/)([0-9A-Za-z_-]{11}).*`)
 
 var youtube = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {

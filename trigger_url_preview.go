@@ -82,7 +82,7 @@ func printYoutubeInfo(url string) (string, error) {
 func getPreview(url string) (preview string, err error) {
 	if youtubeIDReg.MatchString(url) {
 		preview, err = printYoutubeInfo(url)
-		if err != nil {
+		if err == nil {
 			return
 		}
 	}
