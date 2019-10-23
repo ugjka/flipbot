@@ -34,7 +34,6 @@ var youtube = hbot.Trigger{
 }
 
 var ytAPI = url.Values{
-	"key":               {youtubeAPIKey},
 	"part":              {"snippet"},
 	"maxResults":        {"1"},
 	"type":              {"video"},
@@ -45,7 +44,6 @@ var ytAPI = url.Values{
 }
 
 var ytTitleFromID = url.Values{
-	"key":  {youtubeAPIKey},
 	"part": {"snippet,statistics,contentDetails"},
 	"id":   {""},
 }
@@ -80,6 +78,7 @@ type ytVideoResponse struct {
 
 func searchYt(q string) (output ytSearchResponse, err error) {
 	ytAPI.Set("q", q)
+	ytAPI.Set("key", youtubeAPIKey)
 	res, err := httpClient.Get("https://www.googleapis.com/youtube/v3/search?" + ytAPI.Encode())
 	if err != nil {
 		return
@@ -93,6 +92,7 @@ func searchYt(q string) (output ytSearchResponse, err error) {
 
 func getYoutubeTitle(id string) (output ytVideoResponse, err error) {
 	ytTitleFromID.Set("id", id)
+	ytTitleFromID.Set("key", youtubeAPIKey)
 	res, err := httpClient.Get("https://www.googleapis.com/youtube/v3/videos?" + ytTitleFromID.Encode())
 	if err != nil {
 		return
