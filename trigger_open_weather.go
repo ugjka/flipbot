@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
@@ -14,8 +15,8 @@ import (
 	"gopkg.in/ugjka/go-tz.v2/tz"
 )
 
-var nowURL = "http://api.openweathermap.org/data/2.5/weather?units=metric&lat=%s&lon=%s&APPID=" + openWeatherMapAPIKey
-var forecastURL = "http://api.openweathermap.org/data/2.5/forecast?units=metric&lat=%s&lon=%s&APPID=" + openWeatherMapAPIKey
+var nowURL = "http://api.openweathermap.org/data/2.5/weather?units=metric&lat=%s&lon=%s&APPID=%s"
+var forecastURL = "http://api.openweathermap.org/data/2.5/forecast?units=metric&lat=%s&lon=%s&APPID=%s"
 
 var errNoLocation = errors.New("location not found")
 
@@ -27,7 +28,12 @@ var weatherOpen = hbot.Trigger{
 		if len(m.Content) <= 4 {
 			return false
 		}
-		res, _, err := getCurrentWeather(m.Content[3:])
+		lon, lat, err := getLonLat(m.Content[3:])
+		if err != nil {
+			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
+			return false
+		}
+		res, err := getCurrentWeather(lon, lat)
 		switch err {
 		case errNoLocation:
 			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
@@ -82,7 +88,7 @@ type OpenWNow struct {
 	Name string
 }
 
-func getCurrentWeather(loc string) (w OpenWNow, adress string, err error) {
+func getLonLat(loc string) (lon, lat string, err error) {
 	maps := url.Values{}
 	maps.Add("q", loc)
 	maps.Add("format", "json")
@@ -91,28 +97,32 @@ func getCurrentWeather(loc string) (w OpenWNow, adress string, err error) {
 	maps.Add("email", email)
 	data, err := OSMGetter(OSMGeocode + maps.Encode())
 	if err != nil {
-		return w, adress, err
+		return
 	}
 	var mapj OSMmapResults
 	if err = json.Unmarshal(data, &mapj); err != nil {
-		return w, adress, err
+		return
 	}
 	if len(mapj) == 0 {
-		return w, adress, errNoLocation
+		return lon, lat, errNoLocation
 	}
-	resp, err := httpClient.Get(fmt.Sprintf(nowURL, mapj[0].Lat, mapj[0].Lon))
+	return mapj[0].Lon, mapj[0].Lat, nil
+}
+
+func getCurrentWeather(lon, lat string) (w OpenWNow, err error) {
+	resp, err := http.Get(fmt.Sprintf(nowURL, lat, lon, openWeatherMapAPIKey))
 	if err != nil {
-		return w, adress, err
+		return w, err
 	}
 	defer resp.Body.Close()
 	err = json.NewDecoder(resp.Body).Decode(&w)
 	if err != nil {
-		return w, adress, err
+		return w, err
 	}
 	if w.Cod != 200 {
-		return w, adress, errNoLocation
+		return w, errNoLocation
 	}
-	return w, adress, err
+	return w, err
 }
 
 //OpenForecast is
@@ -157,7 +167,7 @@ func getForecastWeather(loc string) (w OpenForecast, adress string, err error) {
 	if len(mapj) == 0 {
 		return w, adress, errNoLocation
 	}
-	resp, err := httpClient.Get(fmt.Sprintf(forecastURL, mapj[0].Lat, mapj[0].Lon))
+	resp, err := httpClient.Get(fmt.Sprintf(forecastURL, mapj[0].Lat, mapj[0].Lon, openWeatherMapAPIKey))
 	if err != nil {
 		return w, adress, err
 	}

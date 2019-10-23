@@ -5,3 +5,4 @@ play
 *.json
 messages.log
 export.sh
+*test.go
