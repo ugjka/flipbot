@@ -51,7 +51,6 @@ FL1PBOT'S COMMANDS
 !debug :print stupid joke
 !meditation : get spiritual advice
 !toss : join the community of tossers
-!online : how many chatters are online
 
 #Composite
 !dict <word> : look up definitions of the given word
