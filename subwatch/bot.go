@@ -157,10 +157,10 @@ func (b *bot) Start() {
 	for {
 		err = b.firstRun()
 		if err == nil {
-			log.Info("subwatch", "success", "first run succeeded")
+			log.Info("subwatch", "info", "first run succeeded")
 			break
 		}
-		log.Warn("subwatch", "first run failed:", err)
+		log.Warn("subwatch", "warning", "first run failed:", "error", err)
 		time.Sleep(time.Minute * 10)
 		log.Info("subwatch", "status", "retrying first run")
 	}

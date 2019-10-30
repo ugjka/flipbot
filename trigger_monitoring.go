@@ -42,7 +42,7 @@ var namesCall sync.Once
 var names = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		namesCall.Do(func() {
-			log.Info("firstrun", "getting", "names")
+			log.Info("firstrun", "action", "getting names")
 			bot.Send("NAMES " + ircChannel)
 		})
 		return (m.Command == "PRIVMSG" && m.To == ircChannel) || m.Command == "JOIN" ||

@@ -88,7 +88,7 @@ func main() {
 
 	err = json.NewDecoder(memoCTR.File).Decode(&memoCTR.store)
 	if err != nil {
-		log.Warn("Cannot decode memo json file", "errro", err)
+		log.Warn("Cannot decode memo json file", "error", err)
 	}
 
 	osmCTR.File, err = os.OpenFile("osmcache.json", os.O_RDWR|os.O_CREATE, 0666)
@@ -99,7 +99,7 @@ func main() {
 
 	err = json.NewDecoder(osmCTR.File).Decode(&osmCTR.cache)
 	if err != nil {
-		log.Warn("Cannot decode osmCacheFile", "errro", err)
+		log.Warn("Cannot decode osmCacheFile", "error", err)
 	}
 	//Log messages
 	logCTR.File, err = os.OpenFile("messages.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
