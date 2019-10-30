@@ -15,18 +15,6 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-var online = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && m.Content == "!online"
-	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		onlineCTR.RLock()
-		irc.Reply(m, fmt.Sprintf("%s: %d nicks online", m.Name, len(onlineCTR.db)))
-		onlineCTR.RUnlock()
-		return false
-	},
-}
-
 var test = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Content == "!test"

@@ -79,16 +79,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	//Store Max online
-	onlineCTR.File, err = os.OpenFile("max.json", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-	if err != nil {
-		panic(err)
-	}
-	defer onlineCTR.Close()
-	err = json.NewDecoder(onlineCTR.File).Decode(&onlineCTR.Max)
-	if err != nil {
-		log.Warn("Cannot decode online count json file", "error", err)
-	}
 	//Store memo messages
 	memoCTR.File, err = os.OpenFile("memo.json", os.O_RDWR|os.O_CREATE, 0666)
 	if err != nil {
@@ -134,7 +124,6 @@ func main() {
 		logCTR.Close()
 		seenCTR.Close()
 		memoCTR.Close()
-		onlineCTR.Close()
 		os.Exit(0)
 	}()
 
@@ -173,9 +162,8 @@ func main() {
 	irc.AddTrigger(ducker)
 	irc.AddTrigger(reminder)
 	irc.AddTrigger(getreminder)
-	irc.AddTrigger(onlinelist)
+	irc.AddTrigger(names)
 	irc.AddTrigger(hug)
-	irc.AddTrigger(online)
 	irc.AddTrigger(debug)
 	irc.AddTrigger(calc)
 	irc.AddTrigger(god)

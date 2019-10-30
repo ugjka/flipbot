@@ -57,13 +57,6 @@ var voicenames = hbot.Trigger{
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		time.Sleep(time.Second * 5)
 		for _, k := range strings.Split(m.Content, " ") {
-			tmp := strings.TrimLeft(k, "@+")
-			onlineCTR.Lock()
-			if _, ok := onlineCTR.db[tmp]; !ok {
-				onlineCTR.db[tmp] = struct{}{}
-				log.Info("online", "adding", tmp, "command", "NAMES")
-			}
-			onlineCTR.Unlock()
 			if strings.HasPrefix(k, "+") || strings.HasPrefix(k, "@") {
 				continue
 			}

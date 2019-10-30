@@ -37,19 +37,12 @@ type Seen struct {
 	LastMSG string
 }
 
-var onlineCTR = struct {
-	sync.Once
-	sync.RWMutex
-	*os.File
-	Max int
-	db  map[string]struct{}
-}{
-	db: make(map[string]struct{}),
-}
+var namesCall sync.Once
 
-var onlinelist = hbot.Trigger{
+var names = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		onlineCTR.Do(func() {
+		namesCall.Do(func() {
+			log.Info("firstrun", "getting", "names")
 			bot.Send("NAMES " + ircChannel)
 		})
 		return (m.Command == "PRIVMSG" && m.To == ircChannel) || m.Command == "JOIN" ||
@@ -57,57 +50,6 @@ var onlinelist = hbot.Trigger{
 			m.Command == "NICK"
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		if m.Command == "KICK" {
-			onlineCTR.Lock()
-			if _, ok := onlineCTR.db[m.Params[1]]; ok {
-				delete(onlineCTR.db, m.Params[1])
-				log.Info("online", "removing", m.Params[1], "command", m.Command)
-			}
-			onlineCTR.Unlock()
-		}
-		if m.Command == "PRIVMSG" || m.Command == "JOIN" {
-			onlineCTR.Lock()
-			if _, ok := onlineCTR.db[m.Name]; !ok {
-				onlineCTR.db[m.Name] = struct{}{}
-				log.Info("online", "adding", m.Name, "command", m.Command)
-			}
-			onlineCTR.Unlock()
-		}
-		if m.Command == "QUIT" || m.Command == "PART" || m.Command == "KILL" {
-			onlineCTR.Lock()
-			if _, ok := onlineCTR.db[m.Name]; ok {
-				delete(onlineCTR.db, m.Name)
-				log.Info("online", "removing", m.Name, "command", m.Command)
-			}
-			onlineCTR.Unlock()
-		}
-		if m.Command == "NICK" {
-			onlineCTR.Lock()
-			if _, ok := onlineCTR.db[m.Name]; ok {
-				delete(onlineCTR.db, m.Name)
-				log.Info("online", "removing", m.Name, "command", m.Command)
-			}
-			if _, ok := onlineCTR.db[m.Trailing()]; !ok {
-				onlineCTR.db[m.Trailing()] = struct{}{}
-				log.Info("online", "adding", m.Trailing(), "command", m.Command)
-			}
-			onlineCTR.Unlock()
-		}
-		if len(onlineCTR.db) > onlineCTR.Max {
-			onlineCTR.Lock()
-			onlineCTR.Max = len(onlineCTR.db)
-			onlineCTR.Truncate(0)
-			err := json.NewEncoder(onlineCTR.File).Encode(onlineCTR.Max)
-			onlineCTR.Unlock()
-			if err != nil {
-				log.Crit("encoding online max", "error", err)
-				return false
-			}
-			onlineCTR.RLock()
-			irc.Msg(ircChannel, fmt.Sprintf("New record: %d nicks online", onlineCTR.Max))
-			onlineCTR.RUnlock()
-		}
-
 		return false
 	},
 }
