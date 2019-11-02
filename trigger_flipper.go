@@ -4,26 +4,31 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ugjka/hellabot"
+	hbot "github.com/ugjka/hellabot"
 )
 
 // This trigger flips the table
+
+const fliptextTrig = "!flip "
+
 var fliptext = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, "!flip ")
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, fliptextTrig)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		irc.Reply(m, fmt.Sprintf("(╯‵Д′)╯彡%s", upside(m.Content[6:])))
+		irc.Reply(m, fmt.Sprintf("(╯‵Д′)╯彡%s", upside(strings.TrimPrefix(m.Content, fliptextTrig))))
 		return false
 	},
 }
 
+var unfliptextTrig = "!unflip "
+
 var unfliptext = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, "!unflip ")
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, unfliptextTrig)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		irc.Reply(m, fmt.Sprintf("%s <(•_•<)", upside(m.Content[8:])))
+		irc.Reply(m, fmt.Sprintf("%s <(•_•<)", upside(strings.TrimPrefix(m.Content, unfliptextTrig))))
 		return false
 	},
 }

@@ -24,12 +24,14 @@ var memoCTR = struct {
 	store: make(map[string][]memoStruct),
 }
 
+const memoTrig = "!memo "
+
 var memo = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, "!memo ")
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, memoTrig)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		msg := strings.TrimPrefix(m.Content, "!memo ")
+		msg := strings.TrimPrefix(m.Content, memoTrig)
 		msg = whitespace.ReplaceAllString(msg, " ")
 		args := strings.Split(msg, " ")
 		nick := strings.ToLower(args[0])

@@ -10,12 +10,14 @@ import (
 	hbot "github.com/ugjka/hellabot"
 )
 
+const dictTrig = "!dict "
+
 var dict = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return strings.HasPrefix(m.Content, "!dict ")
+		return strings.HasPrefix(m.Content, dictTrig)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		cmd := exec.Command("trans", "--no-ansi", "-d", m.Content[6:])
+		cmd := exec.Command("trans", "--no-ansi", "-d", strings.TrimPrefix(m.Content, dictTrig))
 		errBuf := bytes.NewBuffer(nil)
 		cmd.Stderr = errBuf
 		out, err := cmd.Output()
@@ -59,12 +61,14 @@ var dict = hbot.Trigger{
 	},
 }
 
+const synTrig = "!syn "
+
 var syn = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return strings.HasPrefix(m.Content, "!syn ")
+		return strings.HasPrefix(m.Content, synTrig)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		cmd := exec.Command("trans", "--no-ansi", "-d", m.Content[4:])
+		cmd := exec.Command("trans", "--no-ansi", "-d", strings.TrimPrefix(m.Content, synTrig))
 		errBuf := bytes.NewBuffer(nil)
 		cmd.Stderr = errBuf
 		out, err := cmd.Output()

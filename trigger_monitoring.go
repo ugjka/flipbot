@@ -54,38 +54,34 @@ var names = hbot.Trigger{
 	},
 }
 
+const seenTrig = "!seen "
+
 var seen = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, "!seen ")
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, seenTrig)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		for i, v := range strings.Split(m.Content, " ") {
-			if i == 0 {
-				continue
-			}
-			if v == "" {
-				continue
-			}
-			if i == 2 {
-				break
-			}
-			if strings.ToLower(v) == strings.ToLower(m.Name) {
-				irc.Reply(m, fmt.Sprintf("%s: I'm seeing you!", m.Name))
-				return false
-			}
-			seenCTR.RLock()
-			if k, ok := seenCTR.db[strings.ToLower(v)]; ok {
-				dur := durafmt.Parse(time.Now().UTC().Sub(k.Seen))
-				if k.LastMSG != "" {
-					irc.Reply(m, fmt.Sprintf("%s: I saw %s %s ago. Their last message was: %s", m.Name, v, roundDuration(dur.String()), k.LastMSG))
-				} else {
-					irc.Reply(m, fmt.Sprintf("%s: I saw %s %s ago", m.Name, v, roundDuration(dur.String())))
-				}
-			} else {
-				irc.Reply(m, fmt.Sprintf("%s: I haven't seen that nick before", m.Name))
-			}
-			seenCTR.RUnlock()
+		v := strings.TrimPrefix(m.Content, seenTrig)
+		if v == "" {
+			return false
 		}
+		if strings.ToLower(v) == strings.ToLower(m.Name) {
+			irc.Reply(m, fmt.Sprintf("%s: I'm seeing you!", m.Name))
+			return false
+		}
+		seenCTR.RLock()
+		if k, ok := seenCTR.db[strings.ToLower(v)]; ok {
+			dur := durafmt.Parse(time.Now().UTC().Sub(k.Seen))
+			if k.LastMSG != "" {
+				irc.Reply(m, fmt.Sprintf("%s: I saw %s %s ago. Their last message was: %s", m.Name, v, roundDuration(dur.String()), k.LastMSG))
+			} else {
+				irc.Reply(m, fmt.Sprintf("%s: I saw %s %s ago", m.Name, v, roundDuration(dur.String())))
+			}
+		} else {
+			irc.Reply(m, fmt.Sprintf("%s: I haven't seen that nick before", m.Name))
+		}
+		seenCTR.RUnlock()
+
 		return false
 	},
 }
