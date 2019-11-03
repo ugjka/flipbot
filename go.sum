@@ -7,7 +7,6 @@ github.com/andybalholm/cascadia v1.1.0/go.mod h1:GsXiBklL0woXo1j/WYWtSYYC4ouU9Pq
 github.com/bcicen/grmon v0.0.0-20190725134940-6c3770b6af49 h1:ryLrI9lLTXUaxKj3Mqivt2QflbJWXkzewKz4VV/JDTo=
 github.com/bcicen/grmon v0.0.0-20190725134940-6c3770b6af49/go.mod h1:KEaJdcTbyvaT6Oyx9bbHwMVXNy9MTe7loXHNvaS+4Rg=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/djimenez/iconv-go v0.0.0-20160305225143-8960e66bd3da/go.mod h1:ns+zIWBBchgfRdxNgIJWn2x6U95LQchxeqiN5Cgdgts=
 github.com/go-stack/stack v1.8.0/go.mod h1:v0f6uXyyMGvRgIKkXu+yp6POWl0qKG85gN/melR3HDY=
 github.com/hako/durafmt v0.0.0-20191009132224-3f39dc1ed9f4 h1:60gBOooTSmNtrqNaRvrDbi8VAne0REaek2agjnITKSw=
 github.com/hako/durafmt v0.0.0-20191009132224-3f39dc1ed9f4/go.mod h1:5Scbynm8dF1XAPwIwkGPqzkM/shndPm79Jd1003hTjE=
@@ -26,13 +25,11 @@ github.com/mmcdole/goxpp v0.0.0-20181012175147-0068e33feabf/go.mod h1:pasqhqstsp
 github.com/mudler/sendfd v0.0.0-20150620134918-f0fc74c13877/go.mod h1:j4hnSAX0+AZQpILVkkVRwfQTeAFMH0crQMGe5apT9Yo=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/pmylund/go-wikimedia v0.0.0-20130802042651-ca2b93c3aea0/go.mod h1:hsNsQQd9xarIblXsiwDykpoksCdoK1aRLMjuOHA8BVM=
-github.com/saintfish/chardet v0.0.0-20120816061221-3af4cd4741ca/go.mod h1:uugorj2VCxiV1x+LzaIdVa9b4S4qGAcH6cbhh4qVxOU=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.4.0 h1:2E4SXV/wtOkTonXsotYi4li6zVWxYlZuYNCXe9XRJyk=
 github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81PSLYec5m4=
 github.com/ugjka/catrand v0.0.0-20181113133205-3f6473988b0e/go.mod h1:lsnw7rfLsYn6J7avalTL0L0kHt0Zh7QWJHxjpBu8O7k=
 github.com/ugjka/hellabot v0.0.0-20181123123543-c11787775958/go.mod h1:+nuE7ed1X1d99K+0qiZaLHknkp+W6wdQVCIjbpTRQJM=
-github.com/ugjka/remindme v0.0.0-20181113132921-abd3d6412732/go.mod h1:ZZemhIu6iUcxBom/rvN+aJN9PKAEijFVJ4M9PAMReP4=
 github.com/ugjka/remindme v0.0.0-20191022160222-1c4760301f8d h1:x6NwZaBKjgwsNoEYKqXOFjfAAJkFoQjaCn+gcqQLj+Q=
 github.com/ugjka/remindme v0.0.0-20191022160222-1c4760301f8d/go.mod h1:ZZemhIu6iUcxBom/rvN+aJN9PKAEijFVJ4M9PAMReP4=
 github.com/ugjka/reverse v0.0.2 h1:EJFNja1jl10cuvzaVct4kaAYoEPnB8I/0q/I2+YoPPk=
@@ -45,8 +42,6 @@ golang.org/x/net v0.0.0-20191021144547-ec77196f6094/go.mod h1:z5CRVTTTmAJ677TzLL
 golang.org/x/sys v0.0.0-20190215142949-d0b11bdaac8a/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
 golang.org/x/sys v0.0.0-20190222072716-a9d3bda3a223/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
 golang.org/x/sys v0.0.0-20191008105621-543471e840be/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
-golang.org/x/sys v0.0.0-20191020212454-3e7259c5e7c2 h1:nq114VpM8lsSlP+lyUbANecYHYiFcSNFtqcBlxRV+gA=
-golang.org/x/sys v0.0.0-20191020212454-3e7259c5e7c2/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20191022100944-742c48ecaeb7 h1:HmbHVPwrPEKPGLAcHSrMe6+hqSUlvZU0rab6x5EXfGU=
 golang.org/x/sys v0.0.0-20191022100944-742c48ecaeb7/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=

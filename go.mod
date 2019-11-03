@@ -5,7 +5,6 @@ require (
 	github.com/PuerkitoBio/goquery v1.5.0
 	github.com/andybalholm/cascadia v1.1.0 // indirect
 	github.com/bcicen/grmon v0.0.0-20190725134940-6c3770b6af49
-	github.com/djimenez/iconv-go v0.0.0-20160305225143-8960e66bd3da
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/hako/durafmt v0.0.0-20191009132224-3f39dc1ed9f4
 	github.com/inconshreveable/log15 v0.0.0-20180818164646-67afb5ed74ec // indirect
@@ -16,7 +15,6 @@ require (
 	github.com/mmcdole/goxpp v0.0.0-20181012175147-0068e33feabf // indirect
 	github.com/mudler/sendfd v0.0.0-20150620134918-f0fc74c13877 // indirect
 	github.com/pmylund/go-wikimedia v0.0.0-20130802042651-ca2b93c3aea0
-	github.com/saintfish/chardet v0.0.0-20120816061221-3af4cd4741ca
 	github.com/stretchr/testify v1.4.0 // indirect
 	github.com/ugjka/catrand v0.0.0-20181113133205-3f6473988b0e
 	github.com/ugjka/hellabot v0.0.0-20181123123543-c11787775958
