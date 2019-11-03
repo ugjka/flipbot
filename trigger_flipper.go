@@ -13,7 +13,7 @@ const fliptextTrig = "!flip "
 
 var fliptext = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return strings.HasPrefix(m.Content, fliptextTrig)
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, fliptextTrig)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		irc.Reply(m, fmt.Sprintf("(╯‵Д′)╯彡%s", upside(strings.TrimPrefix(m.Content, fliptextTrig))))
