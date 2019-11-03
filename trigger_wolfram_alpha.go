@@ -15,8 +15,10 @@ var calc = hbot.Trigger{
 		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, calcTrig)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+		query := strings.TrimPrefix(m.Content, calcTrig)
 		w := &wolf.Client{AppID: wolframAPIKey}
-		res, err := w.GetShortAnswerQuery(strings.TrimPrefix(m.Content, calcTrig), wolf.Metric, 10)
+
+		res, err := w.GetShortAnswerQuery(query, wolf.Metric, 10)
 		if err != nil {
 			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
 			return true
