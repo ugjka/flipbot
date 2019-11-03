@@ -5,9 +5,8 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"unicode/utf8"
 
-	iconv "github.com/djimenez/iconv-go"
-	"github.com/saintfish/chardet"
 	hbot "github.com/ugjka/hellabot"
 
 	"github.com/PuerkitoBio/goquery"
@@ -71,22 +70,16 @@ func printYoutubeInfo(url string) (string, error) {
 		parseYoutubeTime(res.Items[0].ContentDetails.Duration)), nil
 }
 
-func getPreview(url string) (preview string, err error) {
+func getPreview(url string) (title string, err error) {
 	if youtubeIDReg.MatchString(url) {
-		preview, err = printYoutubeInfo(url)
-		if err == nil {
-			return preview, err
-		}
-	}
-	if !strings.HasPrefix(url, "http://") && !strings.HasPrefix(url, "https://") {
-		url = "http://" + url
+		return printYoutubeInfo(url)
 	}
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return "", err
 	}
-	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 6.1; rv:60.0) Gecko/20100101 Firefox/60.0")
-	req.Header.Set("Accept-Language", "en-US,en;q=0.9")
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101 Firefox/68.0")
+	req.Header.Set("Accept-Language", "en-US,en;q=0.5")
 	req.Header.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
 	req.Header.Set("Connection", "keep-alive")
 
@@ -99,28 +92,15 @@ func getPreview(url string) (preview string, err error) {
 	if res.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("Status code not 200")
 	}
-	reg := regexp.MustCompile("charset=(\\w+);?")
-	con := res.Header.Get("Content-Type")
-	enc1 := reg.FindStringSubmatch(con)
 	doc, err := goquery.NewDocumentFromResponse(res)
 	if err != nil {
 		return "", err
 	}
-	title := doc.Find("title").First().Contents().Text()
-	if len(enc1) > 1 && !strings.Contains(strings.ToLower(enc1[1]), "utf") {
-		tmp, err := iconv.ConvertString(title, strings.ToLower(enc1[1]), "utf-8")
-		if err == nil {
-			title = tmp
-		}
-	}
-	enc, err := chardet.NewTextDetector().DetectAll([]byte(title))
-	if len(enc1) < 2 && err == nil && len(enc) > 0 && !strings.Contains(strings.ToLower(enc[0].Charset), "utf") {
-		tmp, err := iconv.ConvertString(title, strings.ToLower(enc[0].Charset), "utf-8")
-		if err == nil {
-			title = tmp
-		}
+	title = doc.Find("title").First().Contents().Text()
+	if !utf8.Valid([]byte(title)) {
+		return "", fmt.Errorf("not utf-8 text")
 	}
 	title = whitespace.ReplaceAllString(title, " ")
-	preview = strings.TrimSpace(title)
-	return preview, nil
+	title = strings.TrimSpace(title)
+	return title, nil
 }
