@@ -53,6 +53,8 @@ func parseYoutubeTime(input string) string {
 	return strings.Join(results, ":")
 }
 
+var youtubeIDReg = regexp.MustCompile(`(?:http[s]?\://)?(?:www\.)?youtu(?:be\.com/watch\?v=|\.be/)([0-9A-Za-z_-]{11}).*`)
+
 func printYoutubeInfo(url string) (string, error) {
 	res, err := getYoutubeTitle(youtubeIDReg.FindStringSubmatch(url)[1])
 	if err != nil {
