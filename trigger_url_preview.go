@@ -20,7 +20,7 @@ var urltitle = hbot.Trigger{
 		return m.Command == "PRIVMSG" && xurls.Strict().MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		suffix := regexp.MustCompile(`^https?\://.+/.+\.[a-z]{1,4}$`)
+		suffix := regexp.MustCompile(`^https?\://.+/.+\.[a-z]{3,4}$`)
 		url := xurls.Strict().FindString(m.Content)
 		if suffix.MatchString(url) {
 			log.Info("url is a file", "url", url)
@@ -75,7 +75,7 @@ func getPreview(url string) (preview string, err error) {
 	if youtubeIDReg.MatchString(url) {
 		preview, err = printYoutubeInfo(url)
 		if err == nil {
-			return "", err
+			return preview, err
 		}
 	}
 	if !strings.HasPrefix(url, "http://") && !strings.HasPrefix(url, "https://") {

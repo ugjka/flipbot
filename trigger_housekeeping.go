@@ -14,7 +14,7 @@ var namesCall sync.Once
 
 var names = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return true
+		return m.Command == "001" || m.To == ircChannel
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		namesCall.Do(func() {
@@ -28,7 +28,7 @@ var names = hbot.Trigger{
 var modes sync.Once
 var setmodes = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return true
+		return m.Command == "001" || m.To == ircChannel
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		modes.Do(func() {
