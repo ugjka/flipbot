@@ -28,10 +28,7 @@ var ducker = hbot.Trigger{
 			return false
 		}
 		msg := fmt.Sprintf("%s: %s", m.Name, res)
-		if len(msg) > textLimit {
-			msg = msg[:textLimit] + "..."
-		}
-		irc.Reply(m, msg)
+		irc.Reply(m, limit(msg))
 		return false
 	},
 }
@@ -55,10 +52,7 @@ var google = hbot.Trigger{
 			return false
 		}
 		msg := fmt.Sprintf("%s: %s [%s] (%s)", m.Name, res[0].URL, res[0].Title, res[0].Abstract)
-		if len(msg) > textLimit {
-			msg = msg[:textLimit] + "..."
-		}
-		irc.Reply(m, msg)
+		irc.Reply(m, limit(msg))
 		return false
 	},
 }
@@ -83,10 +77,7 @@ var googlenews = hbot.Trigger{
 		}
 		msg := fmt.Sprintf("%s: %s [%s] [%s] (%s)", m.Name,
 			res[0].URL, res[0].Metadata, res[0].Title, res[0].Abstract)
-		if len(msg) > textLimit {
-			msg = msg[:textLimit] + "..."
-		}
-		irc.Reply(m, msg)
+		irc.Reply(m, limit(msg))
 		return false
 	},
 }
@@ -162,5 +153,5 @@ func duck(s string) (out string, err error) {
 	if !ok {
 		return "no results!", nil
 	}
-	return fmt.Sprintf("[%s] %s", sel.Text(), url), nil
+	return fmt.Sprintf("%s [%s]", url, sel.Text()), nil
 }

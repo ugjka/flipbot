@@ -10,21 +10,20 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
+const wikiTrig = "!wiki "
+
 var wiki = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, "!wiki ")
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, wikiTrig)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		answer, link, err := searchWiki(m.Content[6:])
+		answer, link, err := searchWiki(strings.TrimPrefix(m.Content, wikiTrig))
 		if err != nil {
 			log.Warn("could not get wiki entry", "error", err)
 			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
 			return false
 		}
-		if len(answer) > 300 {
-			answer = answer[:300] + "..."
-		}
-		irc.Reply(m, fmt.Sprintf("%s: %s [%s]", m.Name, answer, link))
+		irc.Reply(m, fmt.Sprintf("%s: %s [%s]", m.Name, limit(answer), link))
 		return false
 	},
 }

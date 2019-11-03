@@ -20,7 +20,7 @@ var urltitle = hbot.Trigger{
 		return m.Command == "PRIVMSG" && xurls.Strict().MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		suffix := regexp.MustCompile(`^https?\://.+/.+\.[a-z]{3,4}$`)
+		suffix := regexp.MustCompile(`^https?\://.+/.+\.[a-z]{1,4}$`)
 		url := xurls.Strict().FindString(m.Content)
 		if suffix.MatchString(url) {
 			log.Info("url is a file", "url", url)
@@ -31,15 +31,7 @@ var urltitle = hbot.Trigger{
 			log.Warn("could not get url preview", "url", url, "error", err)
 			return false
 		}
-		if res == "Too Many Requests" {
-			log.Warn("could not get url preview", "url", url, "error", "Too many Requests")
-			return false
-		}
-		res = strings.TrimSpace(res)
-		if len(res) > textLimit {
-			res = res[:textLimit]
-		}
-		irc.Reply(m, fmt.Sprintf("%s's link: %s", m.Name, res))
+		irc.Reply(m, fmt.Sprintf("%s's link: %s", m.Name, limit(res)))
 		return false
 	},
 }
@@ -83,7 +75,7 @@ func getPreview(url string) (preview string, err error) {
 	if youtubeIDReg.MatchString(url) {
 		preview, err = printYoutubeInfo(url)
 		if err == nil {
-			return
+			return "", err
 		}
 	}
 	if !strings.HasPrefix(url, "http://") && !strings.HasPrefix(url, "https://") {
@@ -128,10 +120,7 @@ func getPreview(url string) (preview string, err error) {
 			title = tmp
 		}
 	}
-	preview = fmt.Sprintf("%s", title)
-	if len(preview) < 4 {
-		return "", fmt.Errorf("No title")
-	}
-	preview = strings.Replace(preview, "\n", " ", -1)
-	return
+	title = whitespace.ReplaceAllString(title, " ")
+	preview = strings.TrimSpace(title)
+	return preview, nil
 }

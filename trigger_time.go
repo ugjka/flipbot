@@ -13,12 +13,14 @@ import (
 	"gopkg.in/ugjka/go-tz.v2/tz"
 )
 
+var clockTrig = "!time "
+
 var clock = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, "!time ")
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, clockTrig)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		timez, err := getTime(m.Content[6:])
+		timez, err := getTime(strings.TrimPrefix(m.Content, clockTrig))
 		if err != nil {
 			log.Warn("could not get time", "for", m.Content[6:len(m.Content)], "error", err.Error())
 			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))

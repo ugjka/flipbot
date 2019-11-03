@@ -9,17 +9,19 @@ import (
 	hbot "github.com/ugjka/hellabot"
 )
 
+const transTrig = "!trans "
+
 var trans = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, "!trans ")
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, transTrig)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		res, err := translate(m.Content[7:])
+		res, err := translate(strings.TrimPrefix(m.Content, transTrig))
 		if err != nil {
 			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
 			return false
 		}
-		irc.Reply(m, fmt.Sprintf("%s: %s", m.Name, res))
+		irc.Reply(m, fmt.Sprintf("%s: %s", m.Name, limit(res)))
 		return false
 	},
 }

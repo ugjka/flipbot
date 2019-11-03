@@ -137,7 +137,7 @@ var randomcat = hbot.Trigger{
 
 var define = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return strings.HasPrefix(m.Content, "!define")
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, "!define")
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		irc.Reply(m, fmt.Sprintf("%s: !define is now !urban", m.Name))
@@ -147,7 +147,7 @@ var define = hbot.Trigger{
 
 var toss = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Content == "!toss"
+		return m.Command == "PRIVMSG" && m.Content == "!toss"
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		if strings.HasPrefix(m.Name, "shekib") {
@@ -167,7 +167,7 @@ var toss = hbot.Trigger{
 
 var meditation = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Content == "!meditation"
+		return m.Command == "PRIVMSG" && m.Content == "!meditation"
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		rand.Seed(time.Now().UnixNano())
@@ -179,7 +179,7 @@ var meditation = hbot.Trigger{
 
 var god = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Content == "!god"
+		return m.Command == "PRIVMSG" && m.Content == "!god"
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		buf := bytes.NewBuffer(nil)
@@ -193,7 +193,7 @@ var god = hbot.Trigger{
 
 var help = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Content == "!help"
+		return m.Command == "PRIVMSG" && m.Content == "!help"
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		irc.Reply(m, "Fl1pbot's manual: https://dl.ugjka.net/fl1pbot.txt")

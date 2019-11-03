@@ -14,7 +14,7 @@ const dictTrig = "!dict "
 
 var dict = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return strings.HasPrefix(m.Content, dictTrig)
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, dictTrig)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		cmd := exec.Command("trans", "--no-ansi", "-d", strings.TrimPrefix(m.Content, dictTrig))
@@ -34,11 +34,8 @@ var dict = hbot.Trigger{
 				res = res + fmt.Sprintf("%s: %s ", strings.ToUpper(matches[2]), matches[3])
 			}
 		}
-		if len(res) > textLimit {
-			res = res[:textLimit] + "..."
-		}
 		if len(res) > 0 {
-			irc.Reply(m, fmt.Sprintf("%s: [DEFINITIONS] %s", m.Name, res))
+			irc.Reply(m, fmt.Sprintf("%s: [DEFINITIONS] %s", m.Name, limit(res)))
 			return false
 		}
 		//Synonyms
@@ -49,11 +46,8 @@ var dict = hbot.Trigger{
 				res = res + fmt.Sprintf("%s: %s ", strings.ToUpper(matches[2]), matches[3])
 			}
 		}
-		if len(res) > textLimit {
-			res = res[:textLimit] + "..."
-		}
 		if len(res) > 0 {
-			irc.Reply(m, fmt.Sprintf("%s: [SYNONYMS] %s", m.Name, res))
+			irc.Reply(m, fmt.Sprintf("%s: [SYNONYMS] %s", m.Name, limit(res)))
 			return false
 		}
 		irc.Reply(m, fmt.Sprintf("%s: no results", m.Name))
@@ -65,7 +59,7 @@ const synTrig = "!syn "
 
 var syn = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return strings.HasPrefix(m.Content, synTrig)
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, synTrig)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		cmd := exec.Command("trans", "--no-ansi", "-d", strings.TrimPrefix(m.Content, synTrig))
@@ -86,11 +80,8 @@ var syn = hbot.Trigger{
 				res = res + fmt.Sprintf("%s: %s ", strings.ToUpper(matches[2]), matches[3])
 			}
 		}
-		if len(res) > textLimit {
-			res = res[:textLimit] + "..."
-		}
 		if len(res) > 0 {
-			irc.Reply(m, fmt.Sprintf("%s: [SYNONYMS] %s", m.Name, res))
+			irc.Reply(m, fmt.Sprintf("%s: [SYNONYMS] %s", m.Name, limit(res)))
 			return false
 		}
 		irc.Reply(m, fmt.Sprintf("%s: no results", m.Name))

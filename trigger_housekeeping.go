@@ -10,10 +10,25 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
+var namesCall sync.Once
+
+var names = hbot.Trigger{
+	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+		return m.Command == "001"
+	},
+	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+		namesCall.Do(func() {
+			log.Info("firstrun", "action", "getting names")
+			irc.Send("NAMES " + ircChannel)
+		})
+		return false
+	},
+}
+
 var modes sync.Once
 var setmodes = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.To == ircChannel
+		return m.Command == "001"
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		modes.Do(func() {

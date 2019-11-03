@@ -13,7 +13,6 @@ import (
 	"github.com/hako/durafmt"
 	hbot "github.com/ugjka/hellabot"
 	"github.com/ugjka/reverse"
-	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var logCTR = struct {
@@ -35,21 +34,6 @@ var seenCTR = struct {
 type Seen struct {
 	Seen    time.Time
 	LastMSG string
-}
-
-var namesCall sync.Once
-
-var names = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		namesCall.Do(func() {
-			log.Info("firstrun", "action", "getting names")
-			bot.Send("NAMES " + ircChannel)
-		})
-		return false
-	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		return false
-	},
 }
 
 const seenTrig = "!seen "
