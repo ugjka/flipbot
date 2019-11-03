@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -14,14 +13,17 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
+const duckerTrig = "!ducker "
+
 var ducker = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, "!ducker ")
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, duckerTrig)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		res, err := duck(m.Content[8:])
+		query := strings.TrimPrefix(m.Content, duckerTrig)
+		res, err := duck(query)
 		if err != nil {
-			log.Warn("could not get ddg result", "for", m.Content[8:len(m.Content)], "error", err)
+			log.Warn("could not get ddg result", "for", query, "error", err)
 			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
 			return false
 		}
@@ -34,14 +36,17 @@ var ducker = hbot.Trigger{
 	},
 }
 
+const googleTrig = "!google "
+
 var google = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, "!google ")
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, googleTrig)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		res, err := googleStuff(m.Content[8:])
+		query := strings.TrimPrefix(m.Content, googleTrig)
+		res, err := googleStuff(query)
 		if err != nil {
-			log.Warn("could not get google result", "for", m.Content[8:len(m.Content)], "error", err)
+			log.Warn("could not get google result", "for", query, "error", err)
 			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
 			return false
 		}
@@ -58,16 +63,17 @@ var google = hbot.Trigger{
 	},
 }
 
+var googleNewsTrig = "!news "
+
 var googlenews = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, "!news ")
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, googleNewsTrig)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		/*irc.Reply(m, fmt.Sprintf("%s: This trigger is no longer active", m.Name))
-		return false*/
-		res, err := googleNews(m.Content[6:])
+		query := strings.TrimPrefix(m.Content, googleNewsTrig)
+		res, err := googleNews(query)
 		if err != nil {
-			log.Warn("could not get google result", "for", m.Content[6:len(m.Content)], "error", err)
+			log.Warn("could not get google result", "for", query, "error", err)
 			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
 			return false
 		}
@@ -108,15 +114,11 @@ type GooglerNewsResults []GooglerNewsResult
 
 func googleStuff(q string) (res GooglerResults, err error) {
 	cmd := exec.Command("googler", "--lang=en", "--json", "--count=5", fmt.Sprintf("%s", q))
-	out := bytes.NewBuffer(nil)
-	cmd.Stdout = out
-	errBuf := bytes.NewBuffer(nil)
-	cmd.Stderr = errBuf
-	err = cmd.Run()
+	data, err := cmd.Output()
 	if err != nil {
-		return nil, fmt.Errorf(errBuf.String())
+		return nil, err
 	}
-	if err = json.NewDecoder(out).Decode(&res); err != nil {
+	if err = json.Unmarshal(data, &res); err != nil {
 		return
 	}
 	return
@@ -124,15 +126,11 @@ func googleStuff(q string) (res GooglerResults, err error) {
 
 func googleNews(q string) (res GooglerNewsResults, err error) {
 	cmd := exec.Command("googler", "--lang=en", "--news", "--json", "--count=5", fmt.Sprintf("%s", q))
-	out := bytes.NewBuffer(nil)
-	cmd.Stdout = out
-	errBuf := bytes.NewBuffer(nil)
-	cmd.Stderr = errBuf
-	err = cmd.Run()
+	data, err := cmd.Output()
 	if err != nil {
-		return nil, fmt.Errorf(errBuf.String())
+		return nil, err
 	}
-	if err = json.NewDecoder(out).Decode(&res); err != nil {
+	if err = json.Unmarshal(data, &res); err != nil {
 		return
 	}
 	return

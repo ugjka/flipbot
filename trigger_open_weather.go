@@ -20,15 +20,14 @@ var forecastURL = "http://api.openweathermap.org/data/2.5/forecast?units=metric&
 
 var errNoLocation = errors.New("location not found")
 
+const wTrig = "!w "
+
 var weatherOpen = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, "!w ")
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, wTrig)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		if len(m.Content) <= 4 {
-			return false
-		}
-		lon, lat, err := getLonLat(m.Content[3:])
+		lon, lat, err := getLonLat(strings.TrimPrefix(m.Content, wTrig))
 		if err != nil {
 			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
 			return false
@@ -195,15 +194,14 @@ func getForecastWeather(loc string) (w OpenForecast, adress string, err error) {
 	return w, adress, err
 }
 
+const wfTrig = "!wf "
+
 var wforecastOpen = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, "!wf ")
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, wfTrig)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		if len(m.Content) <= 5 {
-			return false
-		}
-		res, _, err := getForecastWeather(m.Content[4:])
+		res, _, err := getForecastWeather(strings.TrimPrefix(m.Content, wfTrig))
 		switch err {
 		case errNoLocation:
 			irc.Reply(m, fmt.Sprintf("%s: location unknown.", m.Name))

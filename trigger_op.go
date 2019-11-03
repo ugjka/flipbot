@@ -4,8 +4,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ugjka/reverse"
 	hbot "github.com/ugjka/hellabot"
+	"github.com/ugjka/reverse"
 	gomail "gopkg.in/gomail.v2"
 	log "gopkg.in/inconshreveable/log15.v2"
 )

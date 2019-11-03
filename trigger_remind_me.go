@@ -33,13 +33,15 @@ var reminder = hbot.Trigger{
 	},
 }
 
+const getreminderTrig = "!reminder "
+
 var getreminder = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.To == ircChannel && m.Command == "PRIVMSG" &&
-			strings.HasPrefix(m.Content, "!reminder ")
+			strings.HasPrefix(m.Content, getreminderTrig)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		r, err := remindme.Parse(strings.TrimPrefix(m.Content, "!reminder "))
+		r, err := remindme.Parse(strings.TrimPrefix(m.Content, getreminderTrig))
 		if err != nil {
 			irc.Reply(m, fmt.Sprintf("%s: %s", m.Name, err))
 			return false

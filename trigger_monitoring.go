@@ -45,9 +45,7 @@ var names = hbot.Trigger{
 			log.Info("firstrun", "action", "getting names")
 			bot.Send("NAMES " + ircChannel)
 		})
-		return (m.Command == "PRIVMSG" && m.To == ircChannel) || m.Command == "JOIN" ||
-			m.Command == "QUIT" || m.Command == "PART" || m.Command == "KICK" || m.Command == "KILL" ||
-			m.Command == "NICK"
+		return false
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return false
@@ -141,9 +139,11 @@ var watcher = hbot.Trigger{
 	},
 }
 
+const topTrig = "!top"
+
 var top = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && m.Content == "!top"
+		return m.Command == "PRIVMSG" && m.Content == topTrig
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		logCTR.Lock()
