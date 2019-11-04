@@ -87,7 +87,7 @@ func getPreview(url string) (title string, err error) {
 	jar.Clear()
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("Status code not 200")
+		return "", fmt.Errorf("status not 200")
 	}
 	const html = "text/html"
 	content := res.Header.Get("Content-Type")
