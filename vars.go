@@ -45,7 +45,7 @@ var httpClient = &http.Client{
 var jar *cookiejar.Jar
 var meditations []string
 
-const textLimit = 350
+const textLimit = 300
 
 var whitespace = regexp.MustCompile(`\s+`)
 
