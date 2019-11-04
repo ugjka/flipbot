@@ -19,9 +19,9 @@ var urltitle = hbot.Trigger{
 		return m.Command == "PRIVMSG" && xurls.Strict().MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		suffix := regexp.MustCompile(`^https?\://.+/.+\.[a-z]{3,4}$`)
+		suffix := regexp.MustCompile(`^https?\://.+/.+\.[A-Za-z]+$`)
 		url := xurls.Strict().FindString(m.Content)
-		if suffix.MatchString(url) {
+		if suffix.MatchString(url) && !strings.HasSuffix(url, ".html") && !strings.HasSuffix(url, ".htm") {
 			log.Info("url is a file", "url", url)
 			return false
 		}
