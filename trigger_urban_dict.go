@@ -17,7 +17,9 @@ var urban = hbot.Trigger{
 		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, urbanTrig)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		defs, err := LookupWordDefinition(strings.TrimPrefix(m.Content, urbanTrig))
+		query := strings.TrimPrefix(m.Content, urbanTrig)
+		query = strings.ToLower(query)
+		defs, err := LookupWordDefinition(query)
 		if err != nil {
 			log.Warn("urban", "error", err)
 			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
@@ -28,6 +30,11 @@ var urban = hbot.Trigger{
 			return false
 		}
 		result := defs.List[0]
+		result.Word = strings.ToLower(result.Word)
+		if result.Word != query {
+			irc.Reply(m, fmt.Sprintf("%s: no results!", m.Name))
+			return false
+		}
 		replacer := strings.NewReplacer("[", "", "]", "")
 		result.Definition = replacer.Replace(result.Definition)
 		result.Definition = whitespace.ReplaceAllString(result.Definition, " ")
@@ -39,9 +46,10 @@ var urban = hbot.Trigger{
 // UrbanResponse response from urban dictionary
 type UrbanResponse struct {
 	List []struct {
-		Definition string `json:"definition"`
-		Permalink  string `json:"permalink"`
-	} `json:"list"`
+		Definition string
+		Permalink  string
+		Word       string
+	}
 }
 
 // LookupWordDefinition looks up definition
