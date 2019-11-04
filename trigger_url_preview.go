@@ -19,15 +19,10 @@ var urltitle = hbot.Trigger{
 		return m.Command == "PRIVMSG" && xurls.Strict().MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		suffix := regexp.MustCompile(`^https?\://.+/.+\.[A-Za-z]+$`)
 		url := xurls.Strict().FindString(m.Content)
-		if suffix.MatchString(url) && !strings.HasSuffix(url, ".html") && !strings.HasSuffix(url, ".htm") {
-			log.Info("url is a file", "url", url)
-			return false
-		}
 		res, err := getPreview(url)
 		if err != nil {
-			log.Warn("could not get url preview", "url", url, "error", err)
+			log.Warn("preview", "url", url, "error", err)
 			return false
 		}
 		irc.Reply(m, fmt.Sprintf("%s's link: %s", m.Name, limit(res)))
@@ -93,6 +88,11 @@ func getPreview(url string) (title string, err error) {
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("Status code not 200")
+	}
+	const html = "text/html"
+	content := res.Header.Get("Content-Type")
+	if !strings.Contains(content, html) {
+		return "", fmt.Errorf("not %s", html)
 	}
 	doc, err := goquery.NewDocumentFromResponse(res)
 	if err != nil {
