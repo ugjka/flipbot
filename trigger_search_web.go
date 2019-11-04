@@ -23,7 +23,7 @@ var ducker = hbot.Trigger{
 		query := strings.TrimPrefix(m.Content, duckerTrig)
 		res, err := duck(query)
 		if err != nil {
-			log.Warn("could not get ddg result", "for", query, "error", err)
+			log.Warn("no ducker", "for", query, "error", err)
 			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
 			return false
 		}
@@ -43,7 +43,7 @@ var google = hbot.Trigger{
 		query := strings.TrimPrefix(m.Content, googleTrig)
 		res, err := googleStuff(query)
 		if err != nil {
-			log.Warn("could not get google result", "for", query, "error", err)
+			log.Warn("no googler", "for", query, "error", err)
 			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
 			return false
 		}
@@ -67,7 +67,7 @@ var googlenews = hbot.Trigger{
 		query := strings.TrimPrefix(m.Content, googleNewsTrig)
 		res, err := googleNews(query)
 		if err != nil {
-			log.Warn("could not get google result", "for", query, "error", err)
+			log.Warn("no news", "for", query, "error", err)
 			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
 			return false
 		}

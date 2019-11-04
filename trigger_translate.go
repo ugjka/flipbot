@@ -6,6 +6,8 @@ import (
 	"regexp"
 	"strings"
 
+	log "gopkg.in/inconshreveable/log15.v2"
+
 	hbot "github.com/ugjka/hellabot"
 )
 
@@ -18,6 +20,7 @@ var trans = hbot.Trigger{
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		res, err := translate(strings.TrimPrefix(m.Content, transTrig))
 		if err != nil {
+			log.Warn("trans", "error", err)
 			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
 			return false
 		}
@@ -30,9 +33,9 @@ func translate(command string) (res string, err error) {
 	langreg := regexp.MustCompile(`^(\:[a-z]{2,3})\s+(.+)$`)
 	lang := langreg.FindStringSubmatch(command)
 	if len(lang) == 3 {
-		res, err := exec.Command("trans", "-e", "google", "-brief", lang[1], lang[2]).Output()
-		return strings.Replace(string(res), "\n", " ", -1), err
+		out, err := exec.Command("trans", "-e", "google", "-brief", lang[1], lang[2]).Output()
+		return whitespace.ReplaceAllString(string(out), " "), err
 	}
-	resByte, err := exec.Command("trans", "-e", "google", "-brief", command).Output()
-	return strings.Replace(string(resByte), "\n", " ", -1), err
+	out, err := exec.Command("trans", "-e", "google", "-brief", command).Output()
+	return whitespace.ReplaceAllString(string(out), " "), err
 }

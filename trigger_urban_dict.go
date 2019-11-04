@@ -19,8 +19,8 @@ var urban = hbot.Trigger{
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		defs, err := LookupWordDefinition(strings.TrimPrefix(m.Content, urbanTrig))
 		if err != nil {
-			log.Warn("could not get UD definition", "error", err)
-			irc.Reply(m, fmt.Sprintf("%s: error: %v", m.Name, err))
+			log.Warn("urban", "error", err)
+			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
 			return false
 		}
 		if len(defs.List) == 0 {
@@ -28,8 +28,9 @@ var urban = hbot.Trigger{
 			return false
 		}
 		result := defs.List[0]
-		replacer := strings.NewReplacer("\r", "", "\n", " ", "[", "", "]", "")
+		replacer := strings.NewReplacer("[", "", "]", "")
 		result.Definition = replacer.Replace(result.Definition)
+		result.Definition = whitespace.ReplaceAllString(result.Definition, " ")
 		irc.Reply(m, fmt.Sprintf("%s: %s [%s]", m.Name, limit(result.Definition), result.Permalink))
 		return false
 	},

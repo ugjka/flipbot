@@ -19,7 +19,7 @@ var wiki = hbot.Trigger{
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		answer, link, err := searchWiki(strings.TrimPrefix(m.Content, wikiTrig))
 		if err != nil {
-			log.Warn("could not get wiki entry", "error", err)
+			log.Warn("wiki", "error", err)
 			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
 			return false
 		}
@@ -32,7 +32,7 @@ func searchWiki(query string) (answer, link string, err error) {
 	w, err := wikimedia.New("http://en.wikipedia.org/w/api.php")
 	w.Client = httpClient
 	if err != nil {
-		return "", "", err
+		return
 	}
 	f := url.Values{
 		"action":   {"query"},
@@ -43,10 +43,11 @@ func searchWiki(query string) (answer, link string, err error) {
 	}
 	res, err := w.Query(f)
 	if err != nil {
-		return "", "", err
+		return
 	}
 	if len(res.Query.Search) == 0 {
-		return "", "", fmt.Errorf("no results")
+		err = fmt.Errorf("no results")
+		return
 	}
 
 	f = url.Values{
@@ -60,17 +61,14 @@ func searchWiki(query string) (answer, link string, err error) {
 	}
 	res, err = w.Query(f)
 	if err != nil {
-		return "", "", err
+		return
 	}
 	for _, v := range res.Query.Pages {
 		if v.PageId == 0 {
-			return "", "", fmt.Errorf("no results")
+			err = fmt.Errorf("no results")
+			return
 		}
-		text := ""
-		for _, v := range strings.Split(v.Extract, "\n") {
-			text += " " + v
-		}
-		answer = fmt.Sprintf("%s - %s", v.Title, text)
+		answer = whitespace.ReplaceAllString(v.Extract, " ")
 		link = fmt.Sprintf("https://en.wikipedia.org/?curid=%d", v.PageId)
 		break
 	}

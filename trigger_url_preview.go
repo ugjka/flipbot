@@ -56,10 +56,10 @@ func printYoutubeInfo(url string) (string, error) {
 		return "", err
 	}
 	if len(res.Items) == 0 {
-		return "", fmt.Errorf("no items returned from youtube")
+		return "", fmt.Errorf("youtube no items")
 	}
 	if res.Items[0].Snippet.Title == "" {
-		return "", fmt.Errorf("empty title from youtube")
+		return "", fmt.Errorf("youtube no title")
 	}
 	return fmt.Sprintf("[Youtube] %s | %s | %s",
 		res.Items[0].Snippet.Title,

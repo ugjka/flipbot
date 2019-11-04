@@ -17,7 +17,7 @@ var youtube = hbot.Trigger{
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		res, err := searchYt(m.Content[9:])
 		if err != nil {
-			log.Warn("could not get youtube", "error", err)
+			log.Warn("youtube search", "error", err)
 			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
 			return false
 		}

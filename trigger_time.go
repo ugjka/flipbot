@@ -20,9 +20,10 @@ var clock = hbot.Trigger{
 		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, clockTrig)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		timez, err := getTime(strings.TrimPrefix(m.Content, clockTrig))
+		query := strings.TrimPrefix(m.Content, clockTrig)
+		timez, err := getTime(query)
 		if err != nil {
-			log.Warn("could not get time", "for", m.Content[6:len(m.Content)], "error", err.Error())
+			log.Warn("no time", "for", query, "error", err)
 			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
 			return false
 		}
@@ -30,6 +31,8 @@ var clock = hbot.Trigger{
 		return false
 	},
 }
+
+const noplace = "Couldn't find such place."
 
 //Func for querying newyears in specified location
 func getTime(loc string) (string, error) {
@@ -48,7 +51,7 @@ func getTime(loc string) (string, error) {
 		return "", err
 	}
 	if len(mapj) == 0 {
-		return "I don't know that place.", nil
+		return noplace, nil
 	}
 	adress := mapj[0].DisplayName
 	lat, _ := strconv.ParseFloat(mapj[0].Lat, 64)
@@ -56,11 +59,11 @@ func getTime(loc string) (string, error) {
 	p := tz.Point{Lat: lat, Lon: lon}
 	tzid, err := tz.GetZone(p)
 	if err != nil {
-		return "I don't know that place.", nil
+		return noplace, nil
 	}
 	zone, err := time.LoadLocation(tzid[0])
 	if err != nil {
-		return "I don't know that place.", nil
+		return noplace, nil
 	}
 	timeX := time.Now().In(zone)
 	return fmt.Sprintf("Time for %s is %s", adress, timeX.Format("Mon Jan 2 15:04:05")), nil
