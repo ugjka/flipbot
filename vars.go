@@ -40,7 +40,7 @@ var remind = remindme.New(ircNick)
 
 //Default for all requests
 var httpClient = &http.Client{
-	Timeout: 15 * time.Second,
+	Timeout: 30 * time.Second,
 }
 
 var jar *cookiejar.Jar
