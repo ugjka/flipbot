@@ -13,7 +13,7 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-var duckerTrig = regexp.MustCompile(`^!ducker\s+(\S.+)$"`)
+var duckerTrig = regexp.MustCompile(`^!ducker\s+(\S.+)$`)
 
 var ducker = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
