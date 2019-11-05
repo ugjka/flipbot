@@ -13,7 +13,7 @@ import (
 var notifyop = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && m.To == ircChannel &&
-			strings.Contains(m.Content, op)
+			strings.Contains(m.Content, op) && strings.ToLower(m.Name) != op
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		history := ""

@@ -36,28 +36,26 @@ type Seen struct {
 	LastMSG string
 }
 
-const seenTrig = "!seen "
+var seenTrig = regexp.MustCompile("^!seen\\s+([A-Za-z_\\-\\[\\]\\^{}|`][A-Za-z0-9_\\-\\[\\]\\^{}|`]{1,15})$")
 
 var seen = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, seenTrig)
+		return m.Command == "PRIVMSG" && seenTrig.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		v := strings.TrimPrefix(m.Content, seenTrig)
-		if v == "" {
-			return false
-		}
-		if strings.ToLower(v) == strings.ToLower(m.Name) {
+		nick := seenTrig.FindStringSubmatch(m.Content)[1]
+		nick = strings.ToLower(nick)
+		if nick == strings.ToLower(m.Name) {
 			irc.Reply(m, fmt.Sprintf("%s: I'm seeing you!", m.Name))
 			return false
 		}
 		seenCTR.RLock()
-		if k, ok := seenCTR.db[strings.ToLower(v)]; ok {
+		if k, ok := seenCTR.db[nick]; ok {
 			dur := durafmt.Parse(time.Now().UTC().Sub(k.Seen))
 			if k.LastMSG != "" {
-				irc.Reply(m, fmt.Sprintf("%s: I saw %s %s ago. Their last message was: %s", m.Name, v, roundDuration(dur.String()), k.LastMSG))
+				irc.Reply(m, fmt.Sprintf("%s: I saw %s %s ago. Their last message was: %s", m.Name, nick, roundDuration(dur.String()), k.LastMSG))
 			} else {
-				irc.Reply(m, fmt.Sprintf("%s: I saw %s %s ago", m.Name, v, roundDuration(dur.String())))
+				irc.Reply(m, fmt.Sprintf("%s: I saw %s %s ago", m.Name, nick, roundDuration(dur.String())))
 			}
 		} else {
 			irc.Reply(m, fmt.Sprintf("%s: I haven't seen that nick before", m.Name))

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 	"sync"
 
@@ -24,18 +25,16 @@ var memoCTR = struct {
 	store: make(map[string][]memoStruct),
 }
 
-const memoTrig = "!memo "
+var memoTrig = regexp.MustCompile("^!memo\\s+([A-Za-z_\\-\\[\\]\\^{}|`][A-Za-z0-9_\\-\\[\\]\\^{}|`]{1,15})\\s+(\\S.+)$")
 
 var memo = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, memoTrig)
+		return m.Command == "PRIVMSG" && memoTrig.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		msg := strings.TrimPrefix(m.Content, memoTrig)
-		msg = whitespace.ReplaceAllString(msg, " ")
-		args := strings.Split(msg, " ")
-		nick := strings.ToLower(args[0])
-		msg = strings.Join(args[1:], " ")
+		matches := memoTrig.FindStringSubmatch(m.Content)
+		nick := strings.ToLower(matches[1])
+		msg := matches[2]
 		memoCTR.Lock()
 		defer memoCTR.Unlock()
 		memoCTR.store[nick] = append(memoCTR.store[nick], memoStruct{m.Name, msg})

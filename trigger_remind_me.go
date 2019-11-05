@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"strings"
+	"regexp"
 	"sync"
 	"time"
 
@@ -33,15 +33,15 @@ var reminder = hbot.Trigger{
 	},
 }
 
-const getreminderTrig = "!reminder "
+var getreminderTrig = regexp.MustCompile(`^!reminder\s+(\S.+)$`)
 
 var getreminder = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.To == ircChannel && m.Command == "PRIVMSG" &&
-			strings.HasPrefix(m.Content, getreminderTrig)
+			getreminderTrig.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		r, err := remindme.Parse(strings.TrimPrefix(m.Content, getreminderTrig))
+		r, err := remindme.Parse(getreminderTrig.FindStringSubmatch(m.Content)[1])
 		if err != nil {
 			irc.Reply(m, fmt.Sprintf("%s: %s", m.Name, err))
 			return false

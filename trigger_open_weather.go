@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"regexp"
 	"strconv"
-	"strings"
 	"time"
 
 	hbot "github.com/ugjka/hellabot"
@@ -20,14 +20,14 @@ var forecastURL = "http://api.openweathermap.org/data/2.5/forecast?units=metric&
 
 var errNoLocation = errors.New("location not found")
 
-const wTrig = "!w "
+var wTrig = regexp.MustCompile(`^!w\s+(\S.+)$`)
 
 var weatherOpen = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, wTrig)
+		return m.Command == "PRIVMSG" && wTrig.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		lon, lat, err := getLonLat(strings.TrimPrefix(m.Content, wTrig))
+		lon, lat, err := getLonLat(wTrig.FindStringSubmatch(m.Content)[1])
 		if err != nil {
 			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
 			return false
@@ -194,14 +194,14 @@ func getForecastWeather(loc string) (w OpenForecast, adress string, err error) {
 	return w, adress, err
 }
 
-const wfTrig = "!wf "
+var wfTrig = regexp.MustCompile(`^!wf\s+(\S.+)$`)
 
 var wforecastOpen = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, wfTrig)
+		return m.Command == "PRIVMSG" && wfTrig.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		res, _, err := getForecastWeather(strings.TrimPrefix(m.Content, wfTrig))
+		res, _, err := getForecastWeather(wfTrig.FindStringSubmatch(m.Content)[1])
 		switch err {
 		case errNoLocation:
 			irc.Reply(m, fmt.Sprintf("%s: location unknown.", m.Name))

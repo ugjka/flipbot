@@ -6,21 +6,21 @@ import (
 	"net/http"
 	"net/url"
 	"os/exec"
-	"strings"
+	"regexp"
 
 	"github.com/PuerkitoBio/goquery"
 	hbot "github.com/ugjka/hellabot"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-const duckerTrig = "!ducker "
+var duckerTrig = regexp.MustCompile(`^!ducker\s+(\S.+)$"`)
 
 var ducker = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, duckerTrig)
+		return m.Command == "PRIVMSG" && duckerTrig.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		query := strings.TrimPrefix(m.Content, duckerTrig)
+		query := duckerTrig.FindStringSubmatch(m.Content)[1]
 		res, err := duck(query)
 		if err != nil {
 			log.Warn("no ducker", "for", query, "error", err)
@@ -33,14 +33,14 @@ var ducker = hbot.Trigger{
 	},
 }
 
-const googleTrig = "!google "
+var googleTrig = regexp.MustCompile(`^!google\s+(\S.+)$`)
 
 var google = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, googleTrig)
+		return m.Command == "PRIVMSG" && googleTrig.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		query := strings.TrimPrefix(m.Content, googleTrig)
+		query := googleTrig.FindStringSubmatch(m.Content)[1]
 		res, err := googleStuff(query)
 		if err != nil {
 			log.Warn("no googler", "for", query, "error", err)
@@ -57,14 +57,14 @@ var google = hbot.Trigger{
 	},
 }
 
-var googleNewsTrig = "!news "
+var googleNewsTrig = regexp.MustCompile(`^!news\s+(\S.+)$`)
 
 var googlenews = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, googleNewsTrig)
+		return m.Command == "PRIVMSG" && googleNewsTrig.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		query := strings.TrimPrefix(m.Content, googleNewsTrig)
+		query := googleNewsTrig.FindStringSubmatch(m.Content)[1]
 		res, err := googleNews(query)
 		if err != nil {
 			log.Warn("no news", "for", query, "error", err)

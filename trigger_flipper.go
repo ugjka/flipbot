@@ -2,33 +2,33 @@ package main
 
 import (
 	"fmt"
-	"strings"
+	"regexp"
 
 	hbot "github.com/ugjka/hellabot"
 )
 
 // This trigger flips the table
 
-const fliptextTrig = "!flip "
+var fliptextTrig = regexp.MustCompile(`^!flip\s+(\S.+)$`)
 
 var fliptext = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, fliptextTrig)
+		return m.Command == "PRIVMSG" && fliptextTrig.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		irc.Reply(m, fmt.Sprintf("(╯‵Д′)╯彡%s", upside(strings.TrimPrefix(m.Content, fliptextTrig))))
+		irc.Reply(m, fmt.Sprintf("(╯‵Д′)╯彡%s", upside(fliptextTrig.FindStringSubmatch(m.Content)[1])))
 		return false
 	},
 }
 
-var unfliptextTrig = "!unflip "
+var unfliptextTrig = regexp.MustCompile(`^!unflip\s+(\S.+)$`)
 
 var unfliptext = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, unfliptextTrig)
+		return m.Command == "PRIVMSG" && unfliptextTrig.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		irc.Reply(m, fmt.Sprintf("%s <(•_•<)", upside(strings.TrimPrefix(m.Content, unfliptextTrig))))
+		irc.Reply(m, fmt.Sprintf("%s <(•_•<)", upside(unfliptextTrig.FindStringSubmatch(m.Content)[1])))
 		return false
 	},
 }

@@ -10,14 +10,14 @@ import (
 	hbot "github.com/ugjka/hellabot"
 )
 
-const dictTrig = "!dict "
+var dictTrig = regexp.MustCompile(`^!dict\s+(\S.+)$`)
 
 var dict = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, dictTrig)
+		return m.Command == "PRIVMSG" && dictTrig.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		cmd := exec.Command("trans", "--no-ansi", "-d", strings.TrimPrefix(m.Content, dictTrig))
+		cmd := exec.Command("trans", "--no-ansi", "-d", dictTrig.FindStringSubmatch(m.Content)[1])
 		errBuf := bytes.NewBuffer(nil)
 		cmd.Stderr = errBuf
 		out, err := cmd.Output()
@@ -55,14 +55,14 @@ var dict = hbot.Trigger{
 	},
 }
 
-const synTrig = "!syn "
+var synTrig = regexp.MustCompile(`^!syn\s+(\S.+)$`)
 
 var syn = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, synTrig)
+		return m.Command == "PRIVMSG" && synTrig.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		cmd := exec.Command("trans", "--no-ansi", "-d", strings.TrimPrefix(m.Content, synTrig))
+		cmd := exec.Command("trans", "--no-ansi", "-d", synTrig.FindStringSubmatch(m.Content)[1])
 		errBuf := bytes.NewBuffer(nil)
 		cmd.Stderr = errBuf
 		out, err := cmd.Output()
