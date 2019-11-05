@@ -24,7 +24,7 @@ var ducker = hbot.Trigger{
 		res, err := duck(query)
 		if err != nil {
 			log.Warn("no ducker", "for", query, "error", err)
-			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
+			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return false
 		}
 		msg := fmt.Sprintf("%s: %s", m.Name, res)
@@ -44,7 +44,7 @@ var google = hbot.Trigger{
 		res, err := googleStuff(query)
 		if err != nil {
 			log.Warn("no googler", "for", query, "error", err)
-			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
+			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return false
 		}
 		if len(res) == 0 {
@@ -68,7 +68,7 @@ var googlenews = hbot.Trigger{
 		res, err := googleNews(query)
 		if err != nil {
 			log.Warn("no news", "for", query, "error", err)
-			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
+			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return false
 		}
 		if len(res) == 0 {

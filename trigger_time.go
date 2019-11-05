@@ -24,7 +24,7 @@ var clock = hbot.Trigger{
 		timez, err := getTime(query)
 		if err != nil {
 			log.Warn("no time", "for", query, "error", err)
-			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
+			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return false
 		}
 		irc.Reply(m, fmt.Sprintf("%s: %s", m.Name, timez))

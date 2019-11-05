@@ -2,6 +2,7 @@ package main
 
 import (
 	cookiejar "flipbot/jar"
+	"fmt"
 	"net/http"
 	"regexp"
 	"time"
@@ -55,3 +56,5 @@ func limit(in string) string {
 	}
 	return in
 }
+
+var errRequest = fmt.Errorf("an error occurred while processing your request")

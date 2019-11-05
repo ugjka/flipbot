@@ -3,24 +3,24 @@ package main
 import (
 	"fmt"
 	"net/url"
-	"strings"
+	"regexp"
 
 	wikimedia "github.com/pmylund/go-wikimedia"
 	hbot "github.com/ugjka/hellabot"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-const wikiTrig = "!wiki "
+var wikiTrig = regexp.MustCompile(`^!wiki\s+(\S.+)$`)
 
 var wiki = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, wikiTrig)
+		return m.Command == "PRIVMSG" && wikiTrig.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		answer, link, err := searchWiki(strings.TrimPrefix(m.Content, wikiTrig))
+		answer, link, err := searchWiki(wikiTrig.FindStringSubmatch(m.Content)[1])
 		if err != nil {
 			log.Warn("wiki", "error", err)
-			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
+			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return false
 		}
 		irc.Reply(m, fmt.Sprintf("%s: %s [%s]", m.Name, limit(answer), link))

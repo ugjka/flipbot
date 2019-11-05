@@ -29,19 +29,19 @@ var weatherOpen = hbot.Trigger{
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		lon, lat, err := getLonLat(wTrig.FindStringSubmatch(m.Content)[1])
 		if err != nil {
-			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
+			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return false
 		}
 		res, err := getCurrentWeather(lon, lat)
 		switch err {
 		case errNoLocation:
-			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
+			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return false
 		case nil:
 			break
 		default:
 			log.Warn("!w", "error", err)
-			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
+			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return false
 		}
 		format := "%s %s: %s, %.0fC/%.0fF, pressure %.1f hPa, humidity %d%%, wind %.1f m/s, gust %.1f m/s"
@@ -209,7 +209,7 @@ var wforecastOpen = hbot.Trigger{
 		case nil:
 			break
 		default:
-			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
+			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			log.Error("!wf", "error", err)
 			return false
 		}

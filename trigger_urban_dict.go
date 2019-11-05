@@ -22,7 +22,7 @@ var urban = hbot.Trigger{
 		defs, err := LookupWordDefinition(query)
 		if err != nil {
 			log.Warn("urban", "error", err)
-			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
+			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return false
 		}
 		if len(defs.List) == 0 {

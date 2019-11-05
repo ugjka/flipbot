@@ -22,7 +22,7 @@ var calc = hbot.Trigger{
 		res, err := w.GetShortAnswerQuery(query, wolf.Metric, 10)
 		if err != nil {
 			log.Warn("calc", "error", err)
-			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
+			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return true
 		}
 		irc.Reply(m, fmt.Sprintf("%s: %s", m.Name, limit(res)))

@@ -18,7 +18,7 @@ var youtube = hbot.Trigger{
 		res, err := searchYt(m.Content[9:])
 		if err != nil {
 			log.Warn("youtube search", "error", err)
-			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
+			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return false
 		}
 		if len(res.Items) == 0 {

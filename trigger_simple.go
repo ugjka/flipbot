@@ -157,7 +157,7 @@ var toss = hbot.Trigger{
 		text, err := tosss()
 		if err != nil {
 			log.Warn("toss", "error", err)
-			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
+			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return false
 		}
 		irc.Reply(m, fmt.Sprintf("%s: %s", m.Name, text))
