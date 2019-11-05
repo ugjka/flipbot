@@ -2,21 +2,21 @@ package main
 
 import (
 	"fmt"
-	"strings"
+	"regexp"
 
 	wolf "github.com/Krognol/go-wolfram"
 	hbot "github.com/ugjka/hellabot"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-const calcTrig = "!calc "
+var calcTrig = regexp.MustCompile(`^!calc\s+(\S.+)$`)
 
 var calc = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, calcTrig)
+		return m.Command == "PRIVMSG" && calcTrig.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		query := strings.TrimPrefix(m.Content, calcTrig)
+		query := calcTrig.FindStringSubmatch(m.Content)[1]
 		w := &wolf.Client{AppID: wolframAPIKey}
 
 		res, err := w.GetShortAnswerQuery(query, wolf.Metric, 10)

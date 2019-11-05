@@ -4,20 +4,21 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
+	"regexp"
 	"strings"
 
 	hbot "github.com/ugjka/hellabot"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-const urbanTrig = "!urban "
+var urbanTrig = regexp.MustCompile(`^!urban\s+(\S.+)$`)
 
 var urban = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, urbanTrig)
+		return m.Command == "PRIVMSG" && urbanTrig.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		query := strings.TrimPrefix(m.Content, urbanTrig)
+		query := urbanTrig.FindStringSubmatch(m.Content)[1]
 		query = strings.ToLower(query)
 		defs, err := LookupWordDefinition(query)
 		if err != nil {

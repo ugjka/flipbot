@@ -52,7 +52,7 @@ var memo = hbot.Trigger{
 			log.Crit("Could not write to memo file in memo", "error", err)
 
 		}
-		irc.Reply(m, fmt.Sprintf("error: %v", err))
+		irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 		return false
 	},
 }

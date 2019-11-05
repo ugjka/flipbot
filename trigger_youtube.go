@@ -4,18 +4,20 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
-	"strings"
+	"regexp"
 
 	hbot "github.com/ugjka/hellabot"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
+var youtubeTrig = regexp.MustCompile(`^!youtube\s+(\S.+)$`)
+
 var youtube = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, "!youtube ")
+		return m.Command == "PRIVMSG" && youtubeTrig.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		res, err := searchYt(m.Content[9:])
+		res, err := searchYt(youtubeTrig.FindStringSubmatch(m.Content)[1])
 		if err != nil {
 			log.Warn("youtube search", "error", err)
 			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))

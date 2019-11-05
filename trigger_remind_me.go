@@ -43,7 +43,7 @@ var getreminder = hbot.Trigger{
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		r, err := remindme.Parse(getreminderTrig.FindStringSubmatch(m.Content)[1])
 		if err != nil {
-			irc.Reply(m, fmt.Sprintf("%s: %s", m.Name, err))
+			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
 			return false
 		}
 		r.Name = m.Name

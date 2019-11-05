@@ -4,21 +4,20 @@ import (
 	"fmt"
 	"os/exec"
 	"regexp"
-	"strings"
 
 	log "gopkg.in/inconshreveable/log15.v2"
 
 	hbot "github.com/ugjka/hellabot"
 )
 
-const transTrig = "!trans "
+var transTrig = regexp.MustCompile(`^!trans\s+(\S.+)$`)
 
 var trans = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, transTrig)
+		return m.Command == "PRIVMSG" && transTrig.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		res, err := translate(strings.TrimPrefix(m.Content, transTrig))
+		res, err := translate(transTrig.FindStringSubmatch(m.Content)[1])
 		if err != nil {
 			log.Warn("trans", "error", err)
 			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))

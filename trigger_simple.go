@@ -1,11 +1,11 @@
 package main
 
 import (
-	"bytes"
 	mar "flipbot/markov"
 	"fmt"
 	"math/rand"
 	"os/exec"
+	"regexp"
 	"strings"
 	"time"
 
@@ -25,12 +25,14 @@ var test = hbot.Trigger{
 	},
 }
 
+var hugTrig = regexp.MustCompile(`^!hug\s+(\S.+)$`)
+
 var hug = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, "!hug ")
+		return m.Command == "PRIVMSG" && hugTrig.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		irc.Reply(m, fmt.Sprintf("%s hugs %s!", m.Name, m.Content[5:]))
+		irc.Reply(m, fmt.Sprintf("%s hugs %s!", m.Name, hugTrig.FindStringSubmatch(m.Content)[1]))
 		return false
 	},
 }
@@ -156,7 +158,7 @@ var toss = hbot.Trigger{
 		}
 		text, err := tosss()
 		if err != nil {
-			log.Warn("toss", "error", err)
+			log.Warn("!toss", "error", err)
 			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return false
 		}
@@ -182,11 +184,14 @@ var god = hbot.Trigger{
 		return m.Command == "PRIVMSG" && m.Content == "!god"
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		buf := bytes.NewBuffer(nil)
-		cmd := exec.Cmd{Path: "./words.sh",
-			Stdout: buf}
-		cmd.Run()
-		irc.Reply(m, fmt.Sprintf("God says: %s", buf))
+		cmd := exec.Cmd{Path: "./words.sh"}
+		data, err := cmd.Output()
+		if err != nil {
+			log.Warn("!god", "error", err)
+			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
+			return false
+		}
+		irc.Reply(m, fmt.Sprintf("God says: %s", string(data)))
 		return false
 	},
 }

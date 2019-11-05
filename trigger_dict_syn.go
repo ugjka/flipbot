@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	hbot "github.com/ugjka/hellabot"
+	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var dictTrig = regexp.MustCompile(`^!dict\s+(\S.+)$`)
@@ -22,7 +23,8 @@ var dict = hbot.Trigger{
 		cmd.Stderr = errBuf
 		out, err := cmd.Output()
 		if err != nil {
-			irc.Reply(m, fmt.Sprintf("%s: %s", m.Name, errBuf))
+			irc.Reply(m, fmt.Sprintf("%s: %s", m.Name, errRequest))
+			log.Warn("!dict", "error", errBuf)
 			return false
 		}
 		res := ""
@@ -67,7 +69,8 @@ var syn = hbot.Trigger{
 		cmd.Stderr = errBuf
 		out, err := cmd.Output()
 		if err != nil {
-			irc.Reply(m, fmt.Sprintf("%s: %s", m.Name, errBuf))
+			irc.Reply(m, fmt.Sprintf("%s: %s", m.Name, errRequest))
+			log.Warn("!syn", "error", errBuf)
 			return false
 		}
 		res := ""

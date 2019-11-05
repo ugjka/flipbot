@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
+	"regexp"
 	"strconv"
-	"strings"
 	"time"
 
 	hbot "github.com/ugjka/hellabot"
@@ -13,14 +13,14 @@ import (
 	"gopkg.in/ugjka/go-tz.v2/tz"
 )
 
-var clockTrig = "!time "
+var clockTrig = regexp.MustCompile(`^!time\s+(\S.+)$`)
 
 var clock = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, clockTrig)
+		return m.Command == "PRIVMSG" && clockTrig.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		query := strings.TrimPrefix(m.Content, clockTrig)
+		query := clockTrig.FindStringSubmatch(m.Content)[1]
 		timez, err := getTime(query)
 		if err != nil {
 			log.Warn("no time", "for", query, "error", err)
