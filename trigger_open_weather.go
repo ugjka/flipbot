@@ -20,7 +20,7 @@ var forecastURL = "http://api.openweathermap.org/data/2.5/forecast?units=metric&
 
 var errNoLocation = errors.New("location not found")
 
-var weatherOpenTrig = regexp.MustCompile(`^\s*!w\s+(\S.*)$`)
+var weatherOpenTrig = regexp.MustCompile(`(?i)^\s*!w\s+(\S.*)$`)
 var weatherOpen = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && weatherOpenTrig.MatchString(m.Content)
@@ -193,7 +193,7 @@ func getForecastWeather(loc string) (w OpenForecast, adress string, err error) {
 	return w, adress, err
 }
 
-var wforecastOpenTrig = regexp.MustCompile(`^\s*!wf\s+(\S.*)$`)
+var wforecastOpenTrig = regexp.MustCompile(`(?i)^\s*!wf\s+(\S.*)$`)
 var wforecastOpen = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && wforecastOpenTrig.MatchString(m.Content)
