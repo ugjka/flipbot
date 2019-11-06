@@ -9,7 +9,7 @@ import (
 
 // This trigger flips the table
 
-var fliptextTrig = regexp.MustCompile(`^!flip\s+(\S.+)$`)
+var fliptextTrig = regexp.MustCompile(`^\s*!flip\s+(\S.*)$`)
 
 var fliptext = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
@@ -21,7 +21,7 @@ var fliptext = hbot.Trigger{
 	},
 }
 
-var unfliptextTrig = regexp.MustCompile(`^!unflip\s+(\S.+)$`)
+var unfliptextTrig = regexp.MustCompile(`^\s*!unflip\s+(\S.*)$`)
 
 var unfliptext = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {

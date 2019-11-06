@@ -36,7 +36,7 @@ type Seen struct {
 	LastMSG string
 }
 
-var seenTrig = regexp.MustCompile("^!seen\\s+([A-Za-z_\\-\\[\\]\\^{}|`][A-Za-z0-9_\\-\\[\\]\\^{}|`]{1,15})$")
+var seenTrig = regexp.MustCompile("^\\s*!seen\\s+([A-Za-z_\\-\\[\\]\\^{}|`][A-Za-z0-9_\\-\\[\\]\\^{}|`]{1,15})$")
 
 var seen = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {

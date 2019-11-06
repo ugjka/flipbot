@@ -11,7 +11,7 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-var dictTrig = regexp.MustCompile(`^!dict\s+(\S.+)$`)
+var dictTrig = regexp.MustCompile(`^\s*!dict\s+(\S.*)$`)
 
 var dict = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
@@ -57,7 +57,7 @@ var dict = hbot.Trigger{
 	},
 }
 
-var synTrig = regexp.MustCompile(`^!syn\s+(\S.+)$`)
+var synTrig = regexp.MustCompile(`^\s*!syn\s+(\S.*)$`)
 
 var syn = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {

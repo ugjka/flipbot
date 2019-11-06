@@ -11,7 +11,7 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-var urbanTrig = regexp.MustCompile(`^!urban\s+(\S.+)$`)
+var urbanTrig = regexp.MustCompile(`^\s*!urban\s+(\S.*)$`)
 
 var urban = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {

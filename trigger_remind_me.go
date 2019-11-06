@@ -33,7 +33,7 @@ var reminder = hbot.Trigger{
 	},
 }
 
-var getreminderTrig = regexp.MustCompile(`^!reminder\s+(\S.+)$`)
+var getreminderTrig = regexp.MustCompile(`^\s*!reminder\s+(\S.*)$`)
 
 var getreminder = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {

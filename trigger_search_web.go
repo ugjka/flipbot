@@ -13,7 +13,7 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-var duckerTrig = regexp.MustCompile(`^!ducker\s+(\S.+)$`)
+var duckerTrig = regexp.MustCompile(`^\s*!ducker\s+(\S.*)$`)
 
 var ducker = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
@@ -33,7 +33,7 @@ var ducker = hbot.Trigger{
 	},
 }
 
-var googleTrig = regexp.MustCompile(`^!google\s+(\S.+)$`)
+var googleTrig = regexp.MustCompile(`^\s*!google\s+(\S.*)$`)
 
 var google = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
@@ -57,7 +57,7 @@ var google = hbot.Trigger{
 	},
 }
 
-var googleNewsTrig = regexp.MustCompile(`^!news\s+(\S.+)$`)
+var googleNewsTrig = regexp.MustCompile(`^\s*!news\s+(\S.*)$`)
 
 var googlenews = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {

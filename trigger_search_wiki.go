@@ -10,7 +10,7 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-var wikiTrig = regexp.MustCompile(`^!wiki\s+(\S.+)$`)
+var wikiTrig = regexp.MustCompile(`^\s*!wiki\s+(\S.*)$`)
 
 var wiki = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {

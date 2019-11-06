@@ -25,7 +25,7 @@ var test = hbot.Trigger{
 	},
 }
 
-var hugTrig = regexp.MustCompile(`^!hug\s+(\S.+)$`)
+var hugTrig = regexp.MustCompile(`^\s*!hug\s+(\S.*)$`)
 
 var hug = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {

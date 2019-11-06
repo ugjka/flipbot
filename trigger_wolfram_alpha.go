@@ -9,7 +9,7 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-var calcTrig = regexp.MustCompile(`^!calc\s+(\S.+)$`)
+var calcTrig = regexp.MustCompile(`^\s*!calc\s+(\S.*)$`)
 
 var calc = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
