@@ -26,7 +26,7 @@ var test = hbot.Trigger{
 	},
 }
 
-var hugTrig = regexp.MustCompile(`(?i)^\s*!+hug\s+(\S.*)$`)
+var hugTrig = regexp.MustCompile(`(?i)^\s*!+(?:hugs?|loves?)\s+(\S.*)$`)
 var hug = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && hugTrig.MatchString(m.Content)
