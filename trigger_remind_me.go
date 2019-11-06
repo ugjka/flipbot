@@ -33,7 +33,7 @@ var reminder = hbot.Trigger{
 	},
 }
 
-var getreminderTrig = regexp.MustCompile(`(?i)^\s*!reminder\s+(\S.*)$`)
+var getreminderTrig = regexp.MustCompile(`(?i)^\s*!+reminder\s+(\S.*)$`)
 var getreminder = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.To == ircChannel && m.Command == "PRIVMSG" &&

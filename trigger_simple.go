@@ -15,7 +15,7 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-var testTrig = regexp.MustCompile(`(?i).*!(?:test|testing|check).*`)
+var testTrig = regexp.MustCompile(`(?i).*!+(?:test|testing|check).*`)
 var test = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && testTrig.MatchString(m.Content)
@@ -26,7 +26,7 @@ var test = hbot.Trigger{
 	},
 }
 
-var hugTrig = regexp.MustCompile(`(?i)^\s*!hug\s+(\S.*)$`)
+var hugTrig = regexp.MustCompile(`(?i)^\s*!+hug\s+(\S.*)$`)
 var hug = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && hugTrig.MatchString(m.Content)
@@ -37,7 +37,7 @@ var hug = hbot.Trigger{
 	},
 }
 
-var randomdogTrig = regexp.MustCompile(`(?i).*!(?:dog|doggo|goodboi|pup|pupper|puppie).*`)
+var randomdogTrig = regexp.MustCompile(`(?i).*!+(?:dog|doggo|goodboi|pup|pupper|puppie).*`)
 var randomdog = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && randomdogTrig.MatchString(m.Content)
@@ -50,7 +50,7 @@ var randomdog = hbot.Trigger{
 	},
 }
 
-var shrugTrig = regexp.MustCompile(`(?i).*!(?:shrug|srug|shug).*`)
+var shrugTrig = regexp.MustCompile(`(?i).*!+(?:shrug|srug|shug).*`)
 var shrug = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && shrugTrig.MatchString(m.Content)
@@ -61,7 +61,7 @@ var shrug = hbot.Trigger{
 	},
 }
 
-var sleepTrig = regexp.MustCompile(`(?i).*!(?:sleep|nn|nite|goodnight|night|bed|nap).*`)
+var sleepTrig = regexp.MustCompile(`(?i).*!+(?:sleep|nn|nite|goodnight|night|bed|nap).*`)
 var sleep = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && sleepTrig.MatchString(m.Content)
@@ -72,7 +72,7 @@ var sleep = hbot.Trigger{
 	},
 }
 
-var randomTrig = regexp.MustCompile(`(?i).*!(?:random|mad|madcotto|cotto|salad).*`)
+var randomTrig = regexp.MustCompile(`(?i).*!+(?:random|mad|madcotto|cotto|salad).*`)
 var random = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && randomTrig.MatchString(m.Content)
@@ -83,7 +83,7 @@ var random = hbot.Trigger{
 	},
 }
 
-var pingTrig = regexp.MustCompile(`(?i).*!ping.*`)
+var pingTrig = regexp.MustCompile(`(?i).*!+ping.*`)
 var ping = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && pingTrig.MatchString(m.Content)
@@ -94,7 +94,7 @@ var ping = hbot.Trigger{
 	},
 }
 
-var pongTrig = regexp.MustCompile(`(?i).*!pong.*`)
+var pongTrig = regexp.MustCompile(`(?i).*!+pong.*`)
 var pong = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && pongTrig.MatchString(m.Content)
@@ -105,7 +105,7 @@ var pong = hbot.Trigger{
 	},
 }
 
-var flipTrig = regexp.MustCompile(`(?i).*!(?:flip|tableflip|fliptable).*`)
+var flipTrig = regexp.MustCompile(`(?i).*!+(?:flip|tableflip|fliptable).*`)
 var flip = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && flipTrig.MatchString(m.Content)
@@ -116,7 +116,7 @@ var flip = hbot.Trigger{
 	},
 }
 
-var unflipTrig = regexp.MustCompile(`(?i).*!unflip.*`)
+var unflipTrig = regexp.MustCompile(`(?i).*!+unflip.*`)
 var unflip = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && unflipTrig.MatchString(m.Content)
@@ -127,7 +127,7 @@ var unflip = hbot.Trigger{
 	},
 }
 
-var randomcatTrig = regexp.MustCompile(`(?i).*!(?:cat|kitty|fluff|kitten|bagpuss|puss|pussy).*`)
+var randomcatTrig = regexp.MustCompile(`(?i).*!+(?:cat|kitty|fluff|kitten|bagpuss|puss|pussy).*`)
 var randomcat = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && randomcatTrig.MatchString(m.Content)
@@ -138,7 +138,7 @@ var randomcat = hbot.Trigger{
 	},
 }
 
-var defineTrig = regexp.MustCompile(`(?i).*!define.*`)
+var defineTrig = regexp.MustCompile(`(?i).*!+define.*`)
 var define = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && defineTrig.MatchString(m.Content)
@@ -149,7 +149,7 @@ var define = hbot.Trigger{
 	},
 }
 
-var tossTrig = regexp.MustCompile(`(?i).*!(?:toss|wank).*`)
+var tossTrig = regexp.MustCompile(`(?i).*!+(?:toss|wank|cum|come).*`)
 var toss = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && tossTrig.MatchString(m.Content)
@@ -170,7 +170,7 @@ var toss = hbot.Trigger{
 	},
 }
 
-var meditationTrig = regexp.MustCompile(`(?i).*!(?:meditation|meditate|advaita|monism|wisdom).*`)
+var meditationTrig = regexp.MustCompile(`(?i).*!+(?:meditation|meditate|advaita|monism|wisdom).*`)
 var meditation = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && meditationTrig.MatchString(m.Content)
@@ -183,7 +183,7 @@ var meditation = hbot.Trigger{
 	},
 }
 
-var godTrig = regexp.MustCompile(`(?i).*!(?:god|almighty|gibberish).*`)
+var godTrig = regexp.MustCompile(`(?i).*!+(?:god|almighty|gibberish).*`)
 var god = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && godTrig.MatchString(m.Content)
@@ -201,7 +201,7 @@ var god = hbot.Trigger{
 	},
 }
 
-var helpTrig = regexp.MustCompile(`(?i).*!(?:help|manual|commands|list).*`)
+var helpTrig = regexp.MustCompile(`(?i).*!+(?:help|manual|commands|list).*`)
 var help = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && helpTrig.MatchString(m.Content)
@@ -212,7 +212,7 @@ var help = hbot.Trigger{
 	},
 }
 
-var debugTrig = regexp.MustCompile(`(?i).*!(?:debug|bug|joke).*`)
+var debugTrig = regexp.MustCompile(`(?i).*!+(?:debug|bug|joke).*`)
 var debug = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && debugTrig.MatchString(m.Content)

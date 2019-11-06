@@ -9,7 +9,7 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-var calcTrig = regexp.MustCompile(`(?i)^\s*!calc\s+(\S.*)$`)
+var calcTrig = regexp.MustCompile(`(?i)^\s*!+calc\s+(\S.*)$`)
 var calc = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && calcTrig.MatchString(m.Content)
