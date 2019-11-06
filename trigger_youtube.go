@@ -11,7 +11,6 @@ import (
 )
 
 var youtubeTrig = regexp.MustCompile(`^\s*!youtube\s+(\S.*)$`)
-
 var youtube = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && youtubeTrig.MatchString(m.Content)

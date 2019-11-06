@@ -14,7 +14,6 @@ import (
 )
 
 var duckerTrig = regexp.MustCompile(`^\s*!ducker\s+(\S.*)$`)
-
 var ducker = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && duckerTrig.MatchString(m.Content)
@@ -34,7 +33,6 @@ var ducker = hbot.Trigger{
 }
 
 var googleTrig = regexp.MustCompile(`^\s*!google\s+(\S.*)$`)
-
 var google = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && googleTrig.MatchString(m.Content)
@@ -58,7 +56,6 @@ var google = hbot.Trigger{
 }
 
 var googleNewsTrig = regexp.MustCompile(`^\s*!news\s+(\S.*)$`)
-
 var googlenews = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && googleNewsTrig.MatchString(m.Content)

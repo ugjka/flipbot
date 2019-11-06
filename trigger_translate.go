@@ -11,7 +11,6 @@ import (
 )
 
 var transTrig = regexp.MustCompile(`^\s*!trans\s+(\S.*)$`)
-
 var trans = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && transTrig.MatchString(m.Content)

@@ -12,7 +12,6 @@ import (
 )
 
 var dictTrig = regexp.MustCompile(`^\s*!dict\s+(\S.*)$`)
-
 var dict = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && dictTrig.MatchString(m.Content)
@@ -58,7 +57,6 @@ var dict = hbot.Trigger{
 }
 
 var synTrig = regexp.MustCompile(`^\s*!syn\s+(\S.*)$`)
-
 var syn = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && synTrig.MatchString(m.Content)

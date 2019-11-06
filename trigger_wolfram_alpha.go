@@ -10,7 +10,6 @@ import (
 )
 
 var calcTrig = regexp.MustCompile(`^\s*!calc\s+(\S.*)$`)
-
 var calc = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && calcTrig.MatchString(m.Content)

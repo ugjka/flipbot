@@ -14,7 +14,6 @@ import (
 )
 
 var clockTrig = regexp.MustCompile(`^\s*!time\s+(\S.*)$`)
-
 var clock = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && clockTrig.MatchString(m.Content)

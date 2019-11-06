@@ -11,7 +11,6 @@ import (
 )
 
 var wikiTrig = regexp.MustCompile(`^\s*!wiki\s+(\S.*)$`)
-
 var wiki = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && wikiTrig.MatchString(m.Content)

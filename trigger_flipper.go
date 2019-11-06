@@ -10,7 +10,6 @@ import (
 // This trigger flips the table
 
 var fliptextTrig = regexp.MustCompile(`^\s*!flip\s+(\S.*)$`)
-
 var fliptext = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && fliptextTrig.MatchString(m.Content)
@@ -22,7 +21,6 @@ var fliptext = hbot.Trigger{
 }
 
 var unfliptextTrig = regexp.MustCompile(`^\s*!unflip\s+(\S.*)$`)
-
 var unfliptext = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && unfliptextTrig.MatchString(m.Content)

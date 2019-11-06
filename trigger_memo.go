@@ -26,7 +26,6 @@ var memoCTR = struct {
 }
 
 var memoTrig = regexp.MustCompile("^\\s*!memo\\s+([A-Za-z_\\-\\[\\]\\^{}|`][A-Za-z0-9_\\-\\[\\]\\^{}|`]{1,15})\\s+(\\S.+)$")
-
 var memo = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && memoTrig.MatchString(m.Content)

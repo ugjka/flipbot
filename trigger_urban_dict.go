@@ -12,7 +12,6 @@ import (
 )
 
 var urbanTrig = regexp.MustCompile(`^\s*!urban\s+(\S.*)$`)
-
 var urban = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && urbanTrig.MatchString(m.Content)
