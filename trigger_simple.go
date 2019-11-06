@@ -37,7 +37,7 @@ var hug = hbot.Trigger{
 	},
 }
 
-var randomdogTrig = regexp.MustCompile(`(?i).*!+(?:dog|doggo|goodboi|pup|pupper|puppie).*`)
+var randomdogTrig = regexp.MustCompile(`(?i).*!+(?:dog+|dog+o|goodboi|pup+|pup+er|pup+ie).*`)
 var randomdog = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && randomdogTrig.MatchString(m.Content)
@@ -127,7 +127,7 @@ var unflip = hbot.Trigger{
 	},
 }
 
-var randomcatTrig = regexp.MustCompile(`(?i).*!+(?:cat|kitty|fluff|kitten|bagpuss|puss|pussy).*`)
+var randomcatTrig = regexp.MustCompile(`(?i).*!+(?:cat+|kit+y|fluf+|kit+en|bagpuss|pus+|pus+y).*`)
 var randomcat = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && randomcatTrig.MatchString(m.Content)
