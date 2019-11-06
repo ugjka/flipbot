@@ -13,7 +13,7 @@ import (
 	"gopkg.in/ugjka/go-tz.v2/tz"
 )
 
-var clockTrig = regexp.MustCompile(`(?i)^\s*!+time\s+(\S.*)$`)
+var clockTrig = regexp.MustCompile(`(?i)^\s*!+times?\s+(\S.*)$`)
 var clock = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && clockTrig.MatchString(m.Content)

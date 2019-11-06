@@ -11,7 +11,7 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-var urbanTrig = regexp.MustCompile(`(?i)^\s*!+urban\s+(\S.*)$`)
+var urbanTrig = regexp.MustCompile(`(?i)^\s*!+urban+\s+(\S.*)$`)
 var urban = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && urbanTrig.MatchString(m.Content)
