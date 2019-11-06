@@ -16,7 +16,6 @@ import (
 )
 
 var testTrig = regexp.MustCompile(`.*!(?:test|testing|check).*`)
-
 var test = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && testTrig.MatchString(m.Content)
@@ -28,7 +27,6 @@ var test = hbot.Trigger{
 }
 
 var hugTrig = regexp.MustCompile(`^\s*!hug\s+(\S.*)$`)
-
 var hug = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && hugTrig.MatchString(m.Content)
@@ -39,11 +37,10 @@ var hug = hbot.Trigger{
 	},
 }
 
-var dogTrig = regexp.MustCompile(`.*!(?:dog|doggo|goodboi|pup|pupper|puppie).*`)
-
+var randomdogTrig = regexp.MustCompile(`.*!(?:dog|doggo|goodboi|pup|pupper|puppie).*`)
 var randomdog = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && dogTrig.MatchString(m.Content)
+		return m.Command == "PRIVMSG" && randomdogTrig.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		rand.Seed(time.Now().UnixNano())
@@ -54,7 +51,6 @@ var randomdog = hbot.Trigger{
 }
 
 var shrugTrig = regexp.MustCompile(`.*!(?:shrug|srug|shug).*`)
-
 var shrug = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && shrugTrig.MatchString(m.Content)
