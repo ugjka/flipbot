@@ -83,7 +83,7 @@ var random = hbot.Trigger{
 	},
 }
 
-var pingTrig = regexp.MustCompile(`(?i).*!+ping.*`)
+var pingTrig = regexp.MustCompile(`(?i).*!+ping+.*`)
 var ping = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && pingTrig.MatchString(m.Content)
@@ -94,7 +94,7 @@ var ping = hbot.Trigger{
 	},
 }
 
-var pongTrig = regexp.MustCompile(`(?i).*!+pong.*`)
+var pongTrig = regexp.MustCompile(`(?i).*!+pong+.*`)
 var pong = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && pongTrig.MatchString(m.Content)
@@ -105,7 +105,7 @@ var pong = hbot.Trigger{
 	},
 }
 
-var flipTrig = regexp.MustCompile(`(?i).*!+(?:flip|tableflip|fliptable).*`)
+var flipTrig = regexp.MustCompile(`(?i).*!+(?:flip+|tableflip|fliptable).*`)
 var flip = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && flipTrig.MatchString(m.Content)
@@ -116,7 +116,7 @@ var flip = hbot.Trigger{
 	},
 }
 
-var unflipTrig = regexp.MustCompile(`(?i).*!+unflip.*`)
+var unflipTrig = regexp.MustCompile(`(?i).*!+unflip+.*`)
 var unflip = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && unflipTrig.MatchString(m.Content)
@@ -127,7 +127,7 @@ var unflip = hbot.Trigger{
 	},
 }
 
-var randomcatTrig = regexp.MustCompile(`(?i).*!+(?:cat+|kit+y|fluf+|kit+en|bagpuss|pus+|pus+y).*`)
+var randomcatTrig = regexp.MustCompile(`(?i).*!+(?:cat+|kit+y|fluf+|kit+en+|bagpus+|pus+|pus+y).*`)
 var randomcat = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && randomcatTrig.MatchString(m.Content)
@@ -149,7 +149,7 @@ var define = hbot.Trigger{
 	},
 }
 
-var tossTrig = regexp.MustCompile(`(?i).*!+(?:toss|wank|cum|come).*`)
+var tossTrig = regexp.MustCompile(`(?i).*!+(?:tos+|wank|cum+|come).*`)
 var toss = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && tossTrig.MatchString(m.Content)
@@ -183,7 +183,7 @@ var meditation = hbot.Trigger{
 	},
 }
 
-var godTrig = regexp.MustCompile(`(?i).*!+(?:god|almighty|gibberish).*`)
+var godTrig = regexp.MustCompile(`(?i).*!+(?:gods?|almighty|gibberish).*`)
 var god = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && godTrig.MatchString(m.Content)
