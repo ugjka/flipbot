@@ -10,7 +10,7 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-var youtubeTrig = regexp.MustCompile(`(?i)^\s*!+(?:youtube?|yt|ytube)\s+(\S.*)$`)
+var youtubeTrig = regexp.MustCompile(`(?i)^\s*!+(?:youtube?|yt|ytube|tube)\w*\s+(\S.*)$`)
 var youtube = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && youtubeTrig.MatchString(m.Content)

@@ -10,7 +10,7 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-var wikiTrig = regexp.MustCompile(`(?i)^\s*!+wiki(?:pedia)?\s+(\S.*)$`)
+var wikiTrig = regexp.MustCompile(`(?i)^\s*!+wiki(?:pedia)?\w*\s+(\S.*)$`)
 var wiki = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && wikiTrig.MatchString(m.Content)
