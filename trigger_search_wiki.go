@@ -45,7 +45,7 @@ func searchWiki(query string) (answer, link string, err error) {
 		return
 	}
 	if len(res.Query.Search) == 0 {
-		err = fmt.Errorf("no results")
+		answer = "no results"
 		return
 	}
 
