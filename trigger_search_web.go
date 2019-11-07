@@ -13,7 +13,7 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-var duckerTrig = regexp.MustCompile(`(?i)^\s*!+(?:ducker|ddg|duck|duckduckgo)\s+(\S.*)$`)
+var duckerTrig = regexp.MustCompile(`(?i)^\s*!+(?:d|ducker|ddg|duck|duckduckgo)\s+(\S.*)$`)
 var ducker = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && duckerTrig.MatchString(m.Content)
@@ -32,7 +32,7 @@ var ducker = hbot.Trigger{
 	},
 }
 
-var googleTrig = regexp.MustCompile(`(?i)^\s*!+googler?\s+(\S.*)$`)
+var googleTrig = regexp.MustCompile(`(?i)^\s*!+(?:g|googler?)\s+(\S.*)$`)
 var google = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && googleTrig.MatchString(m.Content)
