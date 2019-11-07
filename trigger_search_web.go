@@ -32,7 +32,7 @@ var ducker = hbot.Trigger{
 	},
 }
 
-var googleTrig = regexp.MustCompile(`(?i)^\s*!+google?\s+(\S.*)$`)
+var googleTrig = regexp.MustCompile(`(?i)^\s*!+googler?\s+(\S.*)$`)
 var google = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && googleTrig.MatchString(m.Content)

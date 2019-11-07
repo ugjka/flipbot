@@ -10,7 +10,7 @@ import (
 	hbot "github.com/ugjka/hellabot"
 )
 
-var transTrig = regexp.MustCompile(`(?i)^\s*!+trans?\s+(\S.*)$`)
+var transTrig = regexp.MustCompile(`(?i)^\s*!+trans(?:late)?\s+(\S.*)$`)
 var trans = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && transTrig.MatchString(m.Content)

@@ -201,7 +201,7 @@ var god = hbot.Trigger{
 	},
 }
 
-var helpTrig = regexp.MustCompile(`(?i).*!+(?:help|manual|commands|list).*`)
+var helpTrig = regexp.MustCompile(`(?i).*!+(?:help|manual|com+ands|list).*`)
 var help = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && helpTrig.MatchString(m.Content)
