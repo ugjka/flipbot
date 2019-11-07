@@ -121,7 +121,7 @@ var watcher = hbot.Trigger{
 	},
 }
 
-var topTrig = regexp.MustCompile(`(?i).*!+(?:top|masters|masterminds|gods|ranks?).*`)
+var topTrig = regexp.MustCompile(`(?i).*!+(?:top|masters?|masterminds?|ranks?).*`)
 var top = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && topTrig.MatchString(m.Content)

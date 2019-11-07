@@ -56,7 +56,7 @@ var dict = hbot.Trigger{
 	},
 }
 
-var synTrig = regexp.MustCompile(`(?i)^\s*!+syn(?:onyms)?\s+(\S.*)$`)
+var synTrig = regexp.MustCompile(`(?i)^\s*!+syn(?:onyms?)?\s+(\S.*)$`)
 var syn = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && synTrig.MatchString(m.Content)
