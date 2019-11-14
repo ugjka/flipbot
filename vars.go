@@ -62,3 +62,4 @@ func limit(in string) string {
 
 var errRequest = fmt.Errorf("an error occurred while processing your request")
 var errNotSeen = fmt.Errorf("nick not seen")
+var errNotInCache = fmt.Errorf("not in cache")

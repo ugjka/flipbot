@@ -1,13 +1,14 @@
 package main
 
 import (
-	"encoding/json"
+	"bytes"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"sync"
 
+	"github.com/boltdb/bolt"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
@@ -32,12 +33,44 @@ var osmCTR = struct {
 	cache: make(map[string][]byte),
 }
 
+func setOSMCache(url string, data []byte) error {
+	return db.Batch(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte("osmcache"))
+		return b.Put([]byte(url), data)
+	})
+}
+
+func getOSMCache(url string) ([]byte, error) {
+	buf := bytes.NewBuffer(nil)
+	err := db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte("osmcache"))
+		data := b.Get([]byte(url))
+		if data == nil {
+			return errNotInCache
+		}
+		_, err := buf.Write(data)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
+}
+
 //OSMGetter Gets OSM DATA
 func OSMGetter(url string) (data []byte, err error) {
-	osmCTR.Lock()
-	defer osmCTR.Unlock()
-	if v, ok := osmCTR.cache[url]; ok {
-		return v, nil
+	data, err = getOSMCache(url)
+	switch {
+	case err == errNotInCache:
+		break
+	case err != nil:
+		return nil, err
+	case err == nil:
+		log.Info("osmgetter", "using", "cache")
+		return
 	}
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -56,18 +89,8 @@ func OSMGetter(url string) (data []byte, err error) {
 	if err != nil {
 		return
 	}
-	osmCTR.cache[url] = data
-	tmp, err := json.Marshal(osmCTR.cache)
-	if err == nil {
-		err := osmCTR.Truncate(0)
-		if err != nil {
-			log.Crit("could not truncate the osmCacheFile", "error", err)
-			return nil, err
-		}
-		if _, err := osmCTR.WriteAt(tmp, 0); err != nil {
-			log.Crit("Could not write to osmCacheFile", "error", err)
-			return nil, err
-		}
+	if err := setOSMCache(url, data); err != nil {
+		log.Warn("setOSMCache", "error", err)
 	}
 	return
 }
