@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"time"
 
+	"github.com/boltdb/bolt"
 	"github.com/ugjka/remindme"
 )
 
@@ -38,6 +39,8 @@ var wolframAPIKey string
 
 var remind = remindme.New(ircNick)
 
+var db = new(bolt.DB)
+
 //Default for all requests
 var httpClient = &http.Client{
 	Timeout: 30 * time.Second,
@@ -58,3 +61,4 @@ func limit(in string) string {
 }
 
 var errRequest = fmt.Errorf("an error occurred while processing your request")
+var errNotSeen = fmt.Errorf("nick not seen")

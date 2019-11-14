@@ -10,25 +10,17 @@ import (
 	"sync"
 	"time"
 
+	"github.com/boltdb/bolt"
 	"github.com/hako/durafmt"
 	hbot "github.com/ugjka/hellabot"
 	"github.com/ugjka/reverse"
+	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var logCTR = struct {
 	*os.File
 	sync.Mutex
 }{}
-
-var seenCTR = struct {
-	db map[string]*Seen
-	*os.File
-	*time.Ticker
-	sync.RWMutex
-}{
-	db:     make(map[string]*Seen),
-	Ticker: time.NewTicker(time.Minute * 5),
-}
 
 //Seen struct
 type Seen struct {
@@ -49,21 +41,48 @@ var seen = hbot.Trigger{
 			irc.Reply(m, fmt.Sprintf("%s: I'm seeing you!", m.Name))
 			return false
 		}
-		seenCTR.RLock()
-		if k, ok := seenCTR.db[nick]; ok {
-			dur := durafmt.Parse(time.Now().UTC().Sub(k.Seen))
-			if k.LastMSG != "" {
-				irc.Reply(m, fmt.Sprintf("%s: I saw %s %s ago. Their last message was: %s", m.Name, nick, roundDuration(dur.String()), k.LastMSG))
-			} else {
-				irc.Reply(m, fmt.Sprintf("%s: I saw %s %s ago", m.Name, nick, roundDuration(dur.String())))
-			}
-		} else {
+		seen, err := getSeen(nick)
+		switch {
+		case err == errNotSeen:
 			irc.Reply(m, fmt.Sprintf("%s: I haven't seen that nick before", m.Name))
+			return false
+		case err != nil:
+			log.Warn("getSeen", "error", err)
+			return false
 		}
-		seenCTR.RUnlock()
+		dur := durafmt.Parse(time.Now().UTC().Sub(seen.Seen))
+		if seen.LastMSG != "" {
+			irc.Reply(m, fmt.Sprintf("%s: I saw %s %s ago. Their last message was: %s", m.Name, nick, roundDuration(dur.String()), seen.LastMSG))
+		} else {
+			irc.Reply(m, fmt.Sprintf("%s: I saw %s %s ago", m.Name, nick, roundDuration(dur.String())))
+		}
 
 		return false
 	},
+}
+
+func getSeen(nick string) (seen Seen, err error) {
+	err = db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte("seen"))
+		res := b.Get([]byte(nick))
+		if res == nil {
+			return errNotSeen
+		}
+		return json.Unmarshal(res, &seen)
+	})
+	return
+}
+
+func setSeen(nick string, seen *Seen) error {
+	err := db.Batch(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte("seen"))
+		data, err := json.Marshal(seen)
+		if err != nil {
+			return err
+		}
+		return b.Put([]byte(nick), data)
+	})
+	return err
 }
 
 func roundDuration(dur string) string {
@@ -80,40 +99,34 @@ var watcher = hbot.Trigger{
 			m.Command == "QUIT" || m.Command == "PART" || m.Command == "KICK"
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		name := m.Name
+		name := ""
 		if m.Command == "KICK" {
 			name = m.Params[1]
+		} else {
+			name = m.Name
 		}
-		seenCTR.Lock()
-		defer seenCTR.Unlock()
+		name = strings.ToLower(name)
+		seen, err := getSeen(name)
+		switch {
+		case err == errNotSeen:
+			break
+		case err != nil:
+			log.Warn("getSeen", "error", err)
+			return false
+		}
 		if m.Command == "PRIVMSG" {
-			seen, ok := seenCTR.db[strings.ToLower(name)]
-			if !ok {
-				seenCTR.db[strings.ToLower(name)] = &Seen{
-					Seen:    time.Now().UTC(),
-					LastMSG: m.Content,
-				}
-			} else {
-				seen.Seen = time.Now().UTC()
-				seen.LastMSG = m.Content
+			seen.Seen = time.Now().UTC()
+			seen.LastMSG = m.Content
+			err := setSeen(name, &seen)
+			if err != nil {
+				log.Warn("setSeen", "error", err)
+				return false
 			}
 		} else {
-			seen, ok := seenCTR.db[strings.ToLower(name)]
-			if !ok {
-				seenCTR.db[strings.ToLower(name)] = &Seen{
-					Seen: time.Now().UTC(),
-				}
-			} else {
-				seen.Seen = time.Now().UTC()
-			}
-		}
-		tmp, err := json.Marshal(seenCTR.db)
-		if err == nil {
-			select {
-			case <-seenCTR.C:
-				seenCTR.Truncate(0)
-				seenCTR.WriteAt(tmp, 0)
-			default:
+			seen.Seen = time.Now().UTC()
+			err := setSeen(name, &seen)
+			if err != nil {
+				log.Warn("setSeen", "error", err)
 				return false
 			}
 		}

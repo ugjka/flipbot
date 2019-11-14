@@ -66,6 +66,7 @@ func main() {
 	signal.Notify(stop, os.Interrupt)
 	signal.Notify(stop, os.Kill)
 	signal.Notify(stop, syscall.SIGTERM)
+	signal.Notify(stop, syscall.SIGHUP)
 
 	hijackSession := func(bot *hbot.Bot) {
 		bot.HijackSession = true
@@ -79,6 +80,12 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	go func() {
+		db, err = initDB("flipbot.db")
+		if err != nil {
+			panic(err)
+		}
+	}()
 	//Store memo messages
 	memoCTR.File, err = os.OpenFile("memo.json", os.O_RDWR|os.O_CREATE, 0666)
 	if err != nil {
@@ -108,21 +115,10 @@ func main() {
 	}
 	defer logCTR.Close()
 
-	seenCTR.File, err = os.OpenFile("seen.json", os.O_RDWR|os.O_CREATE, 0666)
-	if err != nil {
-		panic(err)
-	}
-	defer seenCTR.Close()
-
-	err = json.NewDecoder(seenCTR.File).Decode(&seenCTR.db)
-	if err != nil {
-		log.Warn("Cannot decode seen json file", "error", err)
-	}
-
 	go func() {
 		<-stop
+		db.Close()
 		logCTR.Close()
-		seenCTR.Close()
 		memoCTR.Close()
 		os.Exit(0)
 	}()
