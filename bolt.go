@@ -17,9 +17,8 @@ func initDB(file string) (*bolt.DB, error) {
 		}
 		if err != nil {
 			return nil, err
-		} else {
-			break
 		}
+		break
 	}
 	err = db.Update(func(tx *bolt.Tx) error {
 		_, err := tx.CreateBucketIfNotExists([]byte("seen"))
