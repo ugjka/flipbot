@@ -2,23 +2,14 @@ package main
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/boltdb/bolt"
 )
 
 func initDB(file string) (*bolt.DB, error) {
-	var db = new(bolt.DB)
-	var err error
-	for {
-		db, err = bolt.Open(file, 0600, &bolt.Options{Timeout: time.Millisecond * 100})
-		if err == bolt.ErrDatabaseOpen {
-			continue
-		}
-		if err != nil {
-			return nil, err
-		}
-		break
+	db, err := bolt.Open(file, 0600, nil)
+	if err != nil {
+		return nil, err
 	}
 	err = db.Update(func(tx *bolt.Tx) error {
 		_, err := tx.CreateBucketIfNotExists([]byte("seen"))
