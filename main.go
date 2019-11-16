@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	cookiejar "flipbot/jar"
 	"flipbot/subwatch"
 	"fmt"
@@ -86,17 +85,6 @@ func main() {
 			panic(err)
 		}
 	}()
-	//Store memo messages
-	memoCTR.File, err = os.OpenFile("memo.json", os.O_RDWR|os.O_CREATE, 0666)
-	if err != nil {
-		panic(err)
-	}
-	defer memoCTR.Close()
-
-	err = json.NewDecoder(memoCTR.File).Decode(&memoCTR.store)
-	if err != nil {
-		log.Warn("Cannot decode memo json file", "error", err)
-	}
 	//Log messages
 	logCTR.File, err = os.OpenFile("messages.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
@@ -108,7 +96,6 @@ func main() {
 		<-stop
 		db.Close()
 		logCTR.Close()
-		memoCTR.Close()
 		os.Exit(0)
 	}()
 

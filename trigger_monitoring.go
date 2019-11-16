@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"regexp"
@@ -10,7 +9,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/boltdb/bolt"
 	"github.com/hako/durafmt"
 	hbot "github.com/ugjka/hellabot"
 	"github.com/ugjka/reverse"
@@ -28,7 +26,7 @@ type Seen struct {
 	LastMSG string
 }
 
-var seenTrig = regexp.MustCompile("(?i)^\\s*!+seen\\w*\\s+([A-Za-z_\\-\\[\\]\\^{}|`][A-Za-z0-9_\\-\\[\\]\\^{}|`]{1,15})$")
+var seenTrig = regexp.MustCompile("(?i)^\\s*!+seen\\w*\\s+([A-Za-z_\\-\\[\\]\\^{}|`][A-Za-z0-9_\\-\\[\\]\\^{}|`]{0,15}\\*?)$")
 
 var seen = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
@@ -41,7 +39,13 @@ var seen = hbot.Trigger{
 			irc.Reply(m, fmt.Sprintf("%s: I'm seeing you!", m.Name))
 			return false
 		}
-		seen, err := getSeen(nick)
+		seen := Seen{}
+		var err error
+		if strings.HasSuffix(nick, "*") {
+			nick, seen, err = getSeenPrefix(strings.TrimRight(nick, "*"))
+		} else {
+			seen, err = getSeen(nick)
+		}
 		switch {
 		case err == errNotSeen:
 			irc.Reply(m, fmt.Sprintf("%s: I haven't seen that nick before", m.Name))
@@ -59,30 +63,6 @@ var seen = hbot.Trigger{
 
 		return false
 	},
-}
-
-func getSeen(nick string) (seen Seen, err error) {
-	err = db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte("seen"))
-		res := b.Get([]byte(nick))
-		if res == nil {
-			return errNotSeen
-		}
-		return json.Unmarshal(res, &seen)
-	})
-	return
-}
-
-func setSeen(nick string, seen *Seen) error {
-	err := db.Batch(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte("seen"))
-		data, err := json.Marshal(seen)
-		if err != nil {
-			return err
-		}
-		return b.Put([]byte(nick), data)
-	})
-	return err
 }
 
 func roundDuration(dur string) string {

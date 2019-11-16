@@ -1,14 +1,12 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"sync"
 
-	"github.com/boltdb/bolt"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
@@ -31,33 +29,6 @@ var osmCTR = struct {
 	sync.RWMutex
 }{
 	cache: make(map[string][]byte),
-}
-
-func setOSMCache(url string, data []byte) error {
-	return db.Batch(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte("osmcache"))
-		return b.Put([]byte(url), data)
-	})
-}
-
-func getOSMCache(url string) ([]byte, error) {
-	buf := bytes.NewBuffer(nil)
-	err := db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte("osmcache"))
-		data := b.Get([]byte(url))
-		if data == nil {
-			return errNotInCache
-		}
-		_, err := buf.Write(data)
-		if err != nil {
-			return err
-		}
-		return nil
-	})
-	if err != nil {
-		return nil, err
-	}
-	return buf.Bytes(), nil
 }
 
 //OSMGetter Gets OSM DATA
