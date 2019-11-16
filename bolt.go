@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/boltdb/bolt"
 )
@@ -12,6 +13,7 @@ var (
 	seenBucket     = []byte("seen")
 	osmCacheBucket = []byte("osmcache")
 	memoBucket     = []byte("memo")
+	reminderBucket = []byte("reminder")
 )
 
 func initDB(file string) (*bolt.DB, error) {
@@ -41,6 +43,16 @@ func initDB(file string) (*bolt.DB, error) {
 	}
 	err = db.Update(func(tx *bolt.Tx) error {
 		_, err := tx.CreateBucketIfNotExists(memoBucket)
+		if err != nil {
+			return fmt.Errorf("create bucket: %v", err)
+		}
+		return err
+	})
+	if err != nil {
+		return nil, err
+	}
+	err = db.Update(func(tx *bolt.Tx) error {
+		_, err := tx.CreateBucketIfNotExists(reminderBucket)
 		if err != nil {
 			return fmt.Errorf("create bucket: %v", err)
 		}
@@ -163,6 +175,57 @@ func getMemo(nick string) (items memos, err error) {
 	err = db.Batch(func(tx *bolt.Tx) error {
 		b := tx.Bucket(memoBucket)
 		return b.Delete([]byte(nick))
+	})
+	return
+}
+
+func getReminder() (reminders ReminderItems, err error) {
+	var tmp string
+	err = db.View(func(tx *bolt.Tx) error {
+		c := tx.Bucket(reminderBucket).Cursor()
+		if k, v := c.First(); k != nil {
+			tmp = string(k)
+			rem, err := time.Parse(time.RFC3339, string(k))
+			if err != nil {
+				return err
+			}
+			if rem.After(time.Now()) {
+				return errNoReminder
+			}
+			return json.Unmarshal(v, &reminders)
+		}
+		return nil
+	})
+	if err != nil {
+		return
+	}
+	err = db.Batch(func(tx *bolt.Tx) error {
+		b := tx.Bucket(reminderBucket)
+		return b.Delete([]byte(tmp))
+	})
+	return
+}
+
+func setReminder(target string, reminder ReminderItem) (err error) {
+	reminders := make(ReminderItems, 0)
+	err = db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(reminderBucket)
+		if v := b.Get([]byte(target)); v != nil {
+			return json.Unmarshal(v, &reminders)
+		}
+		return nil
+	})
+	if err != nil {
+		return
+	}
+	reminders = append(reminders, reminder)
+	err = db.Batch(func(tx *bolt.Tx) error {
+		b := tx.Bucket(reminderBucket)
+		data, err := json.Marshal(reminders)
+		if err != nil {
+			return err
+		}
+		return b.Put([]byte(target), data)
 	})
 	return
 }
