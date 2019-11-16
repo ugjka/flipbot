@@ -172,6 +172,30 @@ var logmsg = hbot.Trigger{
 	},
 }
 
+var logmsgBolt = hbot.Trigger{
+	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+		return m.Command == "PRIVMSG" && m.To == ircChannel
+	},
+	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+		err := setLogMSG(&Message{
+			Time:    time.Now(),
+			Nick:    m.Name,
+			Message: m.Content,
+		})
+		if err != nil{
+			log.Crit("setLogMSG", "error", err)
+		}
+		return false
+	},
+}
+
+//Message is an irc message
+type Message struct {
+	Time    time.Time
+	Nick    string
+	Message string
+}
+
 type stat struct {
 	name  string
 	count int

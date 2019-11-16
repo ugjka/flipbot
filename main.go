@@ -109,6 +109,7 @@ func main() {
 	irc.AddTrigger(urban)
 	irc.AddTrigger(define)
 	irc.AddTrigger(logmsg)
+	irc.AddTrigger(logmsgBolt)
 	irc.AddTrigger(watcher)
 	irc.AddTrigger(seen)
 	irc.AddTrigger(top)

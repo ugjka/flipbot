@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/binary"
 	"encoding/json"
 	"fmt"
 	"time"
@@ -14,6 +15,7 @@ var (
 	osmCacheBucket = []byte("osmcache")
 	memoBucket     = []byte("memo")
 	reminderBucket = []byte("reminder")
+	logBucket      = []byte("log")
 )
 
 func initDB(file string) (*bolt.DB, error) {
@@ -61,7 +63,36 @@ func initDB(file string) (*bolt.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+	err = db.Update(func(tx *bolt.Tx) error {
+		_, err := tx.CreateBucketIfNotExists(logBucket)
+		if err != nil {
+			return fmt.Errorf("create bucket: %v", err)
+		}
+		return err
+	})
+	if err != nil {
+		return nil, err
+	}
 	return db, nil
+}
+
+func setLogMSG(msg *Message) (err error) {
+	err = db.Batch(func(tx *bolt.Tx) error {
+		b := tx.Bucket(logBucket)
+		id, _ := b.NextSequence()
+		data, err := json.Marshal(msg)
+		if err != nil{
+			return err
+		}
+		return b.Put(itob(id), data)
+	})
+	return
+}
+
+func itob(v uint64) []byte {
+	b := make([]byte, 8)
+	binary.BigEndian.PutUint64(b, v)
+	return b
 }
 
 func getSeen(nick string) (seen Seen, err error) {
