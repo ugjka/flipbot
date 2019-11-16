@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/boltdb/bolt"
-	"github.com/ugjka/remindme"
 )
 
 const emailVar = "FLIPBOT_EMAIL"
@@ -36,8 +35,6 @@ var openWeatherMapAPIKey string
 var op string
 var serverEmail string
 var wolframAPIKey string
-
-var remind = remindme.New(ircNick)
 
 var db = new(bolt.DB)
 

@@ -32,8 +32,6 @@ github.com/stretchr/testify v1.4.0 h1:2E4SXV/wtOkTonXsotYi4li6zVWxYlZuYNCXe9XRJy
 github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81PSLYec5m4=
 github.com/ugjka/catrand v0.0.0-20181113133205-3f6473988b0e/go.mod h1:lsnw7rfLsYn6J7avalTL0L0kHt0Zh7QWJHxjpBu8O7k=
 github.com/ugjka/hellabot v0.0.0-20181123123543-c11787775958/go.mod h1:+nuE7ed1X1d99K+0qiZaLHknkp+W6wdQVCIjbpTRQJM=
-github.com/ugjka/remindme v0.0.0-20191022160222-1c4760301f8d h1:x6NwZaBKjgwsNoEYKqXOFjfAAJkFoQjaCn+gcqQLj+Q=
-github.com/ugjka/remindme v0.0.0-20191022160222-1c4760301f8d/go.mod h1:ZZemhIu6iUcxBom/rvN+aJN9PKAEijFVJ4M9PAMReP4=
 github.com/ugjka/reverse v0.0.2 h1:EJFNja1jl10cuvzaVct4kaAYoEPnB8I/0q/I2+YoPPk=
 github.com/ugjka/reverse v0.0.2/go.mod h1:wWuUGtdttfVA96bRX9zqR6mucB/JqqR5MrUThkexRZQ=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
