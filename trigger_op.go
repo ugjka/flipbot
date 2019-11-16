@@ -23,7 +23,7 @@ var notifyop = hbot.Trigger{
 			c := tx.Bucket(logBucket).Cursor()
 			i := 0
 			msg := &Message{}
-			for k, v := c.Last(); k != nil && v != nil; c.Prev() {
+			for k, v := c.Last(); k != nil && v != nil; k, v = c.Prev() {
 				if i > 20 {
 					break
 				}
