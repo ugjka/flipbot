@@ -1,11 +1,13 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"strings"
 	"time"
 
+	"github.com/boltdb/bolt"
 	hbot "github.com/ugjka/hellabot"
-	"github.com/ugjka/reverse"
 	gomail "gopkg.in/gomail.v2"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
@@ -17,14 +19,27 @@ var notifyop = hbot.Trigger{
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		history := ""
-		logCTR.Lock()
-		scan := reverse.NewScanner(logCTR.File)
-		for i := 0; i < 20; i++ {
-			if scan.Scan() {
-				history = scan.Text() + "\n" + history
+		err := db.View(func(tx *bolt.Tx) error {
+			c := tx.Bucket(logBucket).Cursor()
+			i := 0
+			msg := &Message{}
+			for k, v := c.Last(); k != nil && v != nil; c.Prev() {
+				if i > 20 {
+					break
+				}
+				i++
+				err := json.Unmarshal(v, &msg)
+				if err != nil {
+					return err
+				}
+				history = fmt.Sprintf("%s <%s> %s\n", msg.Time.Format(time.Kitchen), msg.Nick, msg.Message) + history
 			}
+			return nil
+		})
+		if err != nil {
+			log.Crit("notifyop", "error", err)
+			return false
 		}
-		logCTR.Unlock()
 		msg := gomail.NewMessage()
 		msg.SetHeader("From", serverEmail)
 		msg.SetHeader("To", email)

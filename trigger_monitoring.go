@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"regexp"
@@ -9,9 +10,9 @@ import (
 	"sync"
 	"time"
 
+	"github.com/boltdb/bolt"
 	"github.com/hako/durafmt"
 	hbot "github.com/ugjka/hellabot"
-	"github.com/ugjka/reverse"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
@@ -120,27 +121,28 @@ var top = hbot.Trigger{
 		return m.Command == "PRIVMSG" && topTrig.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		logCTR.Lock()
-		defer logCTR.Unlock()
-		reg := regexp.MustCompile("^\\[(\\d{2}\\:\\d{2}\\:\\d{2}\\|\\d{2}\\:\\d{2}\\:\\d{2})\\] \\<(.+)\\>\\t.*$")
 		stats := make(map[string]int)
-		scan := reverse.NewScanner(logCTR.File)
 		res := make(result, 0)
 		week := time.Now().UTC().Add(time.Hour * -24 * 7)
-		for scan.Scan() {
-			matches := reg.FindStringSubmatch(strings.ToLower(scan.Text()))
-			if len(matches) != 3 {
-				continue
+		msg := Message{}
+		err := db.View(func(tx *bolt.Tx) error {
+			c := tx.Bucket(logBucket).Cursor()
+			for k, v := c.Last(); k != nil && v != nil; k, v = c.Prev() {
+				err := json.Unmarshal(v, &msg)
+				if err != nil {
+					return err
+				}
+				if msg.Time.Before(week) {
+					break
+				}
+				stats[strings.ToLower(msg.Nick)]++
 			}
-			timestamp, err := time.Parse("06:01:02|15:04:05", matches[1])
-			if err != nil {
-				continue
-			}
-			if timestamp.After(week) {
-				stats[matches[2]]++
-			} else {
-				break
-			}
+			return nil
+		})
+		if err != nil {
+			log.Crit("!top", "error", err)
+			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
+			return false
 		}
 		for k, v := range stats {
 			k = k[:len(k)-1] + "*"
@@ -182,7 +184,7 @@ var logmsgBolt = hbot.Trigger{
 			Nick:    m.Name,
 			Message: m.Content,
 		})
-		if err != nil{
+		if err != nil {
 			log.Crit("setLogMSG", "error", err)
 		}
 		return false
