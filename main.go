@@ -148,8 +148,6 @@ func main() {
 	logHandler := log.LvlFilterHandler(log.LvlInfo, log.StdoutHandler)
 	irc.Logger.SetHandler(logHandler)
 
-	go remind.Start()
-
 	b := &subwatch.Bot{
 		Endpoints:      []string{subreddit},
 		FetchInterval:  2 * time.Minute,
