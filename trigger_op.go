@@ -18,8 +18,13 @@ var notifyop = hbot.Trigger{
 			strings.Contains(m.Content, op) && strings.ToLower(m.Name) != op
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+		riga, err := time.LoadLocation("Europe/Riga")
+		if err != nil {
+			log.Crit("notifyop", "error", err)
+			return false
+		}
 		history := ""
-		err := db.View(func(tx *bolt.Tx) error {
+		err = db.View(func(tx *bolt.Tx) error {
 			c := tx.Bucket(logBucket).Cursor()
 			i := 0
 			msg := &Message{}
@@ -32,7 +37,7 @@ var notifyop = hbot.Trigger{
 				if err != nil {
 					return err
 				}
-				history = fmt.Sprintf("%s <%s> %s\n", msg.Time.Format(time.Kitchen), msg.Nick, msg.Message) + history
+				history = fmt.Sprintf("%s <%s> %s\n", msg.Time.In(riga).Format(time.Kitchen), msg.Nick, msg.Message) + history
 			}
 			return nil
 		})
