@@ -6,4 +6,4 @@ play
 messages.log
 export.sh
 *test.go
-flipbot.db
+flipbot.db*

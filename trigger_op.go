@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/boltdb/bolt"
@@ -62,6 +63,66 @@ var notifyop = hbot.Trigger{
 			log.Crit("could not push op nick highlight", "error", err)
 			return false
 		}
+		return false
+	},
+}
+
+var logOnce = &sync.Once{}
+var indexLog = hbot.Trigger{
+	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+		return m.From == op && m.Content == "!index"
+	},
+	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+		logOnce.Do(func() {
+			var max uint64
+			err := db.View(func(tx *bolt.Tx) error {
+				last, _ := tx.Bucket(logBucket).Cursor().Last()
+				max = btoi(last)
+				return nil
+			})
+			if err != nil {
+				log.Crit("indexLog", "error", err)
+				return
+			}
+			semaphore := make(chan struct{}, 100)
+			for i := 1; i < int(max); i++ {
+				if i%1000 == 0 {
+					irc.Msg(op, fmt.Sprintf("indexing %d out of %d", i, max))
+				}
+				semaphore <- struct{}{}
+				go func(i int) {
+					err := db.Batch(func(tx *bolt.Tx) error {
+						index := tx.Bucket(indexBucket)
+						v := tx.Bucket(logBucket).Get(itob(uint64(i)))
+						if v == nil {
+							return fmt.Errorf("nil value")
+						}
+						msg := Message{}
+						err := json.Unmarshal(v, &msg)
+						if err != nil {
+							return err
+						}
+						for _, v := range split(strings.ToLower(msg.Message)) {
+							b, err := index.CreateBucketIfNotExists([]byte(v))
+							if err != nil {
+								return err
+							}
+							err = b.Put(itob(uint64(i)), []byte(""))
+							if err != nil {
+								return err
+							}
+						}
+						return err
+					})
+					if err != nil {
+						log.Crit("indexLog", "error", err)
+					}
+					<-semaphore
+				}(i)
+			}
+			irc.Msg(op, "Indexing done!!!! Hip Hip Hurray!!!")
+			return
+		})
 		return false
 	},
 }

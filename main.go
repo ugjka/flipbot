@@ -98,7 +98,8 @@ func main() {
 		logCTR.Close()
 		os.Exit(0)
 	}()
-
+	irc.AddTrigger(searchLog)
+	//irc.AddTrigger(indexLog)
 	irc.AddTrigger(flip)
 	irc.AddTrigger(unflip)
 	irc.AddTrigger(randomcat)

@@ -5,9 +5,13 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
+	"regexp"
+	"sort"
+	"strings"
 	"time"
 
 	"github.com/boltdb/bolt"
+	"mvdan.cc/xurls/v2"
 )
 
 var (
@@ -16,6 +20,7 @@ var (
 	memoBucket     = []byte("memo")
 	reminderBucket = []byte("reminder")
 	logBucket      = []byte("log")
+	indexBucket    = []byte("index")
 )
 
 func initDB(file string) (*bolt.DB, error) {
@@ -73,6 +78,16 @@ func initDB(file string) (*bolt.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+	err = db.Update(func(tx *bolt.Tx) error {
+		_, err := tx.CreateBucketIfNotExists(indexBucket)
+		if err != nil {
+			return fmt.Errorf("create bucket: %v", err)
+		}
+		return err
+	})
+	if err != nil {
+		return nil, err
+	}
 	return db, nil
 }
 
@@ -81,10 +96,25 @@ func setLogMSG(msg *Message) (err error) {
 		b := tx.Bucket(logBucket)
 		id, _ := b.NextSequence()
 		data, err := json.Marshal(msg)
-		if err != nil{
+		if err != nil {
 			return err
 		}
-		return b.Put(itob(id), data)
+		err = b.Put(itob(id), data)
+		if err != nil {
+			return err
+		}
+		index := tx.Bucket(indexBucket)
+		for _, v := range split(strings.ToLower(msg.Message)) {
+			token, err := index.CreateBucketIfNotExists([]byte(v))
+			if err != nil {
+				return err
+			}
+			err = token.Put(itob(id), []byte(""))
+			if err != nil {
+				return err
+			}
+		}
+		return nil
 	})
 	return
 }
@@ -93,6 +123,10 @@ func itob(v uint64) []byte {
 	b := make([]byte, 8)
 	binary.BigEndian.PutUint64(b, v)
 	return b
+}
+
+func btoi(b []byte) uint64 {
+	return binary.BigEndian.Uint64(b)
 }
 
 func getSeen(nick string) (seen Seen, err error) {
@@ -257,6 +291,86 @@ func setReminder(target string, reminder ReminderItem) (err error) {
 			return err
 		}
 		return b.Put([]byte(target), data)
+	})
+	return
+}
+
+var urls = xurls.Relaxed()
+var word = regexp.MustCompile("(!?\\w+[\"']?\\w+)")
+
+func split(in string) (out []string) {
+	if urls.MatchString(in) {
+		in = urls.ReplaceAllString(in, "")
+	}
+	in = strings.Replace(in, "’", "'", -1)
+	return word.FindAllString(in, -1)
+}
+
+func search(in string, ignore string) (msgs []Message, err error) {
+	var results [][]byte
+	arr := split(in)
+	store := make(map[uint64]int)
+	err = db.View(func(tx *bolt.Tx) error {
+		index := tx.Bucket(indexBucket)
+		for _, v := range arr {
+			if b := index.Bucket([]byte(v)); b != nil {
+				b.ForEach(func(k, v []byte) error {
+					store[btoi(k)]++
+					return nil
+				})
+			}
+		}
+		depth := 0
+		for _, v := range store {
+			if v > depth {
+				depth = v
+			}
+		}
+		for k, v := range store {
+			if v < depth {
+				delete(store, k)
+			}
+		}
+		for sk := range store {
+			if b := index.Bucket([]byte(ignore)); b != nil {
+				b.ForEach(func(k, v []byte) error {
+					if sk == btoi(k) {
+						delete(store, sk)
+					}
+					return nil
+				})
+			}
+		}
+		results = make([][]byte, len(store))
+		i := 0
+		for k := range store {
+			results[i] = itob(k)
+			i++
+		}
+		sort.Slice(results, func(i, j int) bool {
+			res := bytes.Compare(results[i], results[j])
+			if res == -1 {
+				return true
+			}
+			return false
+		})
+		return nil
+	})
+	if len(results) == 0 {
+		err = errNoResults
+		return
+	}
+	err = db.View(func(tx *bolt.Tx) error {
+		msgs = make([]Message, 0, 5)
+		for i, j := len(results)-1, 0; i >= 0 && j < 5; i, j = i-1, j+1 {
+			msg := Message{}
+			err := json.Unmarshal(tx.Bucket(logBucket).Get(results[i]), &msg)
+			if err != nil {
+				return err
+			}
+			msgs = append([]Message{msg}, msgs...)
+		}
+		return nil
 	})
 	return
 }
