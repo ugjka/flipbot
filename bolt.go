@@ -318,6 +318,17 @@ func search(in string, ignore string) (msgs []Message, err error) {
 					store[btoi(k)]++
 					return nil
 				})
+			} else {
+				k, _ := index.Cursor().Seek([]byte(v))
+				if k == nil {
+					continue
+				}
+				if b := index.Bucket(k); b != nil {
+					b.ForEach(func(k, v []byte) error {
+						store[btoi(k)]++
+						return nil
+					})
+				}
 			}
 		}
 		depth := 0
