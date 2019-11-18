@@ -12,7 +12,7 @@ import (
 var searchLogRegex = regexp.MustCompile(`(?i)^\s*!search\s+(\S.*)$`)
 var searchLog = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && searchLogRegex.MatchString(m.Content)
+		return m.To == ircChannel && m.Command == "PRIVMSG" && searchLogRegex.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		query := searchLogRegex.FindStringSubmatch(m.Content)[1]
