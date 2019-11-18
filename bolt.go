@@ -21,6 +21,7 @@ var (
 	reminderBucket = []byte("reminder")
 	logBucket      = []byte("log")
 	indexBucket    = []byte("index")
+	usersBucket    = []byte("users")
 )
 
 func initDB(file string) (*bolt.DB, error) {
@@ -88,6 +89,16 @@ func initDB(file string) (*bolt.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+	err = db.Update(func(tx *bolt.Tx) error {
+		_, err := tx.CreateBucketIfNotExists(usersBucket)
+		if err != nil {
+			return fmt.Errorf("create bucket: %v", err)
+		}
+		return err
+	})
+	if err != nil {
+		return nil, err
+	}
 	return db, nil
 }
 
@@ -113,6 +124,15 @@ func setLogMSG(msg *Message) (err error) {
 			if err != nil {
 				return err
 			}
+		}
+		users := tx.Bucket(usersBucket)
+		user, err := users.CreateBucketIfNotExists([]byte(strings.ToLower(msg.Nick)))
+		if err != nil {
+			return err
+		}
+		err = user.Put(itob(id), []byte(""))
+		if err != nil {
+			return err
 		}
 		return nil
 	})
@@ -383,5 +403,38 @@ func search(in string, ignore string) (msgs []Message, err error) {
 		}
 		return nil
 	})
+	return
+}
+
+func userTail(nick string, ignore string, amount int) (msgs []Message, err error) {
+	msgs = make([]Message, 0, amount)
+	err = db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(usersBucket).Bucket([]byte(nick))
+		if b == nil {
+			return errNotSeen
+
+		}
+		c := b.Cursor()
+		i := 0
+		log := tx.Bucket(logBucket)
+		for k, _ := c.Last(); k != nil && i < amount; k, _ = c.Prev() {
+			if v := log.Get(k); v != nil {
+				msg := Message{}
+				err := json.Unmarshal(v, &msg)
+				if strings.Contains(msg.Message, ignore) {
+					continue
+				}
+				if err != nil {
+					return err
+				}
+				msgs = append([]Message{msg}, msgs...)
+				i++
+			}
+		}
+		return nil
+	})
+	if len(msgs) == 0 {
+		err = errNoResults
+	}
 	return
 }

@@ -86,7 +86,7 @@ var indexLog = hbot.Trigger{
 			}
 			semaphore := make(chan struct{}, 100)
 			for i := 1; i < int(max); i++ {
-				if i%1000 == 0 {
+				if i%10000 == 0 {
 					irc.Msg(op, fmt.Sprintf("indexing %d out of %d", i, max))
 				}
 				semaphore <- struct{}{}
@@ -122,6 +122,64 @@ var indexLog = hbot.Trigger{
 			}
 			irc.Msg(op, "Indexing done!!!! Hip Hip Hurray!!!")
 			return
+		})
+		return false
+	},
+}
+
+var usersOnce = &sync.Once{}
+var indexUsers = hbot.Trigger{
+	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+		return m.From == op && m.Content == "!indexusers"
+	},
+	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+		usersOnce.Do(func() {
+			var max uint64
+			err := db.View(func(tx *bolt.Tx) error {
+				last, _ := tx.Bucket(logBucket).Cursor().Last()
+				max = btoi(last)
+				return nil
+			})
+			if err != nil {
+				log.Crit("indexUsers", "error", err)
+				return
+			}
+			semaphore := make(chan struct{}, 100)
+			for i := 1; i < int(max); i++ {
+				if i%10000 == 0 {
+					irc.Msg(op, fmt.Sprintf("\r%d out of %d", i, max))
+				}
+				semaphore <- struct{}{}
+				go func(i int) {
+					err := db.Batch(func(tx *bolt.Tx) error {
+						users := tx.Bucket(usersBucket)
+						v := tx.Bucket(logBucket).Get(itob(uint64(i)))
+						if v == nil {
+							return fmt.Errorf("nil value")
+						}
+						msg := Message{}
+						err := json.Unmarshal(v, &msg)
+						if err != nil {
+							return err
+						}
+						b, err := users.CreateBucketIfNotExists([]byte(strings.ToLower(msg.Nick)))
+						if err != nil {
+							return err
+						}
+						err = b.Put(itob(uint64(i)), []byte(""))
+						if err != nil {
+							return err
+						}
+
+						return err
+					})
+					if err != nil {
+						log.Crit("indexUsers", "error", err)
+					}
+					<-semaphore
+				}(i)
+			}
+			irc.Msg(op, "Users Indexed!!! Hip Hip Hurray!!!")
 		})
 		return false
 	},

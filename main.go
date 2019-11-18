@@ -98,6 +98,8 @@ func main() {
 		logCTR.Close()
 		os.Exit(0)
 	}()
+	irc.AddTrigger(tail)
+	//irc.AddTrigger(indexUsers)
 	//irc.AddTrigger(searchLog)
 	//irc.AddTrigger(indexLog)
 	irc.AddTrigger(flip)
