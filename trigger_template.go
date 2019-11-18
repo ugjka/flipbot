@@ -1,6 +1,8 @@
 package main
 
 /*
+package main
+
 import (
 	hbot "github.com/ugjka/hellabot"
 	log "gopkg.in/inconshreveable/log15.v2"
