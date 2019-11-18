@@ -12,11 +12,11 @@ import (
 
 var tailTrig = regexp.MustCompile("(?i)^\\s*!+tail\\w*\\s+(?:(\\d+)\\s+)?([A-Za-z_\\-\\[\\]\\^{}|`][A-Za-z0-9_\\-\\[\\]\\^{}|`]{0,15}\\*?)$")
 
-const maxTail = 15
+const maxTail = 10
 
 var tail = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && tailTrig.MatchString(m.Content)
+		return m.To == ircChannel && m.Command == "PRIVMSG" && tailTrig.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		capped := false
