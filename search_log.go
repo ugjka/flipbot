@@ -15,8 +15,6 @@ var searchLog = hbot.Trigger{
 		return m.Command == "PRIVMSG" && searchLogRegex.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		irc.Reply(m, fmt.Sprintf("%s: this feature is disabled due to negative feedback", m.Name))
-		return false
 		query := searchLogRegex.FindStringSubmatch(m.Content)[1]
 		query = strings.ToLower(query)
 		msgs, err := search(query, "!search")
