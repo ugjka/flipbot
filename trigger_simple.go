@@ -201,6 +201,49 @@ var god = hbot.Trigger{
 	},
 }
 
+var bkbTrig = regexp.MustCompile(`(?i).*!+(?:b+k+b+|e+rowid+|t+r+i+p+.*|d+r+u+g+s+)`)
+var bkb = hbot.Trigger{
+	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+		return m.Command == "PRIVMSG" && bkbTrig.MatchString(m.Content)
+	},
+	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+		text, err := randomErowid()
+		if err != nil {
+			log.Warn("!bkb", "error", err)
+			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
+			return false
+		}
+		irc.Reply(m, fmt.Sprintf("%s: %s", m.Name, text))
+		return false
+	},
+}
+
+func randomErowid() (string, error) {
+	const url = "https://erowid.org/experiences/exp.php?ID=%d"
+	const max = 35934
+	rand.Seed(time.Now().UnixNano())
+	item := rand.Int31n(max-1) + 1
+	resp, err := httpClient.Get(fmt.Sprintf(url, item))
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	doc, err := goquery.NewDocumentFromResponse(resp)
+	if err != nil {
+		return "", err
+	}
+	text := doc.Find(".ts-citation").First().Text()
+
+	if text == "" {
+		return randomErowid()
+	}
+	text = text[14:]
+	text = strings.Replace(text, "erowid.org/exp/", "https://erowid.org/exp/", 1)
+	text = strings.Replace(text, " Erowid.org.", "", 1)
+	fmt.Println(text)
+	return text, nil
+}
+
 var helpTrig = regexp.MustCompile(`(?i).*!+(?:help|manual|com+ands|list).*`)
 var help = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
