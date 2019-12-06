@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html"
 	"net/http"
 	"regexp"
 	"strings"
@@ -61,10 +62,12 @@ func printYoutubeInfo(url string) (string, error) {
 	if res.Items[0].Snippet.Title == "" {
 		return "", fmt.Errorf("youtube no title")
 	}
-	return fmt.Sprintf("[Youtube] %s | %s | %s",
+	result := fmt.Sprintf("[Youtube] %s | %s | %s",
 		res.Items[0].Snippet.Title,
 		res.Items[0].Snippet.ChannelTitle,
-		parseYoutubeTime(res.Items[0].ContentDetails.Duration)), nil
+		parseYoutubeTime(res.Items[0].ContentDetails.Duration))
+	result = html.UnescapeString(result)
+	return result, nil
 }
 
 func getPreview(url string) (title string, err error) {
@@ -89,10 +92,10 @@ func getPreview(url string) (title string, err error) {
 	if res.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("status not 200")
 	}
-	const html = "text/html"
+	const htmlContent = "text/html"
 	content := res.Header.Get("Content-Type")
-	if !strings.Contains(content, html) {
-		return "", fmt.Errorf("not %s", html)
+	if !strings.Contains(content, htmlContent) {
+		return "", fmt.Errorf("not %s", htmlContent)
 	}
 	doc, err := goquery.NewDocumentFromResponse(res)
 	if err != nil {
@@ -104,5 +107,6 @@ func getPreview(url string) (title string, err error) {
 	}
 	title = whitespace.ReplaceAllString(title, " ")
 	title = strings.TrimSpace(title)
+	title = html.UnescapeString(title)
 	return title, nil
 }

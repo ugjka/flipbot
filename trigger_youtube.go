@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"html"
 	"net/url"
 	"regexp"
 
@@ -26,7 +27,9 @@ var youtube = hbot.Trigger{
 			irc.Reply(m, fmt.Sprintf("%s: no results!", m.Name))
 			return false
 		}
-		irc.Reply(m, fmt.Sprintf("%s: %s https://youtu.be/%s ", m.Name, res.Items[0].Snippet.Title, res.Items[0].ID.VideoID))
+		result := fmt.Sprintf("%s: %s https://youtu.be/%s ", m.Name, res.Items[0].Snippet.Title, res.Items[0].ID.VideoID)
+		result = html.UnescapeString(result)
+		irc.Reply(m, result)
 		return false
 	},
 }
