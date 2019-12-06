@@ -220,7 +220,7 @@ var bkb = hbot.Trigger{
 
 func randomErowid() (string, error) {
 	const url = "https://erowid.org/experiences/exp.php?ID=%d"
-	const max = 35934
+	const max = 113706
 	rand.Seed(time.Now().UnixNano())
 	item := rand.Int31n(max-1) + 1
 	resp, err := httpClient.Get(fmt.Sprintf(url, item))
