@@ -38,8 +38,6 @@ var google = hbot.Trigger{
 		return m.Command == "PRIVMSG" && googleTrig.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		irc.Reply(m, fmt.Sprintf("%s: google doesn't like me, use !d or !ddg or !duck instead", m.Name))
-		return false
 		query := googleTrig.FindStringSubmatch(m.Content)[1]
 		res, err := googleStuff(query)
 		if err != nil {
