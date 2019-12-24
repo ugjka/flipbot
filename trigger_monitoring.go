@@ -76,7 +76,7 @@ func roundDuration(dur string) string {
 
 var watcher = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" || m.Command == "JOIN" ||
+		return (m.Command == "PRIVMSG" && m.To == ircChannel) || m.Command == "JOIN" ||
 			m.Command == "QUIT" || m.Command == "PART" || m.Command == "KICK"
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
