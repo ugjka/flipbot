@@ -197,7 +197,7 @@ var mydol = hbot.Trigger{
 var natureTrig = regexp.MustCompile(`(?i)nature.*`)
 var nature = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && mydolTrig.MatchString(m.Content)
+		return m.Command == "PRIVMSG" && natureTrig.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		irc.Reply(m, "https://www.flightradar24.com/")
