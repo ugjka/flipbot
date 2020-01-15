@@ -15,7 +15,7 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-var testTrig = regexp.MustCompile(`(?i).*!+(?:test|testing|check).*`)
+var testTrig = regexp.MustCompile(`(?i).*!+(?:test|testing|check|caddy\w*|ceph\w*).*`)
 var test = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && testTrig.MatchString(m.Content)
@@ -50,7 +50,7 @@ var randomdog = hbot.Trigger{
 	},
 }
 
-var shrugTrig = regexp.MustCompile(`(?i).*!+(?:shrug|srug|shug).*`)
+var shrugTrig = regexp.MustCompile(`(?i).*!+(?:shrug|srug|shug|unas\w*).*`)
 var shrug = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && shrugTrig.MatchString(m.Content)
@@ -149,7 +149,7 @@ var define = hbot.Trigger{
 	},
 }
 
-var tossTrig = regexp.MustCompile(`(?i).*!+(?:tos+|wank|cum+|come).*`)
+var tossTrig = regexp.MustCompile(`(?i).*!+(?:tos+|wank|cum+|come|shek\w*).*`)
 var toss = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && tossTrig.MatchString(m.Content)
@@ -170,7 +170,7 @@ var toss = hbot.Trigger{
 	},
 }
 
-var meditationTrig = regexp.MustCompile(`(?i).*!+(?:meditation|meditate|advaita|monism|wisdom).*`)
+var meditationTrig = regexp.MustCompile(`(?i).*!+(?:meditation|meditate|advaita|monism|wisdom|ugjka).*`)
 var meditation = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && meditationTrig.MatchString(m.Content)
@@ -179,6 +179,28 @@ var meditation = hbot.Trigger{
 		rand.Seed(time.Now().UnixNano())
 		n := rand.Intn(len(meditations) - 1)
 		irc.Reply(m, fmt.Sprintf("%s: \"%s\"", m.Name, meditations[n]))
+		return false
+	},
+}
+
+var mydolTrig = regexp.MustCompile(`(?i)!+m+y+d+o+l+.*`)
+var mydol = hbot.Trigger{
+	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+		return m.Command == "PRIVMSG" && mydolTrig.MatchString(m.Content)
+	},
+	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+		irc.Reply(m, "https://www.amazon.com/l/B076QJR7LF")
+		return false
+	},
+}
+
+var natureTrig = regexp.MustCompile(`(?i)nature.*`)
+var nature = hbot.Trigger{
+	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+		return m.Command == "PRIVMSG" && mydolTrig.MatchString(m.Content)
+	},
+	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+		irc.Reply(m, "https://www.flightradar24.com/")
 		return false
 	},
 }
@@ -255,7 +277,7 @@ var help = hbot.Trigger{
 	},
 }
 
-var debugTrig = regexp.MustCompile(`(?i).*!+(?:debug|bug|joke).*`)
+var debugTrig = regexp.MustCompile(`(?i).*!+(?:debug|bug|joke|xyk).*`)
 var debug = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && debugTrig.MatchString(m.Content)

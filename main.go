@@ -104,6 +104,8 @@ func main() {
 	//irc.AddTrigger(indexUsers)
 	//irc.AddTrigger(searchLog)
 	//irc.AddTrigger(indexLog)
+	irc.AddTrigger(nature)
+	irc.AddTrigger(mydol)
 	irc.AddTrigger(flip)
 	irc.AddTrigger(unflip)
 	irc.AddTrigger(randomcat)
