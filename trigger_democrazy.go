@@ -22,7 +22,7 @@ var upvote = hbot.Trigger{
 			log.Crit("!upvote", "error", err)
 			return false
 		}
-		irc.Reply(m, fmt.Sprintf("%s: %.4f votes for %s. Your vote will gradually expire in 7 days",
+		irc.Reply(m, fmt.Sprintf("%s: %.4f votes for %s. Your upvote will gradually expire in 7 days",
 			m.Name, votes, word))
 		return false
 	},
@@ -41,7 +41,7 @@ var downvote = hbot.Trigger{
 			log.Crit("!downvote", "error", err)
 			return false
 		}
-		irc.Reply(m, fmt.Sprintf("%s: %.4f votes for %s. Your vote will gradually expire in 7 days",
+		irc.Reply(m, fmt.Sprintf("%s: %.4f votes for %s. Your downvote will gradually expire in 7 days",
 			m.Name, votes, word))
 		return false
 	},
@@ -78,7 +78,7 @@ var ranks = hbot.Trigger{
 			return false
 		}
 		out := "Leaderboard: "
-		if len(ranks) == 0{
+		if len(ranks) == 0 {
 			out += "No votes cast..."
 		}
 		for i, v := range ranks {
