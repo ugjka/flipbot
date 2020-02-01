@@ -98,7 +98,10 @@ func main() {
 		logCTR.Close()
 		os.Exit(0)
 	}()
-
+	irc.AddTrigger(upvote)
+	irc.AddTrigger(downvote)
+	irc.AddTrigger(rank)
+	irc.AddTrigger(echo)
 	irc.AddTrigger(bkb)
 	//irc.AddTrigger(tail)
 	//irc.AddTrigger(indexUsers)

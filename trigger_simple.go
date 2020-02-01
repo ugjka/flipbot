@@ -15,6 +15,17 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
+var echo = hbot.Trigger{
+	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, "!repeat ")
+	},
+	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+		msg := fmt.Sprintf("%s says: '%s'", m.Name, strings.TrimPrefix(m.Content, "!repeat "))
+		irc.Reply(m, msg)
+		return false
+	},
+}
+
 var testTrig = regexp.MustCompile(`(?i).*!+(?:test|testing|check|caddy\w*|ceph\w*).*`)
 var test = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
@@ -194,7 +205,7 @@ var mydol = hbot.Trigger{
 	},
 }
 
-var natureTrig = regexp.MustCompile(`(?i)nature.*`)
+var natureTrig = regexp.MustCompile(`(?i)!nature.*`)
 var nature = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && natureTrig.MatchString(m.Content)

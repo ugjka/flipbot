@@ -115,7 +115,7 @@ var watcher = hbot.Trigger{
 	},
 }
 
-var topTrig = regexp.MustCompile(`(?i).*!+(?:top|masters?|masterminds?|ranks?|echoline).*`)
+var topTrig = regexp.MustCompile(`(?i).*!+(?:top|masters?|masterminds?|echoline).*`)
 var top = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && topTrig.MatchString(m.Content)
@@ -125,6 +125,7 @@ var top = hbot.Trigger{
 		res := make(result, 0)
 		week := time.Now().UTC().Add(time.Hour * -24 * 7)
 		msg := Message{}
+		total := 0
 		err := db.View(func(tx *bolt.Tx) error {
 			c := tx.Bucket(logBucket).Cursor()
 			for k, v := c.Last(); k != nil && v != nil; k, v = c.Prev() {
@@ -135,6 +136,7 @@ var top = hbot.Trigger{
 				if msg.Time.Before(week) {
 					break
 				}
+				total++
 				stats[strings.ToLower(msg.Nick)]++
 			}
 			return nil
@@ -150,8 +152,9 @@ var top = hbot.Trigger{
 		}
 		sort.Sort(sort.Reverse(res))
 		out := "Top posters for past 7 days: "
+		out = fmt.Sprintf("Daily Average: %d posts. %s", total/7, out)
 		for i, v := range res {
-			if (i == 10) || (i == len(res)-1) {
+			if (i == 9) || (i == len(res)-1) {
 				out += fmt.Sprintf("%d. %s posts.", i+1, v)
 				break
 			}
