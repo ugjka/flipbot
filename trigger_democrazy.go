@@ -78,6 +78,9 @@ var ranks = hbot.Trigger{
 			return false
 		}
 		out := "Leaderboard: "
+		if len(ranks) == 0{
+			out += "No votes cast..."
+		}
 		for i, v := range ranks {
 			if i > 9 {
 				break
