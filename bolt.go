@@ -22,6 +22,7 @@ var (
 	logBucket      = []byte("log")
 	indexBucket    = []byte("index")
 	usersBucket    = []byte("users")
+	rankBucket     = []byte("ranks")
 )
 
 func initDB(file string) (*bolt.DB, error) {
@@ -91,6 +92,16 @@ func initDB(file string) (*bolt.DB, error) {
 	}
 	err = db.Update(func(tx *bolt.Tx) error {
 		_, err := tx.CreateBucketIfNotExists(usersBucket)
+		if err != nil {
+			return fmt.Errorf("create bucket: %v", err)
+		}
+		return err
+	})
+	if err != nil {
+		return nil, err
+	}
+	err = db.Update(func(tx *bolt.Tx) error {
+		_, err := tx.CreateBucketIfNotExists(rankBucket)
 		if err != nil {
 			return fmt.Errorf("create bucket: %v", err)
 		}
@@ -437,4 +448,81 @@ func userTail(nick string, ignore string, amount int) (msgs []Message, err error
 		err = errNoResults
 	}
 	return
+}
+
+func setvote(value int64, word string) (votes float64, err error) {
+	err = db.Batch(func(tx *bolt.Tx) error {
+		b := tx.Bucket(rankBucket)
+		wb, err := b.CreateBucketIfNotExists([]byte(word))
+		if err != nil {
+			return err
+		}
+		buf := make([]byte, binary.MaxVarintLen16)
+		n := binary.PutVarint(buf, value)
+		now, _ := time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+		err = wb.Put([]byte(now.Format(time.RFC3339)), buf[:n])
+		if err != nil {
+			return err
+		}
+		c := wb.Cursor()
+		week := time.Hour * 24 * 7
+		for k, v := c.First(); k != nil; k, v = c.Next() {
+			voteDate, err := time.Parse(time.RFC3339, string(k))
+			if err != nil {
+				return err
+			}
+			if voteDate.Before(now.Add(time.Hour * -24 * 7)) {
+				err = c.Delete()
+				if err != nil {
+					return err
+				}
+				continue
+			}
+			age := now.Sub(voteDate)
+			vote, _ := binary.Varint(v)
+			expired := ((week.Seconds() - age.Seconds()) / week.Seconds()) * float64(vote)
+			votes += expired
+		}
+		return nil
+	})
+	return votes, err
+}
+
+func getvotes(word string) (votes float64, err error) {
+	err = db.Batch(func(tx *bolt.Tx) error {
+		b := tx.Bucket(rankBucket)
+		wb := b.Bucket([]byte(word))
+		if wb == nil {
+			votes = 0
+			return nil
+		}
+		c := wb.Cursor()
+		week := time.Hour * 24 * 7
+		now := time.Now()
+		for k, v := c.First(); k != nil; k, v = c.Next() {
+			voteDate, err := time.Parse(time.RFC3339, string(k))
+			if err != nil {
+				return err
+			}
+			if voteDate.Before(now.Add(time.Hour * -24 * 7)) {
+				err = c.Delete()
+				if err != nil {
+					return err
+				}
+				continue
+			}
+			age := now.Sub(voteDate)
+			vote, _ := binary.Varint(v)
+			expired := ((week.Seconds() - age.Seconds()) / week.Seconds()) * float64(vote)
+			votes += expired
+		}
+		if wb.Stats().KeyN == 0 {
+			err := b.DeleteBucket([]byte(word))
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+	return votes, err
 }
