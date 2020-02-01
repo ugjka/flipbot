@@ -12,7 +12,7 @@ import (
 var upvoteTrig = regexp.MustCompile(`(?i)^\s*(?:\++|!+(?:up+|upvote+)\s+)(\S+)$`)
 var upvote = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && upvoteTrig.MatchString(m.Content)
+		return m.Command == "PRIVMSG" && m.To == ircChannel && upvoteTrig.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		word := upvoteTrig.FindStringSubmatch(m.Content)[1]
@@ -31,7 +31,7 @@ var upvote = hbot.Trigger{
 var downvoteTrig = regexp.MustCompile(`(?i)^\s*(?:-+|!+(?:down+|downvote+)\s+)(\S+)$`)
 var downvote = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && downvoteTrig.MatchString(m.Content)
+		return m.Command == "PRIVMSG" && m.To == ircChannel && downvoteTrig.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		word := downvoteTrig.FindStringSubmatch(m.Content)[1]
@@ -66,12 +66,26 @@ var rank = hbot.Trigger{
 	},
 }
 
-var ranksTrig = regexp.MustCompile(`(?i)^\s*!+rank+\s*$`)
+var ranksTrig = regexp.MustCompile(`(?i)^\s*!+(?:rank+s?|leader+s?|leaderboard+s?)\s*$`)
 var ranks = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && m.To == ircChannel && ranksTrig.MatchString(m.Content)
+		return m.Command == "PRIVMSG" && ranksTrig.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+		ranks, err := getRanks()
+		if err != nil {
+			log.Crit("!ranks", "error", err)
+			return false
+		}
+		out := "Leaderboard: "
+		for i, v := range ranks {
+			if i > 9 {
+				break
+			}
+			out += fmt.Sprintf("%d: %s %.4f votes, ", i+1, v.name, v.votes)
+		}
+		out = strings.TrimSuffix(out, ",")
+		irc.Reply(m, out)
 		return false
 	},
 }

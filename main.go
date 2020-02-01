@@ -101,6 +101,7 @@ func main() {
 	irc.AddTrigger(upvote)
 	irc.AddTrigger(downvote)
 	irc.AddTrigger(rank)
+	irc.AddTrigger(ranks)
 	irc.AddTrigger(echo)
 	irc.AddTrigger(bkb)
 	//irc.AddTrigger(tail)

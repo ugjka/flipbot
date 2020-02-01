@@ -526,3 +526,53 @@ func getvotes(word string) (votes float64, err error) {
 	})
 	return votes, err
 }
+
+type ranking struct {
+	name  string
+	votes float64
+}
+
+type rankings []ranking
+
+func getRanks() (ranks []ranking, err error) {
+	err = db.Batch(func(tx *bolt.Tx) error {
+		b := tx.Bucket(rankBucket)
+		c := b.Cursor()
+		week := time.Hour * 24 * 7
+		now := time.Now()
+		for k, _ := c.First(); k != nil; k, _ = c.Next() {
+			votes := float64(0)
+			c := b.Bucket(k).Cursor()
+			for k, v := c.First(); k != nil; k, v = c.Next() {
+				voteDate, err := time.Parse(time.RFC3339, string(k))
+				if err != nil {
+					return err
+				}
+				if voteDate.Before(now.Add(time.Hour * -24 * 7)) {
+					err = c.Delete()
+					if err != nil {
+						return err
+					}
+					continue
+				}
+				age := now.Sub(voteDate)
+				vote, _ := binary.Varint(v)
+				expired := ((week.Seconds() - age.Seconds()) / week.Seconds()) * float64(vote)
+				votes += expired
+			}
+			if b.Bucket(k).Stats().KeyN == 0 {
+				err := b.DeleteBucket(k)
+				if err != nil {
+					return err
+				}
+			} else {
+				ranks = append(ranks, ranking{string(k), votes})
+			}
+		}
+		return nil
+	})
+	sort.Slice(ranks, func(i, j int) bool {
+		return ranks[i].votes > ranks[j].votes
+	})
+	return ranks, err
+}
