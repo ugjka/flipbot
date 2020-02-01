@@ -465,7 +465,7 @@ func setvote(value int64, word string) (votes float64, err error) {
 			return err
 		}
 		c := wb.Cursor()
-		week := time.Hour * 24 * 7
+		week := (time.Hour * 24 * 7).Seconds()
 		for k, v := c.First(); k != nil; k, v = c.Next() {
 			voteDate, err := time.Parse(time.RFC3339, string(k))
 			if err != nil {
@@ -478,9 +478,9 @@ func setvote(value int64, word string) (votes float64, err error) {
 				}
 				continue
 			}
-			age := now.Sub(voteDate)
+			age := now.Sub(voteDate).Seconds()
 			vote, _ := binary.Varint(v)
-			expired := ((week.Seconds() - age.Seconds()) / week.Seconds()) * float64(vote)
+			expired := ((week - age) / week) * float64(vote)
 			votes += expired
 		}
 		return nil
@@ -497,7 +497,7 @@ func getvotes(word string) (votes float64, err error) {
 			return nil
 		}
 		c := wb.Cursor()
-		week := time.Hour * 24 * 7
+		week := (time.Hour * 24 * 7).Seconds()
 		now := time.Now()
 		for k, v := c.First(); k != nil; k, v = c.Next() {
 			voteDate, err := time.Parse(time.RFC3339, string(k))
@@ -511,9 +511,9 @@ func getvotes(word string) (votes float64, err error) {
 				}
 				continue
 			}
-			age := now.Sub(voteDate)
+			age := now.Sub(voteDate).Seconds()
 			vote, _ := binary.Varint(v)
-			expired := ((week.Seconds() - age.Seconds()) / week.Seconds()) * float64(vote)
+			expired := ((week - age) / week) * float64(vote)
 			votes += expired
 		}
 		if wb.Stats().KeyN == 0 {
@@ -538,7 +538,7 @@ func getRanks() (ranks []ranking, err error) {
 	err = db.Batch(func(tx *bolt.Tx) error {
 		b := tx.Bucket(rankBucket)
 		c := b.Cursor()
-		week := time.Hour * 24 * 7
+		week := (time.Hour * 24 * 7).Seconds()
 		now := time.Now()
 		for k, _ := c.First(); k != nil; k, _ = c.Next() {
 			votes := float64(0)
@@ -555,9 +555,9 @@ func getRanks() (ranks []ranking, err error) {
 					}
 					continue
 				}
-				age := now.Sub(voteDate)
+				age := now.Sub(voteDate).Seconds()
 				vote, _ := binary.Varint(v)
-				expired := ((week.Seconds() - age.Seconds()) / week.Seconds()) * float64(vote)
+				expired := ((week - age) / week) * float64(vote)
 				votes += expired
 			}
 			if b.Bucket(k).Stats().KeyN == 0 {
