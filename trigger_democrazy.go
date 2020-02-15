@@ -9,7 +9,7 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-var upvoteTrig = regexp.MustCompile(`(?i)^\s*(?:\++|!+(?:up+|upvote+)\s+)(\S+)$`)
+var upvoteTrig = regexp.MustCompile(`(?i)^\s*(?:\++|!+(?:up+|upvote+)\s+)([[:alnum:]]\S{0,30})$`)
 var upvote = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && m.To == ircChannel && upvoteTrig.MatchString(m.Content)
@@ -28,7 +28,7 @@ var upvote = hbot.Trigger{
 	},
 }
 
-var downvoteTrig = regexp.MustCompile(`(?i)^\s*(?:-+|!+(?:down+|downvote+)\s+)(\S+)$`)
+var downvoteTrig = regexp.MustCompile(`(?i)^\s*(?:-+|!+(?:down+|downvote+)\s+)([[:alnum:]]\S{0,30})$`)
 var downvote = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && m.To == ircChannel && downvoteTrig.MatchString(m.Content)
@@ -47,7 +47,7 @@ var downvote = hbot.Trigger{
 	},
 }
 
-var rankTrig = regexp.MustCompile(`(?i)^\s*(?:\?+|!+rank+\s+)(\S+)$`)
+var rankTrig = regexp.MustCompile(`(?i)^\s*(?:\?+|!+rank+\s+)([[:alnum:]]\S{0,30})$`)
 var rank = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && rankTrig.MatchString(m.Content)
