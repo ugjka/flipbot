@@ -482,6 +482,13 @@ func setvote(value int64, word string) (votes float64, err error) {
 			age := now.Sub(voteDate).Seconds()
 			vote, _ := binary.Varint(v)
 			expired := ((week - age) / week) * float64(vote)
+			if math.Abs(expired) < 0.0001 {
+				err = c.Delete()
+				if err != nil {
+					return err
+				}
+				continue
+			}
 			votes += expired
 		}
 		return nil

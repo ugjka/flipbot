@@ -87,7 +87,7 @@ var ranks = hbot.Trigger{
 			}
 			out += fmt.Sprintf("%d: %s %.4f votes, ", i+1, v.name, v.votes)
 		}
-		out = strings.TrimSuffix(out, ",")
+		out = strings.TrimSuffix(out, ", ") + "."
 		irc.Reply(m, out)
 		return false
 	},
