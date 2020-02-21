@@ -28,7 +28,7 @@ var upvote = hbot.Trigger{
 	},
 }
 
-var downvoteTrig = regexp.MustCompile(`(?i)^\s*(?:-+|!+(?:down+|downvote+)\s+)([[:alnum:]]\S{0,30})$`)
+var downvoteTrig = regexp.MustCompile(`(?i)^\s*(?:-+|!+(?:down+|downvote+)\s+)([[:alnum:]]\S{0,30})(?:\s+.*)?$`)
 var downvote = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && m.To == ircChannel && downvoteTrig.MatchString(m.Content)
