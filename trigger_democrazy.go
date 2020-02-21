@@ -9,7 +9,7 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-var upvoteTrig = regexp.MustCompile(`(?i)^\s*(?:\++|!+(?:up+|upvote+)\s+)([[:alnum:]]\S{0,30})$`)
+var upvoteTrig = regexp.MustCompile(`(?i)^\s*(?:\++|!+(?:up+|upvote+)\s+)([[:alnum:]]\S{0,30})(?:\s+.*)?$`)
 var upvote = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && m.To == ircChannel && upvoteTrig.MatchString(m.Content)
@@ -47,7 +47,7 @@ var downvote = hbot.Trigger{
 	},
 }
 
-var rankTrig = regexp.MustCompile(`(?i)^\s*(?:\?+|!+rank+\s+)([[:alnum:]]\S{0,30})$`)
+var rankTrig = regexp.MustCompile(`(?i)^\s*(?:\?+|!+rank+\s+)([[:alnum:]]\S{0,30})(?:\s+.*)?$`)
 var rank = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && rankTrig.MatchString(m.Content)
