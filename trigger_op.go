@@ -15,12 +15,6 @@ import (
 
 var notifyop = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		if strings.Contains(strings.ToLower(m.Name), "unas") {
-			return false
-		}
-		if strings.Contains(strings.ToLower(m.Name), "shekib") {
-			return false
-		}
 		return m.Command == "PRIVMSG" && m.To == ircChannel &&
 			strings.Contains(m.Content, op) && strings.ToLower(m.Name) != op
 	},

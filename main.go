@@ -141,7 +141,6 @@ func main() {
 	irc.AddTrigger(voicenames)
 	irc.AddTrigger(help)
 	irc.AddTrigger(test)
-	irc.AddTrigger(notifyop)
 	irc.AddTrigger(googlenews)
 	irc.AddTrigger(ducker)
 	irc.AddTrigger(reminder)
