@@ -116,7 +116,7 @@ var pong = hbot.Trigger{
 	},
 }
 
-var flipTrig = regexp.MustCompile(`(?i).*!+(?:flip+|tableflip|fliptable)`)
+var flipTrig = regexp.MustCompile(`^(?i).*!+(?:flip+|tableflip|fliptable)$`)
 var flip = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && flipTrig.MatchString(m.Content)
@@ -127,7 +127,7 @@ var flip = hbot.Trigger{
 	},
 }
 
-var unflipTrig = regexp.MustCompile(`(?i).*!+unflip+`)
+var unflipTrig = regexp.MustCompile(`^(?i).*!+unflip+$`)
 var unflip = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && unflipTrig.MatchString(m.Content)
