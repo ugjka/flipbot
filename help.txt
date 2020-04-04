@@ -16,6 +16,7 @@ FL1PBOT'S COMMANDS
 !roll : roll a dice
 
 #Composite
+!bold <text> : try it
 !dice <number> : roll many dices
 !covid <country> : or blank for global stats
 !dict <word> : look up definitions of the given word
