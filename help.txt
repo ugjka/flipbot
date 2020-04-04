@@ -13,9 +13,11 @@ FL1PBOT'S COMMANDS
 !debug :print stupid joke
 !meditation : get spiritual advice
 !toss : join the community of tossers
+!roll : roll a dice
 
 #Composite
-!covid <country> or blank for global stats
+!dice <number> : roll many dices
+!covid <country> : or blank for global stats
 !dict <word> : look up definitions of the given word
 !syn <word> : look up synonyms of the given word
 !calc <query> : calculate things
