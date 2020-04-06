@@ -1,6 +1,7 @@
 FL1PBOT'S COMMANDS
 
 #Basic
+!sex : fluff
 !flip :flips the table
 !unflip :unflips the table
 !ping :replies with pong (useful to see if your connection has stalled)
