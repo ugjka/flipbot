@@ -25,7 +25,7 @@ var said = []string{"bellowed", "yelped", "croaked", "growled", "panted", "moane
 
 var the = []string{"the"}
 
-var fadj = []string{"saucy", "wanton", "unfortunate", "lust-crazed", "nine-year-old", "bull-dyke", "bisexual", "gorgeous", "sweet", "nymphomaniacal", "large-hipped", "freckled", "forty-five year old", "white-haired", "large-boned", "saintly", "blind", "bearded", "blue-eyed", "large tongued", "friendly", "piano playing", "ear licking", "doe eyed", "sock sniffing", "lesbian", "hairy"}
+var fadj = []string{"saucy", "wanton", "unfortunate", "lust-crazed", "100-year-old", "bull-dyke", "bisexual", "gorgeous", "sweet", "nymphomaniacal", "large-hipped", "freckled", "forty-five year old", "white-haired", "large-boned", "saintly", "blind", "bearded", "blue-eyed", "large tongued", "friendly", "piano playing", "ear licking", "doe eyed", "sock sniffing", "lesbian", "hairy"}
 
 var female = []string{"baggage", "hussy", "woman", "Duchess", "female impersonator", "nymphomaniac", "virgin", "leather freak", "home-coming queen", "defrocked nun", "bisexual budgie", "cheerleader", "office secretary", "sexual deviate", "DARPA contract monitor", "little matchgirl", "ceremonial penguin", "femme fatale", "bosses' daughter", "construction worker", "sausage abuser", "secretary", "Congressman's page", "grandmother", "penguin", "German shepherd", "stewardess", "waitress", "prostitute", "computer science group", "housewife"}
 
