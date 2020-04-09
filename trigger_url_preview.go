@@ -17,7 +17,7 @@ import (
 
 var urltitle = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && xurls.Strict().MatchString(m.Content)
+		return m.Command == "PRIVMSG" && xurls.Strict().MatchString(m.Content) && m.Name != "Skittle"
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		url := xurls.Strict().FindString(m.Content)

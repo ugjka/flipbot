@@ -17,6 +17,7 @@ FL1PBOT'S COMMANDS
 !roll : roll a dice
 
 #Composite
+!idk <name>: get the offical link from wikipedia
 !8ball <question>: shake the magic ball
 !bold <text> : try it
 !dice <number> : roll many dices

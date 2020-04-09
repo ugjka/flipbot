@@ -98,6 +98,7 @@ func main() {
 		logCTR.Close()
 		os.Exit(0)
 	}()
+	irc.AddTrigger(idkTrig)
 	irc.AddTrigger(sexTrig)
 	irc.AddTrigger(ball8)
 	irc.AddTrigger(bold)
