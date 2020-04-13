@@ -17,6 +17,9 @@ FL1PBOT'S COMMANDS
 !roll : roll a dice
 
 #Composite
+!uk : uk overall covid stats
+!uk deaths : covid deaths in uk
+!uk <region> : uk covid stats for region
 !idk <name>: get the offical link from wikipedia
 !8ball <question>: shake the magic ball
 !bold <text> : try it
