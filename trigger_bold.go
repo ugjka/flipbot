@@ -7,7 +7,7 @@ import (
 	hbot "github.com/ugjka/hellabot"
 )
 
-var boldReg = regexp.MustCompile(`(?i)\s*!+(?:bold)\s+(\w+.*)`)
+var boldReg = regexp.MustCompile(`(?i)\s*!+(?:bold)\s+(\S+.*)`)
 var bold = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return boldReg.MatchString(m.Content)
