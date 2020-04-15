@@ -23,6 +23,10 @@ var bold = hbot.Trigger{
 				out += "⚬"
 			}
 		}
+		if len(out) > 300 {
+			out = out[:300]
+			out = strings.ToValidUTF8(out, "")
+		}
 		irc.Reply(m, out)
 		return false
 	},
