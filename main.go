@@ -98,6 +98,7 @@ func main() {
 		logCTR.Close()
 		os.Exit(0)
 	}()
+	irc.AddTrigger(nickickerTrig)
 	irc.AddTrigger(ukcovid)
 	irc.AddTrigger(idkTrig)
 	irc.AddTrigger(sexTrig)

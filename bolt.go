@@ -24,6 +24,7 @@ var (
 	indexBucket    = []byte("index")
 	usersBucket    = []byte("users")
 	rankBucket     = []byte("ranks")
+	hostmaskBucket = []byte("hostmask")
 )
 
 func initDB(file string) (*bolt.DB, error) {
@@ -107,6 +108,16 @@ func initDB(file string) (*bolt.DB, error) {
 			return fmt.Errorf("create bucket: %v", err)
 		}
 		return err
+	})
+	if err != nil {
+		return nil, err
+	}
+	err = db.Update(func(tx *bolt.Tx) error {
+		_, err := tx.CreateBucketIfNotExists(hostmaskBucket)
+		if err != nil {
+			return fmt.Errorf("create bucket: %v", err)
+		}
+		return nil
 	})
 	if err != nil {
 		return nil, err
@@ -597,4 +608,55 @@ func getRanks() (ranks []ranking, err error) {
 		return ranks[i].votes > ranks[j].votes
 	})
 	return ranks, err
+}
+
+func addNickHostmask(hostmask, nick string) error {
+	nick = strings.TrimRight(nick, "_")
+	err := db.Update(func(tx *bolt.Tx) error {
+		b := tx.Bucket(hostmaskBucket)
+		hb, err := b.CreateBucketIfNotExists([]byte(hostmask))
+		if err != nil {
+			return err
+		}
+		c := hb.Cursor()
+		key, value := c.Last()
+		if key != nil && string(value) == nick {
+			return nil
+		}
+		return hb.Put([]byte(time.Now().UTC().Format(time.RFC3339)), []byte(nick))
+	})
+	return err
+}
+
+func checkNickHostmask(hostmask, nick string) (kick bool, err error) {
+	nick = strings.TrimRight(nick, "_")
+	err = db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(hostmaskBucket)
+		hb := b.Bucket([]byte(hostmask))
+		if hb == nil {
+			return nil
+		}
+		c := hb.Cursor()
+		key, value := c.Last()
+		if key != nil && string(value) == nick {
+			return nil
+		}
+		target := time.Now().UTC().Add(-nickChangeWindow)
+		count := 0
+		for k, _ := c.Last(); k != nil; k, _ = c.Prev() {
+			t, err := time.Parse(time.RFC3339, string(k))
+			if err != nil {
+				return err
+			}
+			if t.Before(target) {
+				break
+			}
+			count++
+		}
+		if count >= nickChangesMax {
+			kick = true
+		}
+		return nil
+	})
+	return kick, err
 }
