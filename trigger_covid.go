@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+	"time"
 
 	hbot "github.com/ugjka/hellabot"
 	log "gopkg.in/inconshreveable/log15.v2"
@@ -75,11 +76,12 @@ var covidAllTrigger = hbot.Trigger{
 	},
 }
 
-var coronaCountryAPI = "https://corona.lmao.ninja/countries/"
-var coronaAllAPI = "https://corona.lmao.ninja/all"
-var coronaStatesAPI = "https://corona.lmao.ninja/states/"
+var coronaCountryAPI = "https://corona.lmao.ninja/v2/countries/"
+var coronaAllAPI = "https://corona.lmao.ninja/v2/all"
+var coronaStatesAPI = "https://corona.lmao.ninja/v2/states/"
 
 type covid struct {
+	Updated     int64
 	Message     string
 	Country     string
 	Cases       int
@@ -89,14 +91,15 @@ type covid struct {
 	Recovered   int
 	Active      int
 	Critical    int
+	Tests       int
 }
 
 func (c covid) String() string {
 	if c.Message != "" {
 		return c.Message
 	}
-	return fmt.Sprintf("[%s] cases: %d (+%d today), deaths: %d (+%d today), recovered: %d, active: %d, critical: %d",
-		c.Country, c.Cases, c.TodayCases, c.Deaths, c.TodayDeaths, c.Recovered, c.Active, c.Critical)
+	return fmt.Sprintf("[%s] [%s] cases: %d (+%d today), deaths: %d (+%d today), recovered: %d, active: %d, critical: %d, tests: %d",
+		time.Unix(c.Updated/1000, 0).UTC().Format("02/01/06 15:04 MST"), c.Country, c.Cases, c.TodayCases, c.Deaths, c.TodayDeaths, c.Recovered, c.Active, c.Critical, c.Tests)
 }
 
 func (c covid) IsEmpty() bool {
@@ -104,16 +107,21 @@ func (c covid) IsEmpty() bool {
 }
 
 type covidAll struct {
+	Updated           int64
 	Cases             int
+	TodayCases        int
 	Deaths            int
+	TodayDeaths       int
 	Recovered         int
 	Active            int
+	Critical          int
+	Tests             int
 	AffectedCountries int
 }
 
 func (c covidAll) String() string {
-	return fmt.Sprintf("[Global] cases: %d, deaths: %d, recovered: %d, active: %d, affected countries: %d",
-		c.Cases, c.Deaths, c.Recovered, c.Active, c.AffectedCountries)
+	return fmt.Sprintf("[%s] [Global] cases: %d (+%d today), deaths: %d (+%d today), recovered: %d, active: %d, critical: %d, tests: %d, affected countries: %d",
+		time.Unix(c.Updated/1000, 0).UTC().Format("02/01/06 15:04 MST"), c.Cases, c.TodayCases, c.Deaths, c.TodayDeaths, c.Recovered, c.Active, c.Critical, c.Tests, c.AffectedCountries)
 }
 
 type state struct {
@@ -123,6 +131,7 @@ type state struct {
 	Deaths      int
 	TodayDeaths int
 	Active      int
+	Tests       int
 }
 
 type states []state
@@ -138,6 +147,6 @@ func (s states) Search(q string) state {
 }
 
 func (s *state) String() string {
-	return fmt.Sprintf("[USA, %s] cases: %d (+%d today), deaths %d (+%d today), active: %d",
-		s.State, s.Cases, s.TodayCases, s.Deaths, s.TodayDeaths, s.Active)
+	return fmt.Sprintf("[USA, %s] cases: %d (+%d today), deaths %d (+%d today), active: %d, tests: %d",
+		s.State, s.Cases, s.TodayCases, s.Deaths, s.TodayDeaths, s.Active, s.Tests)
 }
