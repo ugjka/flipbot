@@ -9,7 +9,7 @@ import (
 	hbot "github.com/ugjka/hellabot"
 )
 
-var ball8Reg = regexp.MustCompile(`(?i)\s*!+8?ball+(?:.*)?`)
+var ball8Reg = regexp.MustCompile(`(?i)\s*!+\d?ball+(?:.*)?`)
 var ball8 = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return ball8Reg.MatchString(m.Content)
