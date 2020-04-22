@@ -108,5 +108,8 @@ func getPreview(url string) (title string, err error) {
 	title = whitespace.ReplaceAllString(title, " ")
 	title = strings.TrimSpace(title)
 	title = html.UnescapeString(title)
+	if title == "" {
+		return "", fmt.Errorf("no title")
+	}
 	return title, nil
 }
