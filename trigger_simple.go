@@ -15,6 +15,20 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
+const vixeyIMG = "https://i.imgur.com/6Amydph.jpg"
+
+var vixeyTrig = regexp.MustCompile(`(?i).*!+(?:vixey.*|dash.*).*`)
+
+var vixey = hbot.Trigger{
+	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+		return m.Command == "PRIVMSG" && vixeyTrig.MatchString(m.Content)
+	},
+	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+		irc.Reply(m, vixeyIMG)
+		return false
+	},
+}
+
 var echo = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, "!repeat ")
