@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sync"
 	"time"
 
 	hbot "github.com/ugjka/hellabot"
@@ -18,6 +19,45 @@ var nickickerTrig = hbot.Trigger{
 			err := addNickHostmask(hostmask, m.Name)
 			if err != nil {
 				log.Crit("addNickHostmask", "error", err)
+			}
+			quiet, err := checkNickHostmask(hostmask, m.To)
+			if err != nil {
+				log.Crit("checkNickHostmask", "error", err)
+			}
+			if quiet {
+				const timeOut = time.Minute * 10
+				ip := m.Prefix.Host
+				t, err := getQuiet(ip)
+				if err != nil {
+					log.Info("adding quiet", "ip", ip)
+					err := addQuiet(ip, timeOut)
+					if err != nil {
+						log.Crit("could not add quiet to db", "error", err)
+						return false
+					}
+					irc.Send(fmt.Sprintf("MODE %s +q *!*@%s", ircChannel, ip))
+					irc.Send(fmt.Sprintf("NOTICE %s :you can talk after %s", m.Name, timeOut))
+					time.AfterFunc(timeOut, func() {
+						log.Info("quiet timeout", "ip", ip)
+						irc.Send(fmt.Sprintf("MODE %s -q *!*@%s", ircChannel, ip))
+						err := removeQuiet(ip)
+						if err != nil {
+							log.Crit("can't remove quiet", "error", err)
+						}
+					})
+					return false
+				}
+				if time.Now().UTC().After(t) {
+					log.Info("timout from db", "ip", ip)
+					irc.Send(fmt.Sprintf("MODE %s -q *!*@%s", ircChannel, ip))
+					err := removeQuiet(ip)
+					if err != nil {
+						log.Crit("can't remove quiet", "error", err)
+						return false
+					}
+				} else {
+					irc.Send(fmt.Sprintf("NOTICE %s :you can talk after %s", m.Name, t.Sub(time.Now())))
+				}
 			}
 		}
 		if m.Command == "NICK" {
@@ -40,3 +80,22 @@ var nickickerTrig = hbot.Trigger{
 
 const nickChangeWindow = time.Hour * 24
 const nickChangesMax = 6
+
+var nickickerCleanupOnce = &sync.Once{}
+
+var nickickerCleanupTrig = hbot.Trigger{
+	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+		return m.Command == "PING" || m.Command == "PONG" || (m.Command == "PRIVMSG" && m.To == ircChannel)
+	},
+	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+		nickickerCleanupOnce.Do(func() {
+			log.Info("info", "starting quiet timers", "started")
+			err := quietTimers(irc)
+			if err != nil {
+				log.Crit("couln't start quiet timers", "error", err)
+			}
+			log.Info("info", "starting quiet timers", "executed")
+		})
+		return false
+	},
+}

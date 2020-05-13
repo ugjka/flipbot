@@ -59,6 +59,20 @@ var voice = hbot.Trigger{
 			irc.ChMode(m.Params[2], m.To, "+v")
 			return false
 		}
+		hostmask := m.Prefix.User + "@" + m.Prefix.Host
+		quiet, err := checkNickHostmask(hostmask, m.To)
+		if err != nil {
+			log.Crit("checkNickHostmask", "error", err)
+		}
+		if quiet {
+			log.Info("too many nick changes, not voicing", "nick", m.Name, "hostmask", hostmask)
+			return false
+		}
+		ip := m.Prefix.Host
+		if _, err := getQuiet(ip); err == nil {
+			log.Info("nick quieted, not voicing", "nick", m.Name, "ip", ip)
+			return false
+		}
 		log.Info("giving voice", "to", m.Name, "in", m.To)
 		irc.ChMode(m.Name, m.To, "+v")
 		return false

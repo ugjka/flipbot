@@ -100,6 +100,7 @@ func main() {
 	}()
 	irc.AddTrigger(vixey)
 	irc.AddTrigger(nickickerTrig)
+	irc.AddTrigger(nickickerCleanupTrig)
 	irc.AddTrigger(ukcovid)
 	irc.AddTrigger(idkTrig)
 	irc.AddTrigger(sexTrig)

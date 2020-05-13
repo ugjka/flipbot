@@ -12,6 +12,8 @@ import (
 	"time"
 
 	"github.com/boltdb/bolt"
+	hbot "github.com/ugjka/hellabot"
+	log "gopkg.in/inconshreveable/log15.v2"
 	"mvdan.cc/xurls/v2"
 )
 
@@ -25,6 +27,7 @@ var (
 	usersBucket    = []byte("users")
 	rankBucket     = []byte("ranks")
 	hostmaskBucket = []byte("hostmask")
+	quietBucket    = []byte("quiet")
 )
 
 func initDB(file string) (*bolt.DB, error) {
@@ -114,6 +117,16 @@ func initDB(file string) (*bolt.DB, error) {
 	}
 	err = db.Update(func(tx *bolt.Tx) error {
 		_, err := tx.CreateBucketIfNotExists(hostmaskBucket)
+		if err != nil {
+			return fmt.Errorf("create bucket: %v", err)
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	err = db.Update(func(tx *bolt.Tx) error {
+		_, err := tx.CreateBucketIfNotExists(quietBucket)
 		if err != nil {
 			return fmt.Errorf("create bucket: %v", err)
 		}
@@ -659,4 +672,61 @@ func checkNickHostmask(hostmask, nick string) (kick bool, err error) {
 		return nil
 	})
 	return kick, err
+}
+
+func addQuiet(ip string, dur time.Duration) (err error) {
+	err = db.Batch(func(tx *bolt.Tx) error {
+		b := tx.Bucket(quietBucket)
+		if v := b.Get([]byte(ip)); v != nil {
+			return nil
+		}
+		return b.Put([]byte(ip), []byte(time.Now().Add(dur).UTC().Format(time.RFC3339)))
+	})
+	return err
+}
+
+func getQuiet(ip string) (t time.Time, err error) {
+	err = db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(quietBucket)
+		if v := b.Get([]byte(ip)); v != nil {
+			t, err = time.Parse(time.RFC3339, string(v))
+			return err
+		}
+		return fmt.Errorf("no entry found")
+	})
+	return
+}
+
+func removeQuiet(ip string) (err error) {
+	err = db.Batch(func(tx *bolt.Tx) error {
+		b := tx.Bucket(quietBucket)
+		return b.Delete([]byte(ip))
+	})
+	return
+}
+
+func quietTimers(bot *hbot.Bot) (err error) {
+	err = db.Batch(func(tx *bolt.Tx) error {
+		b := tx.Bucket(quietBucket)
+		return b.ForEach(func(k, v []byte) error {
+			now := time.Now()
+			t, err := time.Parse(time.RFC3339, string(v))
+			if err != nil {
+				return err
+			}
+			buf := make([]byte, len(k))
+			copy(buf, k)
+			ip := string(buf)
+			time.AfterFunc(t.Sub(now), func() {
+				log.Info("Quiet timer", "unbanning ip", ip)
+				bot.Send(fmt.Sprintf("MODE %s -q *!*@%s", ircChannel, ip))
+				err := removeQuiet(ip)
+				if err != nil {
+					log.Crit("can't remove quiet", "error", err)
+				}
+			})
+			return nil
+		})
+	})
+	return
 }
