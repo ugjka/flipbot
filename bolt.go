@@ -157,7 +157,12 @@ func (d dead) String() string {
 		str += "Total: "
 	}
 	for _, v := range d.times {
-		str += fmt.Sprintf("[%d posts in last %s] ", v.posts, roundDuration(durafmt.Parse(v.duration).String()))
+		if v.posts == 1 {
+			str += fmt.Sprintf("[%d post in last %s] ", v.posts, roundDuration(durafmt.Parse(v.duration).String()))
+		} else {
+			str += fmt.Sprintf("[%d posts in last %s] ", v.posts, roundDuration(durafmt.Parse(v.duration).String()))
+		}
+
 	}
 	return str
 }
