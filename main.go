@@ -98,6 +98,7 @@ func main() {
 		logCTR.Close()
 		os.Exit(0)
 	}()
+	irc.AddTrigger(isdead)
 	irc.AddTrigger(vixey)
 	// irc.AddTrigger(nickickerTrig)
 	// irc.AddTrigger(nickickerCleanupTrig)

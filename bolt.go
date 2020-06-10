@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/boltdb/bolt"
+	"github.com/hako/durafmt"
 	hbot "github.com/ugjka/hellabot"
 	log "gopkg.in/inconshreveable/log15.v2"
 	"mvdan.cc/xurls/v2"
@@ -136,6 +137,69 @@ func initDB(file string) (*bolt.DB, error) {
 		return nil, err
 	}
 	return db, nil
+}
+
+type dead struct {
+	times []struct {
+		duration time.Duration
+		posts    int
+	}
+	last struct {
+		seen time.Time
+		nick string
+	}
+}
+
+func (d dead) String() string {
+	str := ""
+	str += fmt.Sprintf("Last activity by %s %s ago. ", d.last.nick, roundDuration(durafmt.Parse(time.Now().Sub(d.last.seen)).String()))
+	if len(d.times) != 0 {
+		str += "Total: "
+	}
+	for _, v := range d.times {
+		str += fmt.Sprintf("[%d posts in last %s] ", v.posts, roundDuration(durafmt.Parse(v.duration).String()))
+	}
+	return str
+}
+
+func getDead(dur ...time.Duration) (d dead, err error) {
+	err = db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(logBucket)
+		c := b.Cursor()
+		counter := 0
+		now := time.Now().UTC()
+		msg := Message{}
+		for k, v := c.Last(); k != nil; k, v = c.Prev() {
+			err := json.Unmarshal(v, &msg)
+			if err != nil {
+				return err
+			}
+			if strings.HasPrefix(msg.Message, "!") || strings.HasPrefix(msg.Message, "$") {
+				continue
+			}
+			if d.last.nick == "" {
+				d.last.nick = msg.Nick
+				d.last.seen = msg.Time
+			}
+			if len(dur) == 0 {
+				break
+			}
+			if now.Add(-dur[0]).After(msg.Time) {
+				d.times = append(d.times, struct {
+					duration time.Duration
+					posts    int
+				}{
+					duration: dur[0],
+					posts:    counter,
+				})
+				dur = dur[1:]
+				continue
+			}
+			counter++
+		}
+		return nil
+	})
+	return d, err
 }
 
 func setLogMSG(msg *Message) (err error) {

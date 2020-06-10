@@ -15,6 +15,7 @@ FL1PBOT'S COMMANDS
 !meditation : get spiritual advice
 !toss : join the community of tossers
 !roll : roll a dice
+!isdead : check channel activity stats
 
 #Composite
 !uk : uk overall covid stats
