@@ -11,6 +11,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/dustin/go-humanize"
+
 	"github.com/boltdb/bolt"
 	"github.com/hako/durafmt"
 	hbot "github.com/ugjka/hellabot"
@@ -152,7 +154,7 @@ type dead struct {
 
 func (d dead) String() string {
 	str := ""
-	str += fmt.Sprintf("Last activity by %s %s ago. ", d.last.nick, roundDuration(durafmt.Parse(time.Now().Sub(d.last.seen)).String()))
+	str += fmt.Sprintf("Last activity by %s %s. ", d.last.nick, humanize.Time(d.last.seen))
 	if len(d.times) != 0 {
 		str += "Total: "
 	}
@@ -208,14 +210,14 @@ func getDead(dur ...time.Duration) (d dead, err error) {
 }
 
 type recent []struct {
-	nick     string
-	duration time.Duration
+	nick string
+	time time.Time
 }
 
 func (r recent) String() string {
 	str := "Recent activity: "
 	for _, v := range r {
-		str += fmt.Sprintf("[%s: %s ago] ", v.nick, roundDuration(durafmt.Parse(v.duration).String()))
+		str += fmt.Sprintf("[%s: %s] ", v.nick, humanize.Time(v.time))
 	}
 	return str
 }
@@ -224,7 +226,6 @@ func getRecent(items int) (r recent, err error) {
 	err = db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(logBucket)
 		c := b.Cursor()
-		now := time.Now().UTC()
 		msg := Message{}
 		memory := make(map[string]struct{})
 		nick := ""
@@ -245,11 +246,11 @@ func getRecent(items int) (r recent, err error) {
 			}
 			memory[nick] = struct{}{}
 			r = append(r, struct {
-				nick     string
-				duration time.Duration
+				nick string
+				time time.Time
 			}{
-				nick:     nick,
-				duration: now.Sub(msg.Time),
+				nick: nick,
+				time: msg.Time,
 			})
 			items--
 		}

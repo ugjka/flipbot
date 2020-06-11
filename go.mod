@@ -6,6 +6,7 @@ require (
 	github.com/andybalholm/cascadia v1.1.0 // indirect
 	github.com/bcicen/grmon v0.0.0-20190725134940-6c3770b6af49
 	github.com/boltdb/bolt v1.3.1
+	github.com/dustin/go-humanize v1.0.0
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/hako/durafmt v0.0.0-20191009132224-3f39dc1ed9f4
 	github.com/inconshreveable/log15 v0.0.0-20180818164646-67afb5ed74ec // indirect
