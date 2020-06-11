@@ -16,6 +16,7 @@ FL1PBOT'S COMMANDS
 !toss : join the community of tossers
 !roll : roll a dice
 !isdead : check channel activity stats
+!recent : see recently seen users
 
 #Composite
 !uk : uk overall covid stats

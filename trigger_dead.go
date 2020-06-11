@@ -8,10 +8,10 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-var isdeadReg = regexp.MustCompile(`(?i).*!+(?:(?:is)?dead+.*).*`)
-var isdead = hbot.Trigger{
+var isDeadReg = regexp.MustCompile(`(?i).*!+(?:(?:is)?dead+.*).*`)
+var isDead = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && isdeadReg.MatchString(m.Content)
+		return m.Command == "PRIVMSG" && isDeadReg.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		d, err := getDead(
@@ -25,6 +25,22 @@ var isdead = hbot.Trigger{
 			return false
 		}
 		irc.Reply(m, d.String())
+		return false
+	},
+}
+
+var isRecentReg = regexp.MustCompile(`(?i).*!+(?:(?:is)?recent+.*).*`)
+var isRecent = hbot.Trigger{
+	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+		return m.Command == "PRIVMSG" && isRecentReg.MatchString(m.Content)
+	},
+	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+		r, err := getRecent(10)
+		if err != nil {
+			log.Error("getRecent", "error", err)
+			return false
+		}
+		irc.Reply(m, r.String())
 		return false
 	},
 }

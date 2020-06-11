@@ -207,6 +207,57 @@ func getDead(dur ...time.Duration) (d dead, err error) {
 	return d, err
 }
 
+type recent []struct {
+	nick     string
+	duration time.Duration
+}
+
+func (r recent) String() string {
+	str := "Recent activity: "
+	for _, v := range r {
+		str += fmt.Sprintf("[%s: %s ago] ", v.nick, roundDuration(durafmt.Parse(v.duration).String()))
+	}
+	return str
+}
+
+func getRecent(items int) (r recent, err error) {
+	err = db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(logBucket)
+		c := b.Cursor()
+		now := time.Now().UTC()
+		msg := Message{}
+		memory := make(map[string]struct{})
+		nick := ""
+		for k, v := c.Last(); k != nil; k, v = c.Prev() {
+			if items == 0 {
+				break
+			}
+			err := json.Unmarshal(v, &msg)
+			if err != nil {
+				return err
+			}
+			nick = strings.ToLower(msg.Nick)
+			if strings.HasPrefix(msg.Message, "!") || strings.HasPrefix(msg.Message, "$") {
+				continue
+			}
+			if _, ok := memory[nick]; ok {
+				continue
+			}
+			memory[nick] = struct{}{}
+			r = append(r, struct {
+				nick     string
+				duration time.Duration
+			}{
+				nick:     nick,
+				duration: now.Sub(msg.Time),
+			})
+			items--
+		}
+		return nil
+	})
+	return r, err
+}
+
 func setLogMSG(msg *Message) (err error) {
 	err = db.Batch(func(tx *bolt.Tx) error {
 		b := tx.Bucket(logBucket)
