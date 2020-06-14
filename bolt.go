@@ -154,7 +154,7 @@ type dead struct {
 
 func (d dead) String() string {
 	str := ""
-	str += fmt.Sprintf("Last activity by %s %s. ", d.last.nick, humanize.Time(d.last.seen))
+	str += fmt.Sprintf("Last activity by %s %s. ", d.last.nick[:len(d.last.nick)-1]+"*", humanize.Time(d.last.seen))
 	if len(d.times) != 0 {
 		str += "Total: "
 	}
@@ -217,7 +217,7 @@ type recent []struct {
 func (r recent) String() string {
 	str := "Recent activity: "
 	for _, v := range r {
-		str += fmt.Sprintf("[%s: %s] ", v.nick, humanize.Time(v.time))
+		str += fmt.Sprintf("[%s: %s] ", v.nick[:len(v.nick)-1]+"*", humanize.Time(v.time))
 	}
 	return str
 }
