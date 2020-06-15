@@ -1,0 +1,35 @@
+{
+  "variables": {
+    "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
+    "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
+    "region": "us-east-1"
+  },
+  "builders": [
+    {
+      "access_key": "{{user `aws_access_key`}}",
+      "ami_name": "archlinux-flipbot-{{timestamp}}",
+      "instance_type": "t2.micro",
+      "region": "{{user `region`}}",
+      "secret_key": "{{user `aws_secret_key`}}",
+      "source_ami": "ami-05ceb2a010d3a3057",
+      "ssh_username": "arch",
+      "type": "amazon-ebs"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "./flipbot.service",
+      "destination": "/home/arch/"
+    },
+    {
+      "type": "file",
+      "source": "./flipbotreload.service",
+      "destination": "/home/arch/"
+    },
+    {
+      "type": "shell",
+      "script": "./setup.sh"
+    }
+  ]
+}

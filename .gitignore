@@ -1,10 +1,10 @@
+packer/*.service
 terraform-aws/*
 !terraform-aws/flipbot.tf
 flipbot
 flipbot2
 .directory
 play
-*.json
 messages.log
 export.sh
 *test.go

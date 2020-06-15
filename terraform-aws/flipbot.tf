@@ -110,8 +110,19 @@ resource "aws_key_pair" "default" {
     public_key = file("~/.ssh/id_rsa.pub")
 }
 
+resource "aws_ebs_volume" "flipbot_data" {
+    availability_zone = "us-east-1a"
+    size = 3
+}
+
+resource "aws_volume_attachment" "fl_data_att" {
+    device_name = "/dev/xvdb"
+    volume_id = aws_ebs_volume.flipbot_data.id
+    instance_id = aws_instance.flipbot.id
+}
+
 resource "aws_instance" "flipbot" {
-  ami           = "ami-05ceb2a010d3a3057"
+  ami           = "ami-080a54665e2d19667"
   instance_type = "t2.micro"
   availability_zone = "us-east-1a"
   key_name = aws_key_pair.default.key_name
