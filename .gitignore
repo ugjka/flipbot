@@ -1,4 +1,5 @@
-terraform-aws
+terraform-aws/*
+!terraform-aws/flipbot.tf
 flipbot
 flipbot2
 .directory
