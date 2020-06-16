@@ -130,7 +130,6 @@ resource "aws_codebuild_project" "flipbot" {
     compute_type                = "BUILD_GENERAL1_SMALL"
     image                       = "_/golang:1.13.12"
     type                        = "LINUX_CONTAINER"
-    image_pull_credentials_type = "CODEBUILD"
   }
 
   logs_config {
