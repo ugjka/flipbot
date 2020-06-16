@@ -5,7 +5,7 @@ files:
     destination: /home/arch/flipbot/
 hooks:
   BeforeInstall:
-    - location remove.sh
+    - location: remove.sh
       timeout: 300
       runas: root
   ApplicationStart:
