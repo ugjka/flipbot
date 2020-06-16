@@ -128,7 +128,7 @@ resource "aws_codebuild_project" "flipbot" {
 
   environment {
     compute_type                = "BUILD_GENERAL1_SMALL"
-    image                       = "aws/codebuild/golang:1.14.4"
+    image                       = "golang:1.13.12"
     type                        = "LINUX_CONTAINER"
     image_pull_credentials_type = "CODEBUILD"
   }
