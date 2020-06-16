@@ -3,6 +3,12 @@ resource "aws_s3_bucket" "codepipeline_bucket" {
   acl    = "private"
 }
 
+resource "aws_s3_bucket" "codepipeline_bucket_log" {
+  bucket = "flipbot-ci-bucket-log"
+  acl    = "private"
+}
+
+
 resource "aws_iam_role" "codepipeline_role" {
   name = "build-role"
 
@@ -43,7 +49,9 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
       ],
       "Resource": [
         "${aws_s3_bucket.codepipeline_bucket.arn}",
-        "${aws_s3_bucket.codepipeline_bucket.arn}/*"
+        "${aws_s3_bucket.codepipeline_bucket.arn}/*",
+        "${aws_s3_bucket.codepipeline_bucket_log.arn}",
+        "${aws_s3_bucket.codepipeline_bucket_log.arn}/*"
       ]
     },
     {
@@ -128,7 +136,7 @@ resource "aws_codebuild_project" "flipbot" {
   logs_config {
     s3_logs {
       status   = "ENABLED"
-      location = "${aws_s3_bucket.codepipeline_bucket.id}/build-log"
+      location = "${aws_s3_bucket.codepipeline_bucket_log.id}/build-log"
     }
   }
 
