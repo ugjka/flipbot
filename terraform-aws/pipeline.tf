@@ -16,7 +16,9 @@ resource "aws_iam_role" "codepipeline_role" {
         "Service": "codepipeline.amazonaws.com",
         "Service": "codebuild.amazonaws.com"
       },
-      "Action": "sts:AssumeRole"
+      "Action": [
+          "sts:AssumeRole"
+        ]
     }
   ]
 }
@@ -37,10 +39,7 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
         "s3:GetObject",
         "s3:GetObjectVersion",
         "s3:GetBucketVersioning",
-        "s3:PutObject",
-        "logs:CreateLogGroup",
-        "logs:CreateLogStream",
-        "logs:PutLogEvents"
+        "s3:PutObject"
       ],
       "Resource": [
         "${aws_s3_bucket.codepipeline_bucket.arn}",
@@ -51,7 +50,10 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
       "Effect": "Allow",
       "Action": [
         "codebuild:BatchGetBuilds",
-        "codebuild:StartBuild"
+        "codebuild:StartBuild",
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
       ],
       "Resource": "*"
     }
