@@ -18,3 +18,5 @@ phases:
 artifacts:
   files:
     - flipbot
+    - appspec.yml
+    - restart.sh

@@ -20,7 +20,9 @@ resource "aws_iam_role" "codepipeline_role" {
       "Effect": "Allow",
       "Principal": {
         "Service": "codepipeline.amazonaws.com",
-        "Service": "codebuild.amazonaws.com"
+        "Service": "codebuild.amazonaws.com",
+        "Service": "codedeploy.amazonaws.com",
+        "Service": "ec2.amazonaws.com"
       },
       "Action": [
           "sts:AssumeRole"
@@ -29,6 +31,16 @@ resource "aws_iam_role" "codepipeline_role" {
   ]
 }
 EOF
+}
+
+resource "aws_iam_role_policy_attachment" "codedeploy_service" {
+  role       = aws_iam_role.codepipeline_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"
+}
+
+resource "aws_iam_role_policy_attachment" "instance_profile_codedeploy" {
+  role       = aws_iam_role.codepipeline_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforAWSCodeDeploy"
 }
 
 resource "aws_iam_role_policy" "codepipeline_policy" {
@@ -114,6 +126,23 @@ resource "aws_codepipeline" "codepipeline" {
       }
     }
   }
+  stage {
+    name = "Deploy"
+
+    action {
+      name            = "Deploy"
+      category        = "Deploy"
+      owner           = "AWS"
+      provider        = "CodeDeploy"
+      input_artifacts = ["build_output"]
+      version         = "1"
+      
+      configuration = {
+        ApplicationName = aws_codedeploy_app.main.name
+        DeploymentGroupName = aws_codedeploy_deployment_group.main.deployment_group_name
+      }
+    }
+  }
 }
 
 resource "aws_codebuild_project" "flipbot" {
@@ -142,5 +171,31 @@ resource "aws_codebuild_project" "flipbot" {
 
   source {
     type = "CODEPIPELINE"
+  }
+}
+
+resource "aws_codedeploy_app" "main" {
+  name = "flipbot"
+}
+
+resource "aws_codedeploy_deployment_group" "main" {
+  app_name              = aws_codedeploy_app.main.name
+  deployment_group_name = "flipbot_deploy"
+  service_role_arn      = aws_iam_role.codepipeline_role.arn
+
+  deployment_config_name = "CodeDeployDefault.OneAtATime" # AWS defined deployment config
+
+  ec2_tag_filter {
+    key   = "Name"
+    type  = "KEY_AND_VALUE"
+    value = "flipbot"
+  }
+
+  # trigger a rollback on deployment failure event
+  auto_rollback_configuration {
+    enabled = true
+    events = [
+      "DEPLOYMENT_FAILURE",
+    ]
   }
 }
