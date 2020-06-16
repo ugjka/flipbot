@@ -73,7 +73,8 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
         "codebuild:StartBuild",
         "logs:CreateLogGroup",
         "logs:CreateLogStream",
-        "logs:PutLogEvents"
+        "logs:PutLogEvents",
+        "codedeploy:*"
       ],
       "Resource": "*"
     }
