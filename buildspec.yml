@@ -19,4 +19,5 @@ artifacts:
   files:
     - flipbot
     - appspec.yml
+    - remove.sh
     - restart.sh

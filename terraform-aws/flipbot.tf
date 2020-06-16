@@ -128,7 +128,7 @@ resource "aws_instance" "flipbot" {
   key_name = aws_key_pair.default.key_name
   vpc_security_group_ids = [aws_security_group.flipbot.id]
   subnet_id = aws_subnet.main.id
-
+  iam_instance_profile = aws_iam_instance_profile.main.name
   tags = {
     Name = "flipbot"
   }
