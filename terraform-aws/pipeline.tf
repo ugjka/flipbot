@@ -4,7 +4,7 @@ resource "aws_s3_bucket" "codepipeline_bucket" {
 }
 
 resource "aws_iam_role" "codepipeline_role" {
-  name = "test-role"
+  name = "build-role"
 
   assume_role_policy = <<EOF
 {
@@ -37,7 +37,10 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
         "s3:GetObject",
         "s3:GetObjectVersion",
         "s3:GetBucketVersioning",
-        "s3:PutObject"
+        "s3:PutObject",
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
       ],
       "Resource": [
         "${aws_s3_bucket.codepipeline_bucket.arn}",
