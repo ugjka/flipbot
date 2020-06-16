@@ -128,6 +128,10 @@ resource "aws_instance" "flipbot" {
   key_name = aws_key_pair.default.key_name
   vpc_security_group_ids = [aws_security_group.flipbot.id]
   subnet_id = aws_subnet.main.id
+
+  tags = {
+    Name = "flipbot"
+  }
 }
 
 output "public_ip" {

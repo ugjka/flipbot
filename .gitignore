@@ -1,6 +1,7 @@
 packer/*.service
 terraform-aws/*
 !terraform-aws/flipbot.tf
+!terraform-aws/pipeline.tf
 flipbot
 flipbot2
 .directory
