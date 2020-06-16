@@ -38,7 +38,7 @@ var memo = hbot.Trigger{
 
 var memowatcher = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "JOIN" || m.Command == "PRIVMSG"
+		return m.To == ircChannel && (m.Command == "JOIN" || m.Command == "PRIVMSG")
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		memos, err := getMemo(strings.ToLower(m.Name))

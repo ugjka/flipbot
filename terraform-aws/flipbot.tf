@@ -82,8 +82,8 @@ resource "aws_security_group_rule" "mosh" {
 resource "aws_security_group_rule" "icmp" {
     type = "ingress"
     protocol = "icmp"
-    from_port = 0
-    to_port = 20
+    from_port = -1
+    to_port = -1
     cidr_blocks = ["0.0.0.0/0"]
     security_group_id = aws_security_group.flipbot.id
 
