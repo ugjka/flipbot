@@ -34,11 +34,13 @@ var youtube = hbot.Trigger{
 			log.Error("search youtube", "error", err)
 			return false
 		}
-		result := fmt.Sprintf("%s: [Youtube] %s | %s | %s",
+		result := fmt.Sprintf("%s: [Youtube] %s | %s | %s | https://youtu.be/%s",
 			m.Name,
 			res.Items[0].Snippet.Title,
 			res.Items[0].Snippet.ChannelTitle,
-			humanize.Time(publishTime))
+			humanize.Time(publishTime),
+			res.Items[0].ID,
+		)
 		result = html.UnescapeString(result)
 		irc.Reply(m, result)
 		return false
