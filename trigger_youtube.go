@@ -39,7 +39,7 @@ var youtube = hbot.Trigger{
 			res.Items[0].Snippet.Title,
 			res.Items[0].Snippet.ChannelTitle,
 			humanize.Time(publishTime),
-			res.Items[0].ID,
+			res.Items[0].ID.VideoID,
 		)
 		result = html.UnescapeString(result)
 		irc.Reply(m, result)
