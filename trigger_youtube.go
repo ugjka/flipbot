@@ -6,7 +6,9 @@ import (
 	"html"
 	"net/url"
 	"regexp"
+	"time"
 
+	"github.com/dustin/go-humanize"
 	hbot "github.com/ugjka/hellabot"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
@@ -27,7 +29,16 @@ var youtube = hbot.Trigger{
 			irc.Reply(m, fmt.Sprintf("%s: no results!", m.Name))
 			return false
 		}
-		result := fmt.Sprintf("%s: %s https://youtu.be/%s ", m.Name, res.Items[0].Snippet.Title, res.Items[0].ID.VideoID)
+		publishTime, err := time.Parse(time.RFC3339, res.Items[0].Snippet.PublishTime)
+		if err != nil {
+			log.Error("search youtube", "error", err)
+			return false
+		}
+		result := fmt.Sprintf("%s: [Youtube] %s | %s | %s",
+			m.Name,
+			res.Items[0].Snippet.Title,
+			res.Items[0].Snippet.ChannelTitle,
+			humanize.Time(publishTime))
 		result = html.UnescapeString(result)
 		irc.Reply(m, result)
 		return false
@@ -55,7 +66,9 @@ type ytSearchResponse struct {
 			VideoID string `json:"videoId"`
 		} `json:"id"`
 		Snippet struct {
-			Title string `json:"title"`
+			Title        string `json:"title"`
+			ChannelTitle string `json:"channelTitle"`
+			PublishTime  string `json:"publishTime"`
 		} `json:"snippet"`
 	} `json:"items"`
 }
