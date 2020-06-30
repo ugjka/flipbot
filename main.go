@@ -99,6 +99,7 @@ func main() {
 		logCTR.Close()
 		os.Exit(0)
 	}()
+	irc.AddTrigger(notifyop)
 	irc.AddTrigger(isRecent)
 	irc.AddTrigger(isDead)
 	irc.AddTrigger(vixey)

@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"regexp"
 	"strings"
 	"sync"
 	"time"
@@ -13,10 +14,10 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
+var notifyopReg = regexp.MustCompile(`(?i).*!+(?:op+|alarm+|alert+).*`)
 var notifyop = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && m.To == ircChannel &&
-			strings.Contains(m.Content, op) && strings.ToLower(m.Name) != op
+		return m.Command == "PRIVMSG" && m.To == ircChannel && notifyopReg.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		riga, err := time.LoadLocation("Europe/Riga")
@@ -47,7 +48,7 @@ var notifyop = hbot.Trigger{
 			return false
 		}
 		msg := gomail.NewMessage()
-		msg.SetHeader("From", serverEmail)
+		msg.SetHeader("From", msg.FormatAddress(serverEmail, "rschizophrenia"))
 		msg.SetHeader("To", email)
 		msg.SetHeader("Subject", "irc notification from "+m.Name)
 		msg.SetBody("text/plain", "--------------------------\n"+
@@ -63,6 +64,7 @@ var notifyop = hbot.Trigger{
 			log.Crit("could not push op nick highlight", "error", err)
 			return false
 		}
+		irc.Reply(m, fmt.Sprintf("%s: message and history emailed to %s", m.Name, op))
 		return false
 	},
 }
