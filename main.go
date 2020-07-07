@@ -2,14 +2,12 @@ package main
 
 import (
 	cookiejar "flipbot/jar"
-	"flipbot/subwatch"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"os/signal"
 	"strings"
 	"syscall"
-	"time"
 
 	grmon "github.com/bcicen/grmon/agent"
 
@@ -68,9 +66,7 @@ func main() {
 	signal.Notify(stop, syscall.SIGHUP)
 
 	hijackSession := func(bot *hbot.Bot) {
-		bot.HijackSession = true
-		bot.SASL = true
-		bot.Password = ircPassword
+		bot.SSL = true
 	}
 
 	channels := func(bot *hbot.Bot) {
@@ -99,10 +95,10 @@ func main() {
 		logCTR.Close()
 		os.Exit(0)
 	}()
-	irc.AddTrigger(notifyop)
-	irc.AddTrigger(isRecent)
-	irc.AddTrigger(isDead)
-	irc.AddTrigger(vixey)
+	//irc.AddTrigger(notifyop)
+	//irc.AddTrigger(isRecent)
+	//irc.AddTrigger(isDead)
+	//irc.AddTrigger(vixey)
 	// irc.AddTrigger(nickickerTrig)
 	// irc.AddTrigger(nickickerCleanupTrig)
 	irc.AddTrigger(ukcovid)
@@ -113,18 +109,18 @@ func main() {
 	irc.AddTrigger(diceTrig)
 	irc.AddTrigger(covidTrigger)
 	irc.AddTrigger(covidAllTrigger)
-	irc.AddTrigger(upvote)
-	irc.AddTrigger(downvote)
-	irc.AddTrigger(rank)
-	irc.AddTrigger(ranks)
-	irc.AddTrigger(echo)
-	irc.AddTrigger(bkb)
+	//irc.AddTrigger(upvote)
+	//irc.AddTrigger(downvote)
+	//irc.AddTrigger(rank)
+	//irc.AddTrigger(ranks)
+	//irc.AddTrigger(echo)
+	//irc.AddTrigger(bkb)
 	//irc.AddTrigger(tail)
 	//irc.AddTrigger(indexUsers)
 	//irc.AddTrigger(searchLog)
 	//irc.AddTrigger(indexLog)
-	irc.AddTrigger(nature)
-	irc.AddTrigger(mydol)
+	//irc.AddTrigger(nature)
+	//irc.AddTrigger(mydol)
 	irc.AddTrigger(flip)
 	irc.AddTrigger(unflip)
 	irc.AddTrigger(randomcat)
@@ -134,33 +130,33 @@ func main() {
 	irc.AddTrigger(shrug)
 	irc.AddTrigger(urban)
 	irc.AddTrigger(define)
-	irc.AddTrigger(logmsg)
-	irc.AddTrigger(logmsgBolt)
-	irc.AddTrigger(watcher)
-	irc.AddTrigger(seen)
-	irc.AddTrigger(top)
+	//irc.AddTrigger(logmsg)
+	//irc.AddTrigger(logmsgBolt)
+	//irc.AddTrigger(watcher)
+	//irc.AddTrigger(seen)
+	//irc.AddTrigger(top)
 	irc.AddTrigger(clock)
 	irc.AddTrigger(google)
 	irc.AddTrigger(wiki)
-	irc.AddTrigger(urltitle)
+	//irc.AddTrigger(urltitle)
 	irc.AddTrigger(fliptext)
 	irc.AddTrigger(unfliptext)
 	irc.AddTrigger(youtube)
 	irc.AddTrigger(weatherOpen)
 	irc.AddTrigger(wforecastOpen)
 	irc.AddTrigger(trans)
-	irc.AddTrigger(voice)
-	irc.AddTrigger(memo)
-	irc.AddTrigger(memowatcher)
-	irc.AddTrigger(setmodes)
-	irc.AddTrigger(voicenames)
-	irc.AddTrigger(help)
+	//irc.AddTrigger(voice)
+	//irc.AddTrigger(memo)
+	//irc.AddTrigger(memowatcher)
+	//irc.AddTrigger(setmodes)
+	//irc.AddTrigger(voicenames)
+	//irc.AddTrigger(help)
 	irc.AddTrigger(test)
 	irc.AddTrigger(googlenews)
 	irc.AddTrigger(ducker)
-	irc.AddTrigger(reminder)
-	irc.AddTrigger(getreminder)
-	irc.AddTrigger(names)
+	//irc.AddTrigger(reminder)
+	//irc.AddTrigger(getreminder)
+	//irc.AddTrigger(names)
 	irc.AddTrigger(hug)
 	irc.AddTrigger(debug)
 	irc.AddTrigger(calc)
@@ -168,26 +164,12 @@ func main() {
 	irc.AddTrigger(randomdog)
 	irc.AddTrigger(pong)
 	irc.AddTrigger(meditation)
-	irc.AddTrigger(toss)
+	//irc.AddTrigger(toss)
 	irc.AddTrigger(dict)
 	irc.AddTrigger(syn)
 	logHandler := log.LvlFilterHandler(log.LvlInfo, log.StdoutHandler)
 	irc.Logger.SetHandler(logHandler)
 
-	b := &subwatch.Bot{
-		Endpoints:      []string{subreddit},
-		FetchInterval:  2 * time.Minute,
-		Round:          2 * time.Minute,
-		UserAgent:      "IRC bot for " + subreddit,
-		PrintSubreddit: false,
-	}
-	subbot, receive := subwatch.New(b)
-	go subbot.Start()
-	go func() {
-		for {
-			irc.Msg(irc.Channels[0], <-receive)
-		}
-	}()
 	irc.Run()
 	fmt.Println("Bot shutting down.")
 }
