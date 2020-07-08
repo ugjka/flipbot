@@ -11,7 +11,7 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-var urbanTrig = regexp.MustCompile(`(?i)^\s*!+urban+\w*\s+(\S.*)$`)
+var urbanTrig = regexp.MustCompile(`(?i)^\s*!(?:+urban+|ud+)\w*\s+(\S.*)$`)
 var urban = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && urbanTrig.MatchString(m.Content)
@@ -38,7 +38,7 @@ var urban = hbot.Trigger{
 		replacer := strings.NewReplacer("[", "", "]", "")
 		result.Definition = replacer.Replace(result.Definition)
 		result.Definition = whitespace.ReplaceAllString(result.Definition, " ")
-		irc.Reply(m, fmt.Sprintf("%s: %s [%s]", m.Name, limit(result.Definition), result.Permalink))
+		irc.Reply(m, fmt.Sprintf("%s: %s", m.Name, limit(result.Definition)))
 		return false
 	},
 }
