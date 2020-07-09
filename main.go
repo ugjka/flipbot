@@ -49,10 +49,13 @@ func main() {
 	check(wolframAPIKey, wolframAPIKeyVar)
 	grmon.Start()
 
-	meddata, _ := ioutil.ReadFile("meditations.txt")
+	var err error
+	meddata, err := ioutil.ReadFile("meditations.txt")
+	if err != nil {
+		panic(err)
+	}
 	meditations = strings.Split(strings.TrimSpace(string(meddata)), "\n")
 	//Cookies jar
-	var err error
 	jar, err = cookiejar.New(nil)
 	if err != nil {
 		panic(err)
