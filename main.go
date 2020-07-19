@@ -98,16 +98,9 @@ func main() {
 		logCTR.Close()
 		os.Exit(0)
 	}()
-<<<<<<< HEAD
-	//irc.AddTrigger(notifyop)
+	irc.AddTrigger(notifyop)
 	//irc.AddTrigger(isRecent)
 	//irc.AddTrigger(isDead)
-=======
-	irc.AddTrigger(logjoin)
-	irc.AddTrigger(notifyop)
-	irc.AddTrigger(isRecent)
-	irc.AddTrigger(isDead)
->>>>>>> master
 	irc.AddTrigger(vixey)
 	// irc.AddTrigger(nickickerTrig)
 	// irc.AddTrigger(nickickerCleanupTrig)
