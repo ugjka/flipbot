@@ -102,6 +102,7 @@ func main() {
 		logCTR.Close()
 		os.Exit(0)
 	}()
+	irc.AddTrigger(logjoin)
 	irc.AddTrigger(notifyop)
 	irc.AddTrigger(isRecent)
 	irc.AddTrigger(isDead)
