@@ -15,13 +15,16 @@ var extJoin = hbot.Trigger{
 		return m.Command == "JOIN" || m.Command == "CAP"
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		extjoinOnce.Do(func() {
-			log.Info("cap", "extended-join", "requesting")
-			irc.Send("CAP REQ :extended-join")
-		})
-		if m.Command == "CAP" && strings.TrimSpace(m.Content) == "extended-join" && len(m.Params) > 1 && m.Params[1] == "ACK" {
-			log.Info("cap", "extended-join", "got ack")
+		if m.Command == "JOIN" {
+			extjoinOnce.Do(func() {
+				log.Info("cap", "extended-join account-notify", "requesting")
+				irc.Send("CAP REQ :extended-join account-notify")
+			})
+		}
+		if m.Command == "CAP" && strings.TrimSpace(m.Content) == "extended-join account-notify" && len(m.Params) > 1 && m.Params[1] == "ACK" {
+			log.Info("cap", "extended-join account-notify", "got ack")
 			irc.Send("CAP END")
+			extJoinEnabled = true
 		}
 		return false
 	},
