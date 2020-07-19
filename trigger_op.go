@@ -53,6 +53,7 @@ var notifyop = hbot.Trigger{
 		msg.SetHeader("Subject", "irc notification from "+m.Name)
 		msg.SetBody("text/plain", "--------------------------\n"+
 			m.Name+": "+m.Content+"\n"+
+			fmt.Sprintf("%s!%s@%s\n", m.Name, m.User, m.Host)+
 			"--------------------------\n"+
 			time.Now().String()+"\n\n"+
 			"HISTORY:\n"+
