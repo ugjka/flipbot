@@ -21,7 +21,7 @@ var notifyop = hbot.Trigger{
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		msg := gomail.NewMessage()
-		msg.SetHeader("From", msg.FormatAddress(serverEmail, "rschizophrenia"))
+		msg.SetHeader("From", msg.FormatAddress(serverEmail, "mbd"))
 		msg.SetHeader("To", email)
 		msg.SetHeader("Subject", "irc notification from "+m.Name)
 		msg.SetBody("text/plain", "--------------------------\n"+
