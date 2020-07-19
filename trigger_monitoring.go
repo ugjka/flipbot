@@ -177,6 +177,18 @@ var logmsg = hbot.Trigger{
 	},
 }
 
+var logjoin = hbot.Trigger{
+	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+		return m.Command == "JOIN"
+	},
+	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+		logCTR.Lock()
+		fmt.Fprintf(logCTR.File, "[%s] [JOIN]\t%s!%s@%s (%s)\n", time.Now().UTC().Format("06:01:02|15:04:05"), m.Name, m.User, m.Host, m.Trailing())
+		logCTR.Unlock()
+		return false
+	},
+}
+
 var logmsgBolt = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && m.To == ircChannel
