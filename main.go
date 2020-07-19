@@ -98,6 +98,11 @@ func main() {
 		logCTR.Close()
 		os.Exit(0)
 	}()
+<<<<<<< HEAD
+=======
+	irc.AddTrigger(extJoin)
+	irc.AddTrigger(logjoin)
+>>>>>>> master
 	irc.AddTrigger(notifyop)
 	//irc.AddTrigger(isRecent)
 	//irc.AddTrigger(isDead)
