@@ -20,44 +20,15 @@ var notifyop = hbot.Trigger{
 		return m.Command == "PRIVMSG" && m.To == ircChannel && notifyopReg.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		riga, err := time.LoadLocation("Europe/Riga")
-		if err != nil {
-			log.Crit("notifyop", "error", err)
-			return false
-		}
-		history := ""
-		err = db.View(func(tx *bolt.Tx) error {
-			c := tx.Bucket(logBucket).Cursor()
-			i := 0
-			msg := &Message{}
-			for k, v := c.Last(); k != nil && v != nil; k, v = c.Prev() {
-				if i > 20 {
-					break
-				}
-				i++
-				err := json.Unmarshal(v, &msg)
-				if err != nil {
-					return err
-				}
-				history = fmt.Sprintf("%s <%s> %s\n", msg.Time.In(riga).Format(time.Kitchen), msg.Nick, msg.Message) + history
-			}
-			return nil
-		})
-		if err != nil {
-			log.Crit("notifyop", "error", err)
-			return false
-		}
 		msg := gomail.NewMessage()
 		msg.SetHeader("From", msg.FormatAddress(serverEmail, "rschizophrenia"))
 		msg.SetHeader("To", email)
 		msg.SetHeader("Subject", "irc notification from "+m.Name)
 		msg.SetBody("text/plain", "--------------------------\n"+
-			m.Name+": "+m.Content+"\n"+
+			m.Name+": "+m.Content+"\n\n"+
 			fmt.Sprintf("%s!%s@%s\n", m.Name, m.User, m.Host)+
 			"--------------------------\n"+
-			time.Now().String()+"\n\n"+
-			"HISTORY:\n"+
-			history)
+			time.Now().String()+"\n\n")
 
 		d := gomail.NewDialer("127.0.0.1", 25, "", "")
 
@@ -65,7 +36,7 @@ var notifyop = hbot.Trigger{
 			log.Crit("could not push op nick highlight", "error", err)
 			return false
 		}
-		irc.Reply(m, fmt.Sprintf("%s: message and history emailed to %s", m.Name, op))
+		irc.Reply(m, fmt.Sprintf("%s: message emailed to %s", m.Name, op))
 		return false
 	},
 }
