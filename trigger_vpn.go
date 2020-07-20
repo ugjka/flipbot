@@ -48,7 +48,7 @@ var vpnTrigger = hbot.Trigger{
 		}
 		if vpn {
 			log.Info("whois vpn detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
-			irc.Send(fmt.Sprintf("REMOVE %s %s :VPN detected", ircChannel, m.Name))
+			irc.Send(fmt.Sprintf("REMOVE %s %s :VPN detected, please identify before joining to bypass this check", ircChannel, m.Name))
 			return false
 		}
 		vpn, err = torrentVPNCheck(ip)
@@ -58,7 +58,7 @@ var vpnTrigger = hbot.Trigger{
 		}
 		if vpn {
 			log.Info("torrent vpn detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
-			irc.Send(fmt.Sprintf("REMOVE %s %s :VPN detected", ircChannel, m.Name))
+			irc.Send(fmt.Sprintf("REMOVE %s %s :VPN detected, please identify before joining to bypass this check", ircChannel, m.Name))
 			return false
 		}
 		return false
