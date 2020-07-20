@@ -16,7 +16,7 @@ var kickmeTrigger = hbot.Trigger{
 		return m.Command == "PRIVMSG" && m.To == ircChannel && m.Content == "!kickme"
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		irc.Send(fmt.Sprintf("KICK %s %s :why are you kicking yourself", ircChannel, m.Name))
+		irc.Send(fmt.Sprintf("REMOVE %s %s :why are you kicking yourself", ircChannel, m.Name))
 		return false
 	},
 }
@@ -46,7 +46,7 @@ var vpnTrigger = hbot.Trigger{
 			return false
 		}
 		if vpn {
-			irc.Send(fmt.Sprintf("KICK %s %s :VPN detected", ircChannel, m.Name))
+			irc.Send(fmt.Sprintf("REMOVE %s %s :VPN detected", ircChannel, m.Name))
 			return false
 		}
 		vpn, err = torrentVPNCheck(ip)
@@ -55,7 +55,7 @@ var vpnTrigger = hbot.Trigger{
 			return false
 		}
 		if vpn {
-			irc.Send(fmt.Sprintf("KICK %s %s :VPN detected", ircChannel, m.Name))
+			irc.Send(fmt.Sprintf("REMOVE %s %s :VPN detected", ircChannel, m.Name))
 			return false
 		}
 		return false
