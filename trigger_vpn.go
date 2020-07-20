@@ -22,7 +22,7 @@ var kickmeTrigger = hbot.Trigger{
 	},
 }
 
-var ipReg = regexp.MustCompile(`^.*(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$`)
+var ipReg = regexp.MustCompile(`^\D*(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$`)
 var vpnTrigger = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		if m.Command == "JOIN" {
@@ -47,7 +47,7 @@ var vpnTrigger = hbot.Trigger{
 			return false
 		}
 		if vpn {
-			log.Info("vpn detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
+			log.Info("whois vpn detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
 			irc.Send(fmt.Sprintf("REMOVE %s %s :VPN detected", ircChannel, m.Name))
 			return false
 		}
@@ -57,7 +57,7 @@ var vpnTrigger = hbot.Trigger{
 			return false
 		}
 		if vpn {
-			log.Info("vpn detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
+			log.Info("torrent vpn detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
 			irc.Send(fmt.Sprintf("REMOVE %s %s :VPN detected", ircChannel, m.Name))
 			return false
 		}
