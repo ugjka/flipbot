@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os/exec"
 	"regexp"
+	"strconv"
 	"strings"
 
 	hbot "github.com/ugjka/hellabot"
@@ -28,7 +29,7 @@ var vpnTrigger = hbot.Trigger{
 			if !ipReg.MatchString(m.Host) {
 				return false
 			}
-			if m.Name == "klimdaddie" {
+			if m.Name == "klimdaddie" || m.Name == "madk" {
 				return false
 			}
 			if len(m.Params) == 3 && m.Params[1] != "*" {
@@ -81,10 +82,15 @@ func whoisVPNCheck(ip string) (vpn bool, err error) {
 	arr := ipRangeReg.FindStringSubmatch(data)
 	start := strings.Split(arr[1], ".")
 	end := strings.Split(arr[2], ".")
-	for i := 0; i < 3; i++ {
+	for i := 0; i < 2; i++ {
 		if start[i] != end[i] {
 			return false, nil
 		}
+	}
+	startInt, _ := strconv.ParseInt(start[2], 0, 64)
+	endInt, _ := strconv.ParseInt(end[2], 0, 64)
+	if endInt-startInt > 1 {
+		return false, nil
 	}
 	return true, nil
 }
