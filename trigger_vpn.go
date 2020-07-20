@@ -67,7 +67,7 @@ var vpnTrigger = hbot.Trigger{
 
 var ipRangeReg = regexp.MustCompile(`(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})`)
 
-const torrentThresholdSize = 1024 * 50
+const torrentThresholdSize = 1024 * 30
 
 func whoisVPNCheck(ip string) (vpn bool, err error) {
 	cmd := exec.Command("whois", ip)
