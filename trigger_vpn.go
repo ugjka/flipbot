@@ -17,7 +17,7 @@ var kickmeTrigger = hbot.Trigger{
 		return m.Command == "PRIVMSG" && m.To == ircChannel && m.Content == "!kickme"
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		irc.Send(fmt.Sprintf("REMOVE %s %s :why are you kicking yourself", ircChannel, m.Name))
+		irc.Send(fmt.Sprintf("KICK %s %s :why are you kicking yourself", ircChannel, m.Name))
 		return false
 	},
 }
