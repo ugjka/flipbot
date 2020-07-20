@@ -29,7 +29,7 @@ var vpnTrigger = hbot.Trigger{
 			if !ipReg.MatchString(m.Host) {
 				return false
 			}
-			if m.Name == "klimdaddie" || m.Name == "madk" {
+			if m.Name == "klimdaddie" || m.Name == "madk" || m.Name == "fl1pbot" {
 				return false
 			}
 			if len(m.Params) == 3 && m.Params[1] != "*" {
