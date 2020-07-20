@@ -46,6 +46,7 @@ var vpnTrigger = hbot.Trigger{
 			return false
 		}
 		if vpn {
+			log.Info("vpn detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
 			irc.Send(fmt.Sprintf("REMOVE %s %s :VPN detected", ircChannel, m.Name))
 			return false
 		}
@@ -55,6 +56,7 @@ var vpnTrigger = hbot.Trigger{
 			return false
 		}
 		if vpn {
+			log.Info("vpn detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
 			irc.Send(fmt.Sprintf("REMOVE %s %s :VPN detected", ircChannel, m.Name))
 			return false
 		}
