@@ -112,6 +112,7 @@ func providerVPNCheck(ip string) (vpn bool, err error) {
 		"abuse@m247.ro",
 		"abuse@cdn77.com",
 		"abuse@creanova.org",
+		"abuse@estoxy.com",
 	}
 	cmd := exec.Command("whois", ip)
 	b, err := cmd.CombinedOutput()
