@@ -162,6 +162,7 @@ func denyListVPNCheck(ip string) (vpn bool, err error) {
 				denyList = append(denyList, v)
 			}
 		}
+		log.Info("denylists", "status", "loaded")
 	})
 	if err != nil {
 		denyListOnce = &sync.Once{}
