@@ -134,25 +134,33 @@ var denyList = []string{}
 var denyListOnce = &sync.Once{}
 
 func denyListVPNCheck(ip string) (vpn bool, err error) {
-	const denyListURL = "https://raw.githubusercontent.com/ejrv/VPNs/master/vpn-ipv4.txt"
+	var denyLists = []string{
+		"https://raw.githubusercontent.com/ejrv/VPNs/master/vpn-ipv4.txt",
+		"https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/firehol_level1.netset",
+		"https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/firehol_level2.netset",
+		"https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/firehol_abusers_30d.netset",
+		"https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/firehol_proxies.netset",
+	}
 	denyListOnce.Do(func() {
-		var res = &http.Response{}
-		res, err = httpClient.Get(denyListURL)
-		if err != nil {
-			return
-		}
-		defer res.Body.Close()
-		var data = []byte{}
-		data, err = ioutil.ReadAll(res.Body)
-		if err != nil {
-			return
-		}
-		for _, v := range strings.Split(string(data), "\n") {
-			v = strings.TrimSpace(v)
-			if strings.HasPrefix(v, "#") || v == "" {
-				continue
+		for _, denyListURL := range denyLists {
+			var res = &http.Response{}
+			res, err = httpClient.Get(denyListURL)
+			if err != nil {
+				return
 			}
-			denyList = append(denyList, v)
+			defer res.Body.Close()
+			var data = []byte{}
+			data, err = ioutil.ReadAll(res.Body)
+			if err != nil {
+				return
+			}
+			for _, v := range strings.Split(string(data), "\n") {
+				v = strings.TrimSpace(v)
+				if strings.HasPrefix(v, "#") || v == "" {
+					continue
+				}
+				denyList = append(denyList, v)
+			}
 		}
 	})
 	if err != nil {
