@@ -52,7 +52,7 @@ var vpnTrigger = hbot.Trigger{
 		}
 		if vpn {
 			log.Info("subnet vpn detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
-			irc.Send(fmt.Sprintf("REMOVE %s %s :%s", warning, ircChannel, m.Name))
+			irc.Send(fmt.Sprintf("REMOVE %s %s :%s", ircChannel, m.Name, warning))
 			return false
 		}
 		vpn, err = providerVPNCheck(ip)
@@ -62,7 +62,7 @@ var vpnTrigger = hbot.Trigger{
 		}
 		if vpn {
 			log.Info("provider vpn detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
-			irc.Send(fmt.Sprintf("REMOVE %s %s :%s", warning, ircChannel, m.Name))
+			irc.Send(fmt.Sprintf("REMOVE %s %s :%s", ircChannel, m.Name, warning))
 			return false
 		}
 		vpn, err = denyListVPNCheck(ip)
@@ -72,7 +72,7 @@ var vpnTrigger = hbot.Trigger{
 		}
 		if vpn {
 			log.Info("denylist vpn detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
-			irc.Send(fmt.Sprintf("REMOVE %s %s :%s", warning, ircChannel, m.Name))
+			irc.Send(fmt.Sprintf("REMOVE %s %s :%s", ircChannel, m.Name, warning))
 			return false
 		}
 		return false
