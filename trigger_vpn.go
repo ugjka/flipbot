@@ -91,18 +91,19 @@ func subnetVPNCheck(ip string) (vpn bool, err error) {
 		return false, fmt.Errorf("no range found")
 	}
 	res := ipRangeReg.FindAllStringSubmatch(data, -1)
-	arr := res[len(res)-1]
-	start := strings.Split(arr[1], ".")
-	end := strings.Split(arr[2], ".")
-	for i := 0; i < 2; i++ {
-		if start[i] != end[i] {
+	for _, arr := range res {
+		start := strings.Split(arr[1], ".")
+		end := strings.Split(arr[2], ".")
+		for i := 0; i < 2; i++ {
+			if start[i] != end[i] {
+				return false, nil
+			}
+		}
+		startInt, _ := strconv.ParseInt(start[2], 0, 64)
+		endInt, _ := strconv.ParseInt(end[2], 0, 64)
+		if endInt-startInt > 1 {
 			return false, nil
 		}
-	}
-	startInt, _ := strconv.ParseInt(start[2], 0, 64)
-	endInt, _ := strconv.ParseInt(end[2], 0, 64)
-	if endInt-startInt > 1 {
-		return false, nil
 	}
 	return true, nil
 }
