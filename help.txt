@@ -17,6 +17,7 @@ FL1PBOT'S COMMANDS
 !roll : roll a dice
 !isdead : check channel activity stats
 !recent : see recently seen users
+!kickme : kick yourself
 
 #Composite
 !uk : uk overall covid stats
