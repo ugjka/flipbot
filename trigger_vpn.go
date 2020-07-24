@@ -2,10 +2,14 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
+	"net"
+	"net/http"
 	"os/exec"
 	"regexp"
 	"strconv"
 	"strings"
+	"sync"
 
 	hbot "github.com/ugjka/hellabot"
 	log "gopkg.in/inconshreveable/log15.v2"
@@ -28,7 +32,7 @@ var vpnTrigger = hbot.Trigger{
 			if !ipReg.MatchString(m.Host) {
 				return false
 			}
-			if m.Name == "klimdaddie" || m.Name == ircNick {
+			if m.Name == "klimdaddie" || m.Name == "yousei" || m.Name == ircNick {
 				return false
 			}
 			if len(m.Params) == 3 && m.Params[1] != "*" {
@@ -57,6 +61,16 @@ var vpnTrigger = hbot.Trigger{
 		}
 		if vpn {
 			log.Info("provider vpn detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
+			irc.Send(fmt.Sprintf("REMOVE %s %s :VPN detected, please identify before joining to bypass this check", ircChannel, m.Name))
+			return false
+		}
+		vpn, err = denyListVPNCheck(ip)
+		if err != nil {
+			log.Error("denylist vpn check", "error", err)
+			return false
+		}
+		if vpn {
+			log.Info("denylist vpn detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
 			irc.Send(fmt.Sprintf("REMOVE %s %s :VPN detected, please identify before joining to bypass this check", ircChannel, m.Name))
 			return false
 		}
@@ -110,4 +124,52 @@ func providerVPNCheck(ip string) (vpn bool, err error) {
 		}
 	}
 	return false, nil
+}
+
+var denyList = []string{}
+var denyListOnce = &sync.Once{}
+
+func denyListVPNCheck(ip string) (vpn bool, err error) {
+	const denyListURL = "https://raw.githubusercontent.com/ejrv/VPNs/master/vpn-ipv4.txt"
+	denyListOnce.Do(func() {
+		var res = &http.Response{}
+		res, err = httpClient.Get(denyListURL)
+		if err != nil {
+			return
+		}
+		defer res.Body.Close()
+		var data = []byte{}
+		data, err = ioutil.ReadAll(res.Body)
+		if err != nil {
+			return
+		}
+		for _, v := range strings.Split(string(data), "\n") {
+			v = strings.TrimSpace(v)
+			if strings.HasPrefix(v, "#") || v == "" {
+				continue
+			}
+			denyList = append(denyList, v)
+		}
+	})
+	if err != nil {
+		denyListOnce = &sync.Once{}
+		return
+	}
+	for _, v := range denyList {
+		if strings.Contains(v, "/") {
+			_, subnet, err := net.ParseCIDR(v)
+			if err != nil {
+				return false, err
+			}
+			ipNet := net.ParseIP(ip)
+			if subnet.Contains(ipNet) {
+				return true, nil
+			}
+		} else {
+			if ip == v {
+				return true, nil
+			}
+		}
+	}
+	return
 }
