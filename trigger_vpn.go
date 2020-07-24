@@ -42,6 +42,7 @@ var vpnTrigger = hbot.Trigger{
 		return m.Command == "JOIN"
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+		const warning = "VPN/Proxy/Datacenter IP addresses are banned, please identify with freenode before joining to bypass this check"
 		arr := ipReg.FindStringSubmatch(m.Host)
 		ip := arr[1]
 		vpn, err := subnetVPNCheck(ip)
@@ -51,7 +52,7 @@ var vpnTrigger = hbot.Trigger{
 		}
 		if vpn {
 			log.Info("subnet vpn detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
-			irc.Send(fmt.Sprintf("REMOVE %s %s :VPN detected, please identify before joining to bypass this check", ircChannel, m.Name))
+			irc.Send(fmt.Sprintf("REMOVE %s %s :%s", warning, ircChannel, m.Name))
 			return false
 		}
 		vpn, err = providerVPNCheck(ip)
@@ -61,7 +62,7 @@ var vpnTrigger = hbot.Trigger{
 		}
 		if vpn {
 			log.Info("provider vpn detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
-			irc.Send(fmt.Sprintf("REMOVE %s %s :VPN detected, please identify before joining to bypass this check", ircChannel, m.Name))
+			irc.Send(fmt.Sprintf("REMOVE %s %s :%s", warning, ircChannel, m.Name))
 			return false
 		}
 		vpn, err = denyListVPNCheck(ip)
@@ -71,7 +72,7 @@ var vpnTrigger = hbot.Trigger{
 		}
 		if vpn {
 			log.Info("denylist vpn detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
-			irc.Send(fmt.Sprintf("REMOVE %s %s :VPN detected, please identify before joining to bypass this check", ircChannel, m.Name))
+			irc.Send(fmt.Sprintf("REMOVE %s %s :%s", warning, ircChannel, m.Name))
 			return false
 		}
 		return false
