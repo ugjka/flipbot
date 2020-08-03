@@ -45,7 +45,17 @@ var vpnTrigger = hbot.Trigger{
 		const warning = "VPN/Proxy/Datacenter IP addresses are banned, please identify with freenode before joining to bypass this check"
 		arr := ipReg.FindStringSubmatch(m.Host)
 		ip := arr[1]
-		vpn, err := subnetVPNCheck(ip)
+		vpn, err := denyListVPNCheck(ip)
+		if err != nil {
+			log.Error("denylist vpn check", "error", err)
+			return false
+		}
+		if vpn {
+			log.Info("denylist vpn detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
+			irc.Send(fmt.Sprintf("REMOVE %s %s :%s", ircChannel, m.Name, warning))
+			return false
+		}
+		vpn, err = subnetVPNCheck(ip)
 		if err != nil {
 			log.Error("subnet vpn check", "error", err)
 			return false
@@ -65,21 +75,14 @@ var vpnTrigger = hbot.Trigger{
 			irc.Send(fmt.Sprintf("REMOVE %s %s :%s", ircChannel, m.Name, warning))
 			return false
 		}
-		vpn, err = denyListVPNCheck(ip)
-		if err != nil {
-			log.Error("denylist vpn check", "error", err)
-			return false
-		}
-		if vpn {
-			log.Info("denylist vpn detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
-			irc.Send(fmt.Sprintf("REMOVE %s %s :%s", ircChannel, m.Name, warning))
-			return false
-		}
 		return false
 	},
 }
 
 func subnetVPNCheck(ip string) (vpn bool, err error) {
+	netmaskValid := false
+	rangeValid := true
+	var routeReg = regexp.MustCompile(`\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/(\d{1,2})`)
 	var ipRangeReg = regexp.MustCompile(`(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})`)
 	cmd := exec.Command("whois", ip)
 	b, err := cmd.CombinedOutput()
@@ -87,6 +90,16 @@ func subnetVPNCheck(ip string) (vpn bool, err error) {
 		return
 	}
 	data := string(b)
+	if routeReg.MatchString(data) {
+		arr := routeReg.FindStringSubmatch(data)
+		netmask, err := strconv.Atoi(arr[1])
+		if err != nil {
+			return false, err
+		}
+		if netmask < 22 {
+			netmaskValid = true
+		}
+	}
 	if !ipRangeReg.MatchString(data) {
 		return false, fmt.Errorf("no range found")
 	}
@@ -96,16 +109,17 @@ func subnetVPNCheck(ip string) (vpn bool, err error) {
 		end := strings.Split(arr[2], ".")
 		for i := 0; i < 2; i++ {
 			if start[i] != end[i] {
-				return false, nil
+				return !(rangeValid || netmaskValid), nil
 			}
 		}
 		startInt, _ := strconv.ParseInt(start[2], 0, 64)
 		endInt, _ := strconv.ParseInt(end[2], 0, 64)
 		if endInt-startInt > 1 {
-			return false, nil
+			return !(rangeValid || netmaskValid), nil
 		}
 	}
-	return true, nil
+	rangeValid = false
+	return !(rangeValid || netmaskValid), nil
 }
 
 func providerVPNCheck(ip string) (vpn bool, err error) {
