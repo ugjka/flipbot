@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/url"
 	"regexp"
+	"strings"
 
 	wikimedia "github.com/pmylund/go-wikimedia"
 	hbot "github.com/ugjka/hellabot"
@@ -19,10 +20,10 @@ var wiki = hbot.Trigger{
 		answer, link, err := searchWiki(wikiTrig.FindStringSubmatch(m.Content)[1])
 		if err != nil {
 			log.Warn("wiki", "error", err)
-			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
+			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errNoResults))
 			return false
 		}
-		irc.Reply(m, fmt.Sprintf("%s: %s [%s]", m.Name, limit(answer), link))
+		irc.Reply(m, fmt.Sprintf("%s: %s \n[%s]", m.Name, limit(answer, 2048), link))
 		return false
 	},
 }
@@ -55,7 +56,7 @@ func searchWiki(query string) (answer, link string, err error) {
 		"titles":          {res.Query.Search[0].Title},
 		"explaintext":     {"true"},
 		"exsectionformat": {"plain"},
-		"exchars":         {"740"},
+		"exchars":         {"2048"},
 		"redirects":       {"true"},
 	}
 	res, err = w.Query(f)
@@ -67,7 +68,11 @@ func searchWiki(query string) (answer, link string, err error) {
 			err = fmt.Errorf("no results")
 			return
 		}
-		answer = whitespace.ReplaceAllString(v.Extract, " ")
+		answer = strings.TrimSpace(v.Extract)
+		if strings.Contains(strings.Split(answer, "\n")[0], "may refer to:") {
+			err = fmt.Errorf("no results")
+			return
+		}
 		link = fmt.Sprintf("https://en.wikipedia.org/?curid=%d", v.PageId)
 		break
 	}

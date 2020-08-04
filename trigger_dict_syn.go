@@ -36,7 +36,7 @@ var dict = hbot.Trigger{
 			}
 		}
 		if len(res) > 0 {
-			irc.Reply(m, fmt.Sprintf("%s: [DEFINITIONS] %s", m.Name, limit(res)))
+			irc.Reply(m, fmt.Sprintf("%s: [DEFINITIONS] %s", m.Name, limit(res, 1024)))
 			return false
 		}
 		//Synonyms
@@ -48,7 +48,7 @@ var dict = hbot.Trigger{
 			}
 		}
 		if len(res) > 0 {
-			irc.Reply(m, fmt.Sprintf("%s: [SYNONYMS] %s", m.Name, limit(res)))
+			irc.Reply(m, fmt.Sprintf("%s: [SYNONYMS] %s", m.Name, limit(res, 1024)))
 			return false
 		}
 		irc.Reply(m, fmt.Sprintf("%s: no results", m.Name))
@@ -82,7 +82,7 @@ var syn = hbot.Trigger{
 			}
 		}
 		if len(res) > 0 {
-			irc.Reply(m, fmt.Sprintf("%s: [SYNONYMS] %s", m.Name, limit(res)))
+			irc.Reply(m, fmt.Sprintf("%s: [SYNONYMS] %s", m.Name, limit(res, 1024)))
 			return false
 		}
 		irc.Reply(m, fmt.Sprintf("%s: no results", m.Name))

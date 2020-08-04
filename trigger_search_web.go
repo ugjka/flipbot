@@ -27,7 +27,7 @@ var ducker = hbot.Trigger{
 			return false
 		}
 		msg := fmt.Sprintf("%s: %s", m.Name, res)
-		irc.Reply(m, limit(msg))
+		irc.Reply(m, msg)
 		return false
 	},
 }
@@ -49,8 +49,8 @@ var google = hbot.Trigger{
 			irc.Reply(m, fmt.Sprintf("%s: no results!", m.Name))
 			return false
 		}
-		msg := fmt.Sprintf("%s: %s [%s] (%s)", m.Name, res[0].URL, res[0].Title, res[0].Abstract)
-		irc.Reply(m, limit(msg))
+		msg := fmt.Sprintf("%s: %s [%s] \n(%s)", m.Name, res[0].URL, res[0].Title, res[0].Abstract)
+		irc.Reply(m, msg)
 		return false
 	},
 }
@@ -72,9 +72,9 @@ var googlenews = hbot.Trigger{
 			irc.Reply(m, fmt.Sprintf("%s: no results!", m.Name))
 			return false
 		}
-		msg := fmt.Sprintf("%s: %s [%s] [%s] (%s)", m.Name,
+		msg := fmt.Sprintf("%s: %s [%s] [%s] \n(%s)", m.Name,
 			res[0].URL, res[0].Metadata, res[0].Title, res[0].Abstract)
-		irc.Reply(m, limit(msg))
+		irc.Reply(m, msg)
 		return false
 	},
 }

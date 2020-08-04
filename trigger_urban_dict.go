@@ -37,8 +37,8 @@ var urban = hbot.Trigger{
 		}
 		replacer := strings.NewReplacer("[", "", "]", "")
 		result.Definition = replacer.Replace(result.Definition)
-		result.Definition = whitespace.ReplaceAllString(result.Definition, " ")
-		irc.Reply(m, fmt.Sprintf("%s: %s", m.Name, limit(result.Definition)))
+		result.Definition = strings.TrimSpace(result.Definition)
+		irc.Reply(m, fmt.Sprintf("%s: %s", m.Name, limit(result.Definition, 1024)))
 		return false
 	},
 }

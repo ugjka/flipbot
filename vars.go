@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"regexp"
+	"strings"
 	"time"
 
 	"github.com/boltdb/bolt"
@@ -46,13 +47,11 @@ var httpClient = &http.Client{
 var jar *cookiejar.Jar
 var meditations []string
 
-const textLimit = 300
-
 var whitespace = regexp.MustCompile(`\s+`)
 
-func limit(in string) string {
+func limit(in string, textLimit int) string {
 	if len(in) > textLimit {
-		return in[:textLimit] + "..."
+		return strings.ToValidUTF8(in[:textLimit]+"...", "")
 	}
 	return in
 }
