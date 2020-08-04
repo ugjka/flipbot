@@ -18,7 +18,7 @@ var bold = hbot.Trigger{
 		text := boldReg.FindStringSubmatch(m.Content)[1]
 		text = strings.ToLower(text)
 		out := ""
-		maxlen := 510 - 2 - m.Prefix.Len() - len(fmt.Sprintf("PRIVMSG %s :", m.To))
+		maxlen := 510 - 2 - irc.PrefixLen - len(fmt.Sprintf("PRIVMSG %s :", m.To))
 		spacer := '⚬'
 		var placeholder rune
 		for _, v := range text {
