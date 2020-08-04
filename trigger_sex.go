@@ -8,9 +8,9 @@ import (
 	hbot "github.com/ugjka/hellabot"
 )
 
-var sexTrigReg = regexp.MustCompile(`(?i)^\s*!+sex+$`)
 var sexTrig = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+		var sexTrigReg = regexp.MustCompile(`(?i)^\s*!+sex+$`)
 		return sexTrigReg.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {

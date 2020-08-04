@@ -14,7 +14,7 @@ require (
 	github.com/mmcdole/gofeed v1.0.0
 	github.com/pmylund/go-wikimedia v0.0.0-20130802042651-ca2b93c3aea0
 	github.com/ugjka/catrand v0.0.0-20181113133205-3f6473988b0e
-	github.com/ugjka/hellabot v0.0.3
+	github.com/ugjka/hellabot v0.0.4
 	golang.org/x/net v0.0.0-20200707034311-ab3426394381 // indirect
 	golang.org/x/text v0.3.3 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect

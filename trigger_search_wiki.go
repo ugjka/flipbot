@@ -22,7 +22,7 @@ var wiki = hbot.Trigger{
 			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return false
 		}
-		irc.Reply(m, fmt.Sprintf("%s: %s [%s]", m.Name, limit(answer), link))
+		irc.Reply(m, fmt.Sprintf("%s: %s [%s]", m.Name, limit(answer, 1024), link))
 		return false
 	},
 }

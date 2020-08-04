@@ -66,9 +66,9 @@ var rank = hbot.Trigger{
 	},
 }
 
-var ranksTrig = regexp.MustCompile(`(?i)^\s*!+(?:rank+s?|leader+s?|leaderboard+s?)\s*$`)
 var ranks = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+		var ranksTrig = regexp.MustCompile(`(?i)^\s*!+(?:rank+s?|leader+s?|leaderboard+s?)\s*$`)
 		return m.Command == "PRIVMSG" && ranksTrig.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {

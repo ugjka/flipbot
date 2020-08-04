@@ -24,7 +24,7 @@ var calc = hbot.Trigger{
 			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return true
 		}
-		irc.Reply(m, fmt.Sprintf("%s: %s", m.Name, limit(res)))
+		irc.Reply(m, fmt.Sprintf("%s: %s", m.Name, limit(res, 1024)))
 		return false
 	},
 }

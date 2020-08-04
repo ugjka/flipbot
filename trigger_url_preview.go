@@ -26,7 +26,7 @@ var urltitle = hbot.Trigger{
 			log.Warn("preview", "url", url, "error", err)
 			return false
 		}
-		irc.Reply(m, fmt.Sprintf("%s's link: %s", m.Name, limit(res)))
+		irc.Reply(m, fmt.Sprintf("%s's link: %s", m.Name, limit(res, 300)))
 		return false
 	},
 }
