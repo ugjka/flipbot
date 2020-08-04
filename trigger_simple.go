@@ -30,12 +30,12 @@ var vixey = hbot.Trigger{
 
 var kittyParty = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		var kittyReg = regexp.MustCompile(`(?i).*!+(?:kit+y+|cat+)party+(?:\s+\S*)?`)
-		return m.Command == "PRIVMSG" && m.To == ircChannel && kittyReg.MatchString(m.Content)
+		var kittyReg = regexp.MustCompile(`(?i).*!+(?:kit+y+|kitten|cat+)party+(?:\s+\S*)?`)
+		return m.Command == "PRIVMSG" && kittyReg.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		cats := []rune("😺😸😹😻😼😽🙀😿😾🐈🐈‍")
-		maxlen := 510 - 2 - irc.PrefixLen - len(fmt.Sprintf("PRIVMSG %s :", ircChannel))
+		maxlen := 510 - 2 - irc.PrefixLen - len(fmt.Sprintf("PRIVMSG %s :", m.To))
 		msg := ""
 		rand.Seed(time.Now().UnixNano())
 		for i := 0; ; {
