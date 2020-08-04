@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
+	"unicode/utf8"
 
 	hbot "github.com/ugjka/hellabot"
 )
@@ -16,16 +18,19 @@ var bold = hbot.Trigger{
 		text := boldReg.FindStringSubmatch(m.Content)[1]
 		text = strings.ToLower(text)
 		out := ""
+		maxlen := 510 - 2 - m.Prefix.Len() - len(fmt.Sprintf("PRIVMSG %s :", m.To))
+		spacer := '⚬'
+		var placeholder rune
 		for _, v := range text {
 			if r, ok := blackbold[v]; ok {
-				out += string(r)
+				placeholder = r
 			} else {
-				out += "⚬"
+				placeholder = spacer
 			}
-		}
-		if len(out) > 300 {
-			out = out[:300]
-			out = strings.ToValidUTF8(out, "")
+			if len([]byte(out))+utf8.RuneLen(placeholder) > maxlen {
+				break
+			}
+			out += string(placeholder)
 		}
 		irc.Reply(m, out)
 		return false
