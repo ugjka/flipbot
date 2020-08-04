@@ -177,7 +177,7 @@ var unflip = hbot.Trigger{
 
 var randomcat = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		var randomcatTrig = regexp.MustCompile(`(?i)!+(?:cat+|kit+y|fluf+|kit+en+|bagpus+|pus+|pus+y)`)
+		var randomcatTrig = regexp.MustCompile(`^(?i)!+(?:cat+|kit+y|fluf+|kit+en+|bagpus+|pus+|pus+y)$`)
 		return m.Command == "PRIVMSG" && randomcatTrig.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
