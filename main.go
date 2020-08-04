@@ -102,6 +102,7 @@ func main() {
 		logCTR.Close()
 		os.Exit(0)
 	}()
+	irc.AddTrigger(kittyParty)
 	irc.AddTrigger(vpnTrigger)
 	irc.AddTrigger(kickmeTrigger)
 	irc.AddTrigger(extJoin)
