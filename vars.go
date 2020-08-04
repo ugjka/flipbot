@@ -63,3 +63,5 @@ var errNotInCache = fmt.Errorf("not in cache")
 var errNoMemo = fmt.Errorf("no memos found")
 var errNoReminder = fmt.Errorf("no reminder expired")
 var errNoResults = fmt.Errorf("no results")
+
+var extJoinEnabled = false

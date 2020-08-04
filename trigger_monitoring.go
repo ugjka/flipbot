@@ -177,13 +177,29 @@ var logmsg = hbot.Trigger{
 	},
 }
 
-var logjoin = hbot.Trigger{
+var logJoin = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "JOIN"
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		logCTR.Lock()
-		fmt.Fprintf(logCTR.File, "[%s] [JOIN]\t%s!%s@%s (%s)\n", time.Now().UTC().Format("06:01:02|15:04:05"), m.Name, m.User, m.Host, m.Trailing())
+		account := "[unknown]"
+		if len(m.Params) == 3 {
+			account = m.Params[1]
+		}
+		fmt.Fprintf(logCTR.File, "[%s] [JOIN]\t%s!%s@%s (%s) account: %s\n", time.Now().UTC().Format("06:01:02|15:04:05"), m.Name, m.User, m.Host, m.Trailing(), account)
+		logCTR.Unlock()
+		return false
+	},
+}
+
+var logAccount = hbot.Trigger{
+	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+		return m.Command == "ACCOUNT"
+	},
+	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+		logCTR.Lock()
+		fmt.Fprintf(logCTR.File, "[%s] [ACCOUNT]\t%s!%s@%s (%s)\n", time.Now().UTC().Format("06:01:02|15:04:05"), m.Name, m.User, m.Host, m.Params[0])
 		logCTR.Unlock()
 		return false
 	},
