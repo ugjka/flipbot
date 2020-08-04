@@ -18,6 +18,9 @@ var bold = hbot.Trigger{
 		text := boldReg.FindStringSubmatch(m.Content)[1]
 		text = strings.ToLower(text)
 		out := ""
+		if m.To == irc.Nick {
+			m.To = m.Name
+		}
 		maxlen := 510 - 2 - irc.PrefixLen - len(fmt.Sprintf("PRIVMSG %s :", m.To))
 		spacer := '⚬'
 		var placeholder rune

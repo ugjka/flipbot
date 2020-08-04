@@ -35,6 +35,9 @@ var kittyParty = hbot.Trigger{
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		cats := []rune("😺😸😹😻😼😽🙀😿😾🐈🐈‍")
+		if m.To == irc.Nick {
+			m.To = m.Name
+		}
 		maxlen := 510 - 2 - irc.PrefixLen - len(fmt.Sprintf("PRIVMSG %s :", m.To))
 		msg := ""
 		rand.Seed(time.Now().UnixNano())
