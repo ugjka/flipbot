@@ -54,6 +54,32 @@ var kittyParty = hbot.Trigger{
 	},
 }
 
+var pooParty = hbot.Trigger{
+	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+		var kittyReg = regexp.MustCompile(`(?i).*!+(?:po+p?|shit+|crap)party+(?:\s+\S*)?`)
+		return m.Command == "PRIVMSG" && kittyReg.MatchString(m.Content)
+	},
+	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+		cats := []rune("‍💩🚽🧻🍷🍺😵🤢🤮💊💉🌧️🥦🧄🍄")
+		if m.To == irc.Nick {
+			m.To = m.Name
+		}
+		maxlen := 510 - 2 - irc.PrefixLen - len(fmt.Sprintf("PRIVMSG %s :", m.To))
+		msg := ""
+		rand.Seed(time.Now().UnixNano())
+		for i := 0; ; {
+			j := rand.Intn(len(cats) - 1)
+			if i+utf8.RuneLen(cats[j]) > maxlen {
+				break
+			}
+			msg += string(cats[j])
+			i += utf8.RuneLen(cats[j])
+		}
+		irc.Reply(m, msg)
+		return false
+	},
+}
+
 var echo = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, "!repeat ")
