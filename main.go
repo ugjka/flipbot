@@ -156,7 +156,7 @@ func main() {
 	//irc.AddTrigger(memowatcher)
 	//irc.AddTrigger(setmodes)
 	//irc.AddTrigger(voicenames)
-	//irc.AddTrigger(help)
+	irc.AddTrigger(help)
 	irc.AddTrigger(test)
 	irc.AddTrigger(googlenews)
 	irc.AddTrigger(ducker)

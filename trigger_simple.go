@@ -374,7 +374,7 @@ var help = hbot.Trigger{
 		return m.Command == "PRIVMSG" && helpTrig.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		irc.Reply(m, "Fl1pbot's manual: https://raw.githubusercontent.com/ugjka/flipbot/master/help.txt")
+		irc.Reply(m, "Fl1pbot's manual: https://raw.githubusercontent.com/ugjka/flipbot/bootybot/help.txt")
 		return false
 	},
 }
