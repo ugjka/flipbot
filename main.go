@@ -98,6 +98,7 @@ func main() {
 		logCTR.Close()
 		os.Exit(0)
 	}()
+	irc.AddTrigger(morningTrig)
 	irc.AddTrigger(pooParty)
 	irc.AddTrigger(kittyParty)
 	irc.AddTrigger(notifyop)
