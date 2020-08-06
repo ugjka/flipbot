@@ -34,7 +34,7 @@ var morningTrig = hbot.Trigger{
 		return m.Command == "PRIVMSG" && kittyReg.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		cats := []rune("☕🥪🥐🧈🍞🥞🥓😴🥱🙃⏰💻🧇🚬🚿")
+		cats := []rune("☕☕☕☕🥪🥐🧈🍞🥞🥓😴🥱🙃⏰💻🧇🚬🚿")
 		if m.To == irc.Nick {
 			m.To = m.Name
 		}
