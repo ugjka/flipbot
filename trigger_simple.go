@@ -28,6 +28,32 @@ var vixey = hbot.Trigger{
 	},
 }
 
+var morningTrig = hbot.Trigger{
+	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+		var kittyReg = regexp.MustCompile(`(?i).*!+(?:goo+d)?morning(?:\s+\S*)?`)
+		return m.Command == "PRIVMSG" && kittyReg.MatchString(m.Content)
+	},
+	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+		cats := []rune("☕🥪🥐🧈🍞🥞🥓😴🥱🙃⏰💻🧇🚬🚿")
+		if m.To == irc.Nick {
+			m.To = m.Name
+		}
+		maxlen := 510 - 2 - irc.PrefixLen - len(fmt.Sprintf("PRIVMSG %s :", m.To))
+		msg := ""
+		rand.Seed(time.Now().UnixNano())
+		for i := 0; ; {
+			j := rand.Intn(len(cats) - 1)
+			if i+utf8.RuneLen(cats[j]) > maxlen {
+				break
+			}
+			msg += string(cats[j])
+			i += utf8.RuneLen(cats[j])
+		}
+		irc.Reply(m, msg)
+		return false
+	},
+}
+
 var kittyParty = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		var kittyReg = regexp.MustCompile(`(?i).*!+(?:kit+y+|kitten|cat+)party+(?:\s+\S*)?`)
