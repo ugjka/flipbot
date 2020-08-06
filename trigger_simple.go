@@ -30,26 +30,16 @@ var vixey = hbot.Trigger{
 
 var morningTrig = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		var kittyReg = regexp.MustCompile(`(?i).*!+(?:goo+d)?morning(?:\s+\S*)?`)
-		return m.Command == "PRIVMSG" && kittyReg.MatchString(m.Content)
+		var morningReg = regexp.MustCompile(`(?i).*!+(?:goo+d)?morning(?:\s+\S*)?`)
+		return m.Command == "PRIVMSG" && morningReg.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		cats := []rune("☕☕☕☕🥪🥐🧈🍞🥞🥓😴🥱🙃⏰💻🧇🚬🚿🚽🪥")
-		if m.To == irc.Nick {
-			m.To = m.Name
-		}
-		maxlen := 510 - 2 - irc.PrefixLen - len(fmt.Sprintf("PRIVMSG %s :", m.To))
-		msg := ""
+		morning := []rune("☕☕☕☕🥪🥐🧈🍞🥞🥓😴🥱🙃⏰💻🧇🚬🚿🚽🪥")
 		rand.Seed(time.Now().UnixNano())
-		for i := 0; ; {
-			j := rand.Intn(len(cats) - 1)
-			if i+utf8.RuneLen(cats[j]) > maxlen {
-				break
-			}
-			msg += string(cats[j])
-			i += utf8.RuneLen(cats[j])
-		}
-		irc.Reply(m, msg)
+		rand.Shuffle(len(morning), func(i, j int) {
+			morning[i], morning[j] = morning[j], morning[i]
+		})
+		irc.Reply(m, string(morning))
 		return false
 	},
 }
@@ -82,11 +72,11 @@ var kittyParty = hbot.Trigger{
 
 var pooParty = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		var kittyReg = regexp.MustCompile(`(?i).*!+(?:po+p?|shit+|crap)party+(?:\s+\S*)?`)
-		return m.Command == "PRIVMSG" && kittyReg.MatchString(m.Content)
+		var pooReg = regexp.MustCompile(`(?i).*!+(?:po+p?|shit+|crap)party+(?:\s+\S*)?`)
+		return m.Command == "PRIVMSG" && pooReg.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		cats := []rune("‍💩🚽🧻🍷🍺😵🤢🤮💊💉🌧️🥦🧄🍄")
+		poo := []rune("‍💩🚽🧻🍷🍺😵🤢🤮💊💉🌧️🥦🧄🍄")
 		if m.To == irc.Nick {
 			m.To = m.Name
 		}
@@ -94,12 +84,12 @@ var pooParty = hbot.Trigger{
 		msg := ""
 		rand.Seed(time.Now().UnixNano())
 		for i := 0; ; {
-			j := rand.Intn(len(cats) - 1)
-			if i+utf8.RuneLen(cats[j]) > maxlen {
+			j := rand.Intn(len(poo) - 1)
+			if i+utf8.RuneLen(poo[j]) > maxlen {
 				break
 			}
-			msg += string(cats[j])
-			i += utf8.RuneLen(cats[j])
+			msg += string(poo[j])
+			i += utf8.RuneLen(poo[j])
 		}
 		irc.Reply(m, msg)
 		return false
