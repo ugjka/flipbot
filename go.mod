@@ -14,7 +14,7 @@ require (
 	github.com/mmcdole/gofeed v1.0.0
 	github.com/pmylund/go-wikimedia v0.0.0-20130802042651-ca2b93c3aea0
 	github.com/ugjka/catrand v0.0.0-20181113133205-3f6473988b0e
-	github.com/ugjka/hellabot v0.0.5
+	github.com/ugjka/hellabot v0.0.6
 	golang.org/x/net v0.0.0-20200707034311-ab3426394381 // indirect
 	golang.org/x/sys v0.0.0-20200805065543-0cf7623e9dbd // indirect
 	golang.org/x/text v0.3.3 // indirect
