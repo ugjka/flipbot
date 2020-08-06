@@ -18,6 +18,9 @@ FL1PBOT'S COMMANDS
 !isdead : check channel activity stats
 !recent : see recently seen users
 !kickme : kick yourself
+!kittyparty : kitten party
+!shitparty : shit party
+!morning : good morning
 
 #Composite
 !uk : uk overall covid stats
