@@ -34,7 +34,7 @@ var morningTrig = hbot.Trigger{
 		return m.Command == "PRIVMSG" && morningReg.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		morning := []rune("☕☕☕☕🥪🥐🧈🍞🥞🥓😴🥱🙃⏰💻🧇🚬🚿🚽🪥")
+		morning := []rune("☕☕☕☕🥪🥐🧈🍞🥞🥓😴🥱🙃⏰💻🧇🚬🚿🚽🪥🥣")
 		rand.Seed(time.Now().UnixNano())
 		rand.Shuffle(len(morning), func(i, j int) {
 			morning[i], morning[j] = morning[j], morning[i]
