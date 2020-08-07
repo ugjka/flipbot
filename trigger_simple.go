@@ -54,7 +54,7 @@ var kittyParty = hbot.Trigger{
 		if m.To == irc.Nick {
 			m.To = m.Name
 		}
-		maxlen := 510 - 2 - irc.PrefixLen - len(fmt.Sprintf("PRIVMSG %s :", m.To))
+		maxlen := 510 - 2 - irc.Prefix.Len() - len(fmt.Sprintf("PRIVMSG %s :", m.To))
 		msg := ""
 		rand.Seed(time.Now().UnixNano())
 		for i := 0; ; {
@@ -80,7 +80,7 @@ var pooParty = hbot.Trigger{
 		if m.To == irc.Nick {
 			m.To = m.Name
 		}
-		maxlen := 510 - 2 - irc.PrefixLen - len(fmt.Sprintf("PRIVMSG %s :", m.To))
+		maxlen := 510 - 2 - irc.Prefix.Len() - len(fmt.Sprintf("PRIVMSG %s :", m.To))
 		msg := ""
 		rand.Seed(time.Now().UnixNano())
 		for i := 0; ; {
