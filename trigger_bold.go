@@ -21,7 +21,7 @@ var bold = hbot.Trigger{
 		if m.To == irc.Nick {
 			m.To = m.Name
 		}
-		maxlen := 510 - 2 - irc.PrefixLen - len(fmt.Sprintf("PRIVMSG %s :", m.To))
+		maxlen := 510 - 2 - irc.Prefix.Len() - len(fmt.Sprintf("PRIVMSG %s :", m.To))
 		spacer := '⚬'
 		var placeholder rune
 		for _, v := range text {
