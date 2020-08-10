@@ -25,6 +25,7 @@ var logCTR = struct {
 type Seen struct {
 	Seen    time.Time
 	LastMSG string
+	Command string
 }
 
 var seenTrig = regexp.MustCompile("(?i)^\\s*!+seen\\w*\\s+([A-Za-z_\\-\\[\\]\\^{}|`][A-Za-z0-9_\\-\\[\\]\\^{}|`]{0,15}\\*?)$")
@@ -57,9 +58,9 @@ var seen = hbot.Trigger{
 		}
 		dur := durafmt.Parse(time.Now().UTC().Sub(seen.Seen))
 		if seen.LastMSG != "" {
-			irc.Reply(m, fmt.Sprintf("%s: I saw %s %s ago. Their last message was: %s", m.Name, nick, roundDuration(dur.String()), seen.LastMSG))
+			irc.Reply(m, fmt.Sprintf("%s: I saw %s %s ago. Last message: %s", m.Name, nick, roundDuration(dur.String()), seen.LastMSG))
 		} else {
-			irc.Reply(m, fmt.Sprintf("%s: I saw %s %s ago", m.Name, nick, roundDuration(dur.String())))
+			irc.Reply(m, fmt.Sprintf("%s: I saw %s %s ago. Last activity: %s", m.Name, nick, roundDuration(dur.String()), seen.Command))
 		}
 
 		return false
@@ -86,15 +87,8 @@ var watcher = hbot.Trigger{
 		} else {
 			name = m.Name
 		}
+		seen := Seen{}
 		name = strings.ToLower(name)
-		seen, err := getSeen(name)
-		switch {
-		case err == errNotSeen:
-			break
-		case err != nil:
-			log.Warn("getSeen", "error", err)
-			return false
-		}
 		if m.Command == "PRIVMSG" {
 			seen.Seen = time.Now().UTC()
 			seen.LastMSG = m.Content
@@ -105,6 +99,7 @@ var watcher = hbot.Trigger{
 			}
 		} else {
 			seen.Seen = time.Now().UTC()
+			seen.Command = m.Command
 			err := setSeen(name, &seen)
 			if err != nil {
 				log.Warn("setSeen", "error", err)
