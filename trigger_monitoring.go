@@ -58,7 +58,7 @@ var seen = hbot.Trigger{
 		}
 		dur := durafmt.Parse(time.Now().UTC().Sub(seen.Seen))
 		if seen.LastMSG != "" {
-			irc.Reply(m, fmt.Sprintf("%s: I saw %s %s ago. Their last message was: %s", m.Name, nick, roundDuration(dur.String()), seen.LastMSG))
+			irc.Reply(m, fmt.Sprintf("%s: I saw %s %s ago. Last message: %s", m.Name, nick, roundDuration(dur.String()), seen.LastMSG))
 		} else {
 			irc.Reply(m, fmt.Sprintf("%s: I saw %s %s ago. Last activity: %s", m.Name, nick, roundDuration(dur.String()), seen.Command))
 		}
