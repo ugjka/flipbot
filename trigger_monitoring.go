@@ -86,15 +86,8 @@ var watcher = hbot.Trigger{
 		} else {
 			name = m.Name
 		}
+		seen := Seen{}
 		name = strings.ToLower(name)
-		seen, err := getSeen(name)
-		switch {
-		case err == errNotSeen:
-			break
-		case err != nil:
-			log.Warn("getSeen", "error", err)
-			return false
-		}
 		if m.Command == "PRIVMSG" {
 			seen.Seen = time.Now().UTC()
 			seen.LastMSG = m.Content
