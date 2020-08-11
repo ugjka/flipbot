@@ -154,6 +154,8 @@ func denyListVPNCheck(ip string) (vpn bool, err error) {
 		"https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/firehol_level2.netset",
 		"https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/firehol_abusers_30d.netset",
 		"https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/firehol_proxies.netset",
+		// Ban Belgium
+		"https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/ipdeny_country/id_country_be.netset",
 	}
 	denyListOnce.Do(func() {
 		for _, denyListURL := range denyLists {
