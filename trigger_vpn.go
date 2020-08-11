@@ -154,8 +154,6 @@ func denyListVPNCheck(ip string) (vpn bool, err error) {
 		"https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/firehol_level2.netset",
 		"https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/firehol_abusers_30d.netset",
 		"https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/firehol_proxies.netset",
-		// Ban Belgium
-		"https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/ipdeny_country/id_country_be.netset",
 	}
 	denyListOnce.Do(func() {
 		for _, denyListURL := range denyLists {
@@ -185,6 +183,93 @@ func denyListVPNCheck(ip string) (vpn bool, err error) {
 		return
 	}
 	for _, v := range denyList {
+		if strings.Contains(v, "/") {
+			_, subnet, err := net.ParseCIDR(v)
+			if err != nil {
+				return false, err
+			}
+			ipNet := net.ParseIP(ip)
+			if subnet.Contains(ipNet) {
+				return true, nil
+			}
+		} else {
+			if ip == v {
+				return true, nil
+			}
+		}
+	}
+	return
+}
+
+var denyBETrigger = hbot.Trigger{
+	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+		if m.Command == "JOIN" {
+			if !ipReg.MatchString(m.Host) {
+				return false
+			}
+			if m.Name == "klimdaddie" || m.Name == "yousei" || m.Name == ircNick {
+				return false
+			}
+			if len(m.Params) == 3 && m.Params[1] != "*" {
+				return false
+			}
+		}
+		return m.Command == "JOIN"
+	},
+	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+		const warning = "BELGIUM is banned, please identify with freenode before joining to bypass this check"
+		arr := ipReg.FindStringSubmatch(m.Host)
+		ip := arr[1]
+		be, err := denyListBECheck(ip)
+		if err != nil {
+			log.Error("denylist Belgium check", "error", err)
+			return false
+		}
+		if be {
+			log.Info("denylist Belgium detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
+			irc.Send(fmt.Sprintf("REMOVE %s %s :%s", ircChannel, m.Name, warning))
+			return false
+		}
+		return false
+	},
+}
+
+var denyBEList = []string{}
+var denyBEListOnce = &sync.Once{}
+
+func denyListBECheck(ip string) (BE bool, err error) {
+	var denyLists = []string{
+		// Ban Belgium
+		"https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/ipdeny_country/id_country_be.netset",
+	}
+	denyBEListOnce.Do(func() {
+		for _, denyListURL := range denyLists {
+			var res = &http.Response{}
+			res, err = httpClient.Get(denyListURL)
+			if err != nil {
+				return
+			}
+			defer res.Body.Close()
+			var data = []byte{}
+			data, err = ioutil.ReadAll(res.Body)
+			if err != nil {
+				return
+			}
+			for _, v := range strings.Split(string(data), "\n") {
+				v = strings.TrimSpace(v)
+				if strings.HasPrefix(v, "#") || v == "" {
+					continue
+				}
+				denyBEList = append(denyBEList, v)
+			}
+		}
+		log.Info("denylist BE", "status", "loaded")
+	})
+	if err != nil {
+		denyBEListOnce = &sync.Once{}
+		return
+	}
+	for _, v := range denyBEList {
 		if strings.Contains(v, "/") {
 			_, subnet, err := net.ParseCIDR(v)
 			if err != nil {
