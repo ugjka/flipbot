@@ -116,8 +116,6 @@ func main() {
 	irc.AddTrigger(setmodes)
 	irc.AddTrigger(memowatcher)
 	irc.AddTrigger(getreminder)
-	irc.AddTrigger(vpnTrigger)
-	irc.AddTrigger(denyBETrigger)
 	irc.AddTrigger(kickmeTrigger)
 	irc.AddTrigger(notifyop)
 	irc.AddTrigger(isRecent)
@@ -185,6 +183,10 @@ func main() {
 	irc.AddTrigger(toss)
 	irc.AddTrigger(dict)
 	irc.AddTrigger(syn)
+	// Slow triggers
+	irc.AddTrigger(vpnTrigger)
+	irc.AddTrigger(denyBETrigger)
+
 	logHandler := log.LvlFilterHandler(log.LvlInfo, log.StdoutHandler)
 	irc.Logger.SetHandler(logHandler)
 
