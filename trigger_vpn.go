@@ -204,9 +204,6 @@ func denyListVPNCheck(ip string) (vpn bool, err error) {
 var denyBETrigger = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
 		if m.Command == "JOIN" {
-			if !ipReg.MatchString(m.Host) {
-				return false
-			}
 			if m.Name == "klimdaddie" || m.Name == "yousei" || m.Name == ircNick {
 				return false
 			}
@@ -218,8 +215,18 @@ var denyBETrigger = hbot.Trigger{
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		const warning = "BELGIUM is banned, please identify with freenode before joining to bypass this check"
-		arr := ipReg.FindStringSubmatch(m.Host)
-		ip := arr[1]
+		ip := ""
+		if ipReg.MatchString(m.Host) {
+			arr := ipReg.FindStringSubmatch(m.Host)
+			ip = arr[1]
+		} else {
+			ipRAW, err := net.ResolveIPAddr("ip4", m.Host)
+			if err != nil {
+				log.Error("deny BE", "can't resolve host", m.Host)
+				return false
+			}
+			ip = ipRAW.String()
+		}
 		be, err := denyListBECheck(ip)
 		if err != nil {
 			log.Error("denylist Belgium check", "error", err)
