@@ -7,39 +7,38 @@ import (
 	"regexp"
 	"strings"
 
-	hbot "github.com/ugjka/hellabot"
+	kitty "github.com/ugjka/kittybot"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var urbanTrig = regexp.MustCompile(`(?i)^\s*!(?:urban+|ud+)\w*\s+(\S.*)$`)
-var urban = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var urban = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && urbanTrig.MatchString(m.Content)
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		query := urbanTrig.FindStringSubmatch(m.Content)[1]
 		query = strings.ToLower(query)
 		defs, err := LookupWordDefinition(query)
 		if err != nil {
 			log.Warn("urban", "error", err)
 			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
-			return false
+			return
 		}
 		if len(defs.List) == 0 {
 			irc.Reply(m, fmt.Sprintf("%s: no results!", m.Name))
-			return false
+			return
 		}
 		result := defs.List[0]
 		result.Word = strings.ToLower(result.Word)
 		if result.Word != query {
 			irc.Reply(m, fmt.Sprintf("%s: no results!", m.Name))
-			return false
+			return
 		}
 		replacer := strings.NewReplacer("[", "", "]", "")
 		result.Definition = replacer.Replace(result.Definition)
 		result.Definition = strings.TrimSpace(result.Definition)
 		irc.Reply(m, fmt.Sprintf("%s: %s \n[%s]", m.Name, limit(result.Definition, 1024), result.Permalink))
-		return false
 	},
 }
 

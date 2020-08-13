@@ -7,16 +7,16 @@ import (
 	"regexp"
 	"strings"
 
-	hbot "github.com/ugjka/hellabot"
+	kitty "github.com/ugjka/kittybot"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var dictTrig = regexp.MustCompile(`(?i)^\s*!+dict(?:ionary)?\w*\s+(\S.*)$`)
-var dict = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var dict = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && dictTrig.MatchString(m.Content)
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		cmd := exec.Command("trans", "--no-ansi", "-d", dictTrig.FindStringSubmatch(m.Content)[1])
 		errBuf := bytes.NewBuffer(nil)
 		cmd.Stderr = errBuf
@@ -24,7 +24,7 @@ var dict = hbot.Trigger{
 		if err != nil {
 			irc.Reply(m, fmt.Sprintf("%s: %s", m.Name, errRequest))
 			log.Warn("!dict", "error", errBuf)
-			return false
+			return
 		}
 		res := ""
 		defs := []string{"noun", "adjective", "verb"}
@@ -37,7 +37,7 @@ var dict = hbot.Trigger{
 		}
 		if len(res) > 0 {
 			irc.Reply(m, fmt.Sprintf("%s: [DEFINITIONS] %s", m.Name, limit(res, 1024)))
-			return false
+			return
 		}
 		//Synonyms
 		for _, v := range defs {
@@ -49,19 +49,18 @@ var dict = hbot.Trigger{
 		}
 		if len(res) > 0 {
 			irc.Reply(m, fmt.Sprintf("%s: [SYNONYMS] %s", m.Name, limit(res, 1024)))
-			return false
+			return
 		}
 		irc.Reply(m, fmt.Sprintf("%s: no results", m.Name))
-		return false
 	},
 }
 
 var synTrig = regexp.MustCompile(`(?i)^\s*!+syn(?:onyms?)?\w*\s+(\S.*)$`)
-var syn = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var syn = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && synTrig.MatchString(m.Content)
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		cmd := exec.Command("trans", "--no-ansi", "-d", synTrig.FindStringSubmatch(m.Content)[1])
 		errBuf := bytes.NewBuffer(nil)
 		cmd.Stderr = errBuf
@@ -69,7 +68,7 @@ var syn = hbot.Trigger{
 		if err != nil {
 			irc.Reply(m, fmt.Sprintf("%s: %s", m.Name, errRequest))
 			log.Warn("!syn", "error", errBuf)
-			return false
+			return
 		}
 		res := ""
 		defs := []string{"noun", "adjective", "verb"}
@@ -83,9 +82,8 @@ var syn = hbot.Trigger{
 		}
 		if len(res) > 0 {
 			irc.Reply(m, fmt.Sprintf("%s: [SYNONYMS] %s", m.Name, limit(res, 1024)))
-			return false
+			return
 		}
 		irc.Reply(m, fmt.Sprintf("%s: no results", m.Name))
-		return false
 	},
 }

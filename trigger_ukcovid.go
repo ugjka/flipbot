@@ -8,16 +8,16 @@ import (
 	"sort"
 	"strings"
 
-	hbot "github.com/ugjka/hellabot"
+	kitty "github.com/ugjka/kittybot"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var ukcovidReg = regexp.MustCompile(`(?i)^\s*!+(?:uk|gb)(?:covid\w*)?(?:\s+(\S.*))?$`)
-var ukcovid = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var ukcovid = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return ukcovidReg.MatchString(m.Content)
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		input := ukcovidReg.FindStringSubmatch(m.Content)[1]
 		input = strings.TrimSpace(input)
 		if input == "" {
@@ -25,29 +25,28 @@ var ukcovid = hbot.Trigger{
 			if err != nil {
 				log.Error("ukcovid", "error", err)
 				irc.Reply(m, fmt.Sprintf("%s: some error happened", m.Name))
-				return false
+				return
 			}
 			irc.Reply(m, out)
-			return false
+			return
 		}
 		if strings.Contains(input, "death") {
 			out, err := getUKDeaths()
 			if err != nil {
 				log.Error("ukcovid", "error", err)
 				irc.Reply(m, fmt.Sprintf("%s: some error happened", m.Name))
-				return false
+				return
 			}
 			irc.Reply(m, out)
-			return false
+			return
 		}
 		out, err := getUKRegion(input)
 		if err != nil {
 			log.Error("ukcovid", "error", err)
 			irc.Reply(m, fmt.Sprintf("%s: some error happened", m.Name))
-			return false
+			return
 		}
 		irc.Reply(m, out)
-		return false
 	},
 }
 

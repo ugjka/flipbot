@@ -6,19 +6,18 @@ import (
 	"regexp"
 	"time"
 
-	hbot "github.com/ugjka/hellabot"
+	kitty "github.com/ugjka/kittybot"
 )
 
-var ball8 = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var ball8 = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		var ball8Reg = regexp.MustCompile(`(?i)\s*!+\d*ball+(?:\s+\S*)?`)
 		return ball8Reg.MatchString(m.Content)
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		rand.Seed(time.Now().UnixNano())
 		number := rand.Intn(len(ballChoices) - 1)
 		irc.Reply(m, fmt.Sprintf("%s: %s", m.Name, ballChoices[number]))
-		return false
 	},
 }
 

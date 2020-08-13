@@ -5,17 +5,16 @@ import (
 	"regexp"
 	"time"
 
-	hbot "github.com/ugjka/hellabot"
+	kitty "github.com/ugjka/kittybot"
 )
 
-var sexTrig = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var sexTrig = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		var sexTrigReg = regexp.MustCompile(`(?i)^\s*!+sex+$`)
 		return sexTrigReg.MatchString(m.Content)
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		irc.Reply(m, altogethernow())
-		return false
 	},
 }
 

@@ -7,25 +7,24 @@ import (
 	"regexp"
 
 	"github.com/PuerkitoBio/goquery"
-	hbot "github.com/ugjka/hellabot"
+	kitty "github.com/ugjka/kittybot"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var idkTrigReg = regexp.MustCompile(`(?i)^\s*!+idk+\s+(\S.*)$`)
-var idkTrig = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var idkTrig = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return idkTrigReg.MatchString(m.Content)
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		query := idkTrigReg.FindStringSubmatch(m.Content)[1]
 		link, err := idk(query)
 		if err != nil {
 			log.Error("idk", "error", err)
 			irc.Reply(m, fmt.Sprintf("%s: idk neither...", m.Name))
-			return false
+			return
 		}
 		irc.Reply(m, fmt.Sprintf("%s: %s", m.Name, link))
-		return false
 	},
 }
 

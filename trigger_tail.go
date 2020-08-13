@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	hbot "github.com/ugjka/hellabot"
+	kitty "github.com/ugjka/kittybot"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
@@ -14,11 +14,11 @@ var tailTrig = regexp.MustCompile("(?i)^\\s*!+tail\\w*\\s+(?:(\\d+)\\s+)?([A-Za-
 
 const maxTail = 10
 
-var tail = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var tail = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.To == ircChannel && m.Command == "PRIVMSG" && tailTrig.MatchString(m.Content)
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		capped := false
 		tailLen := 5
 		nick := ""
@@ -44,20 +44,20 @@ var tail = hbot.Trigger{
 			switch {
 			case err == errNotSeen:
 				irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
-				return false
+				return
 			case err != nil:
 				log.Crit("tailTrig", "error", err)
-				return false
+				return
 			}
 		}
 		msgs, err := userTail(nick, "!tail", tailLen)
 		switch {
 		case err == errNotSeen || err == errNoResults:
 			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
-			return false
+			return
 		case err != nil:
 			log.Crit("tailTrig", "error", err)
-			return false
+			return
 		}
 		if capped {
 			irc.Reply(m, fmt.Sprintf("%s: tail lenght is capped to %d", m.Name, maxTail))
@@ -65,6 +65,5 @@ var tail = hbot.Trigger{
 		for _, msg := range msgs {
 			irc.Reply(m, fmt.Sprintf("[%s] [%s] %s\n", msg.Time.Format("2006-01-02 3:04PM MST"), msg.Nick, msg.Message))
 		}
-		return false
 	},
 }
