@@ -51,10 +51,11 @@ var kittyParty = hbot.Trigger{
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		cats := []rune("😺😸😹😻😼😽🙀😿😾🐈🐈‍")
+		who := m.To
 		if m.To == irc.Nick {
-			m.To = m.Name
+			who = m.Name
 		}
-		maxlen := 510 - 2 - irc.Prefix.Len() - len(fmt.Sprintf("PRIVMSG %s :", m.To))
+		maxlen := 510 - 2 - irc.Prefix.Len() - len(fmt.Sprintf("PRIVMSG %s :", who))
 		msg := ""
 		rand.Seed(time.Now().UnixNano())
 		for i := 0; ; {
@@ -72,15 +73,16 @@ var kittyParty = hbot.Trigger{
 
 var pooParty = hbot.Trigger{
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		var pooReg = regexp.MustCompile(`(?i).*!+(?:po+p?|shit+|crap)party+(?:\s+\S*)?`)
+		var pooReg = regexp.MustCompile(`(?i).*!+(?:po+p?|shit+y?|crap)party+(?:\s+\S*)?`)
 		return m.Command == "PRIVMSG" && pooReg.MatchString(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		poo := []rune("‍💩🚽🧻🍷🍺😵🤢🤮💊💉🌧️🥦🧄🍄")
+		who := m.To
 		if m.To == irc.Nick {
-			m.To = m.Name
+			who = m.Name
 		}
-		maxlen := 510 - 2 - irc.Prefix.Len() - len(fmt.Sprintf("PRIVMSG %s :", m.To))
+		maxlen := 510 - 2 - irc.Prefix.Len() - len(fmt.Sprintf("PRIVMSG %s :", who))
 		msg := ""
 		rand.Seed(time.Now().UnixNano())
 		for i := 0; ; {

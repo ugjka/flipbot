@@ -160,8 +160,8 @@ func main() {
 	irc.AddTrigger(test)
 	irc.AddTrigger(googlenews)
 	irc.AddTrigger(ducker)
-	//irc.AddTrigger(reminder)
-	//irc.AddTrigger(getreminder)
+	irc.AddTrigger(reminder)
+	irc.AddTrigger(getreminder)
 	//irc.AddTrigger(names)
 	irc.AddTrigger(hug)
 	irc.AddTrigger(debug)
@@ -173,6 +173,10 @@ func main() {
 	//irc.AddTrigger(toss)
 	irc.AddTrigger(dict)
 	irc.AddTrigger(syn)
+	// Slow triggers
+	//irc.AddTrigger(vpnTrigger)
+	//irc.AddTrigger(denyBETrigger)
+
 	logHandler := log.LvlFilterHandler(log.LvlInfo, log.StdoutHandler)
 	irc.Logger.SetHandler(logHandler)
 
