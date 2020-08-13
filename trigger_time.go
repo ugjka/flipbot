@@ -8,26 +8,25 @@ import (
 	"strconv"
 	"time"
 
-	hbot "github.com/ugjka/hellabot"
+	kitty "github.com/ugjka/kittybot"
 	log "gopkg.in/inconshreveable/log15.v2"
 	"gopkg.in/ugjka/go-tz.v2/tz"
 )
 
 var clockTrig = regexp.MustCompile(`(?i)^\s*!+times?\w*\s+(\S.*)$`)
-var clock = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var clock = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && clockTrig.MatchString(m.Content)
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		query := clockTrig.FindStringSubmatch(m.Content)[1]
 		timez, err := getTime(query)
 		if err != nil {
 			log.Warn("no time", "for", query, "error", err)
 			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
-			return false
+			return
 		}
 		irc.Reply(m, fmt.Sprintf("%s: %s", m.Name, timez))
-		return false
 	},
 }
 

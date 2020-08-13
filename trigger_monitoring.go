@@ -12,7 +12,7 @@ import (
 
 	"github.com/boltdb/bolt"
 	"github.com/hako/durafmt"
-	hbot "github.com/ugjka/hellabot"
+	kitty "github.com/ugjka/kittybot"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
@@ -30,16 +30,16 @@ type Seen struct {
 
 var seenTrig = regexp.MustCompile("(?i)^\\s*!+seen\\w*\\s+([A-Za-z_\\-\\[\\]\\^{}|`][A-Za-z0-9_\\-\\[\\]\\^{}|`]{0,15}\\*?)$")
 
-var seen = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var seen = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && seenTrig.MatchString(m.Content)
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		nick := seenTrig.FindStringSubmatch(m.Content)[1]
 		nick = strings.ToLower(nick)
 		if nick == strings.ToLower(m.Name) {
 			irc.Reply(m, fmt.Sprintf("%s: I'm seeing you!", m.Name))
-			return false
+			return
 		}
 		seen := Seen{}
 		var err error
@@ -51,10 +51,10 @@ var seen = hbot.Trigger{
 		switch {
 		case err == errNotSeen:
 			irc.Reply(m, fmt.Sprintf("%s: I haven't seen that nick before", m.Name))
-			return false
+			return
 		case err != nil:
 			log.Warn("getSeen", "error", err)
-			return false
+			return
 		}
 		dur := durafmt.Parse(time.Now().UTC().Sub(seen.Seen))
 		if seen.LastMSG != "" {
@@ -62,8 +62,6 @@ var seen = hbot.Trigger{
 		} else {
 			irc.Reply(m, fmt.Sprintf("%s: I saw %s %s ago. Last activity: %s", m.Name, nick, roundDuration(dur.String()), seen.Command))
 		}
-
-		return false
 	},
 }
 
@@ -75,12 +73,12 @@ func roundDuration(dur string) string {
 	return strings.Join(arr[:2], " ")
 }
 
-var watcher = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var watcher = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return (m.Command == "PRIVMSG" && m.To == ircChannel) || m.Command == "JOIN" ||
 			m.Command == "QUIT" || m.Command == "PART" || m.Command == "KICK"
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		name := ""
 		if m.Command == "KICK" {
 			name = m.Params[1]
@@ -95,7 +93,7 @@ var watcher = hbot.Trigger{
 			err := setSeen(name, &seen)
 			if err != nil {
 				log.Warn("setSeen", "error", err)
-				return false
+				return
 			}
 		} else {
 			seen.Seen = time.Now().UTC()
@@ -103,19 +101,18 @@ var watcher = hbot.Trigger{
 			err := setSeen(name, &seen)
 			if err != nil {
 				log.Warn("setSeen", "error", err)
-				return false
+				return
 			}
 		}
-		return false
 	},
 }
 
 var topTrig = regexp.MustCompile(`(?i).*!+(?:top|masters?|masterminds?|echoline).*`)
-var top = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var top = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && topTrig.MatchString(m.Content)
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		stats := make(map[string]int)
 		res := make(result, 0)
 		week := time.Now().UTC().Add(time.Hour * -24 * 7)
@@ -139,7 +136,7 @@ var top = hbot.Trigger{
 		if err != nil {
 			log.Crit("!top", "error", err)
 			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
-			return false
+			return
 		}
 		for k, v := range stats {
 			k = k[:len(k)-1] + "*"
@@ -156,27 +153,25 @@ var top = hbot.Trigger{
 			out += fmt.Sprintf("%d. %s posts, ", i+1, v)
 		}
 		irc.Reply(m, out)
-		return false
 	},
 }
 
-var logmsg = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var logmsg = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && m.To == ircChannel
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		logCTR.Lock()
 		fmt.Fprintf(logCTR.File, "[%s] <%s>\t%s\n", time.Now().UTC().Format("06:01:02|15:04:05"), m.Name, m.Content)
 		logCTR.Unlock()
-		return false
 	},
 }
 
-var logJoin = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var logJoin = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "JOIN"
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		logCTR.Lock()
 		account := "[unknown]"
 		if len(m.Params) == 3 {
@@ -184,27 +179,25 @@ var logJoin = hbot.Trigger{
 		}
 		fmt.Fprintf(logCTR.File, "[%s] [JOIN]\t%s!%s@%s (%s) account: %s\n", time.Now().UTC().Format("06:01:02|15:04:05"), m.Name, m.User, m.Host, m.Trailing(), account)
 		logCTR.Unlock()
-		return false
 	},
 }
 
-var logAccount = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var logAccount = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "ACCOUNT"
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		logCTR.Lock()
 		fmt.Fprintf(logCTR.File, "[%s] [ACCOUNT]\t%s!%s@%s (%s)\n", time.Now().UTC().Format("06:01:02|15:04:05"), m.Name, m.User, m.Host, m.Params[0])
 		logCTR.Unlock()
-		return false
 	},
 }
 
-var logmsgBolt = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var logmsgBolt = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && m.To == ircChannel
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		err := setLogMSG(&Message{
 			Time:    time.Now(),
 			Nick:    m.Name,
@@ -213,7 +206,6 @@ var logmsgBolt = hbot.Trigger{
 		if err != nil {
 			log.Crit("setLogMSG", "error", err)
 		}
-		return false
 	},
 }
 

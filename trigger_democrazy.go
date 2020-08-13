@@ -5,77 +5,74 @@ import (
 	"regexp"
 	"strings"
 
-	hbot "github.com/ugjka/hellabot"
+	kitty "github.com/ugjka/kittybot"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var upvoteTrig = regexp.MustCompile(`(?i)^\s*(?:\++|!+(?:up+|upvote+)\s+)([[:alnum:]]\S{0,30})(?:\s+.*)?$`)
-var upvote = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var upvote = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && m.To == ircChannel && upvoteTrig.MatchString(m.Content)
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		word := upvoteTrig.FindStringSubmatch(m.Content)[1]
 		word = strings.ToLower(word)
 		votes, err := setvote(1, word)
 		if err != nil {
 			log.Crit("!upvote", "error", err)
-			return false
+			return
 		}
 		irc.Reply(m, fmt.Sprintf("%s: %.4f votes for %s. Your upvote will gradually expire in 7 days",
 			m.Name, votes, word))
-		return false
 	},
 }
 
 var downvoteTrig = regexp.MustCompile(`(?i)^\s*(?:-+|!+(?:down+|downvote+)\s+)([[:alnum:]]\S{0,30})(?:\s+.*)?$`)
-var downvote = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var downvote = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && m.To == ircChannel && downvoteTrig.MatchString(m.Content)
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		word := downvoteTrig.FindStringSubmatch(m.Content)[1]
 		word = strings.ToLower(word)
 		votes, err := setvote(-1, word)
 		if err != nil {
 			log.Crit("!downvote", "error", err)
-			return false
+			return
 		}
 		irc.Reply(m, fmt.Sprintf("%s: %.4f votes for %s. Your downvote will gradually expire in 7 days",
 			m.Name, votes, word))
-		return false
 	},
 }
 
 var rankTrig = regexp.MustCompile(`(?i)^\s*(?:\?+|!+rank+\s+)([[:alnum:]]\S{0,30})(?:\s+.*)?$`)
-var rank = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var rank = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && rankTrig.MatchString(m.Content)
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		word := rankTrig.FindStringSubmatch(m.Content)[1]
 		word = strings.ToLower(word)
 		votes, err := getvotes(word)
 		if err != nil {
 			log.Crit("!rank", "error", err)
-			return false
+			return
 		}
 		irc.Reply(m, fmt.Sprintf("%s: %.4f votes for %s",
 			m.Name, votes, word))
-		return false
 	},
 }
 
-var ranks = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var ranks = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		var ranksTrig = regexp.MustCompile(`(?i)^\s*!+(?:rank+s?|leader+s?|leaderboard+s?)\s*$`)
 		return m.Command == "PRIVMSG" && ranksTrig.MatchString(m.Content)
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		ranks, err := getRanks()
 		if err != nil {
 			log.Crit("!ranks", "error", err)
-			return false
+			return
 		}
 		out := "Leaderboard: "
 		if len(ranks) == 0 {
@@ -89,6 +86,5 @@ var ranks = hbot.Trigger{
 		}
 		out = strings.TrimSuffix(out, ", ") + "."
 		irc.Reply(m, out)
-		return false
 	},
 }

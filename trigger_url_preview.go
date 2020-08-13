@@ -8,26 +8,25 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	hbot "github.com/ugjka/hellabot"
+	kitty "github.com/ugjka/kittybot"
 
 	"github.com/PuerkitoBio/goquery"
 	log "gopkg.in/inconshreveable/log15.v2"
 	"mvdan.cc/xurls/v2"
 )
 
-var urltitle = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var urltitle = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && xurls.Strict().MatchString(m.Content) && m.Name != "Skittle"
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		url := xurls.Strict().FindString(m.Content)
 		res, err := getPreview(url)
 		if err != nil {
 			log.Warn("preview", "url", url, "error", err)
-			return false
+			return
 		}
 		irc.Reply(m, fmt.Sprintf("%s's link: %s", m.Name, limit(res, 300)))
-		return false
 	},
 }
 

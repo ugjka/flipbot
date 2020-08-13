@@ -11,7 +11,7 @@ import (
 
 	grmon "github.com/bcicen/grmon/agent"
 
-	hbot "github.com/ugjka/hellabot"
+	kitty "github.com/ugjka/kittybot"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
@@ -68,14 +68,14 @@ func main() {
 	signal.Notify(stop, syscall.SIGTERM)
 	signal.Notify(stop, syscall.SIGHUP)
 
-	hijackSession := func(bot *hbot.Bot) {
+	hijackSession := func(bot *kitty.Bot) {
 		bot.SSL = true
 	}
 
-	channels := func(bot *hbot.Bot) {
+	channels := func(bot *kitty.Bot) {
 		bot.Channels = []string{ircChannel}
 	}
-	irc, err := hbot.NewBot(fmt.Sprintf("%s:%s", ircServer, ircPort), ircNick, channels, hijackSession)
+	irc, err := kitty.NewBot(fmt.Sprintf("%s:%s", ircServer, ircPort), ircNick, channels, hijackSession)
 	if err != nil {
 		panic(err)
 	}

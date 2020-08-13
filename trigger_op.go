@@ -9,17 +9,17 @@ import (
 	"time"
 
 	"github.com/boltdb/bolt"
-	hbot "github.com/ugjka/hellabot"
+	kitty "github.com/ugjka/kittybot"
 	gomail "gopkg.in/gomail.v2"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var notifyopReg = regexp.MustCompile(`(?i).*!+(?:op+|alarm+|alert+).*`)
-var notifyop = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var notifyop = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && m.To == ircChannel && notifyopReg.MatchString(m.Content)
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		msg := gomail.NewMessage()
 		msg.SetHeader("From", msg.FormatAddress(serverEmail, "mbd"))
 		msg.SetHeader("To", email)
@@ -34,19 +34,18 @@ var notifyop = hbot.Trigger{
 
 		if err := d.DialAndSend(msg); err != nil {
 			log.Crit("could not push op nick highlight", "error", err)
-			return false
+			return
 		}
 		irc.Reply(m, fmt.Sprintf("%s: message emailed to %s", m.Name, op))
-		return false
 	},
 }
 
 var logOnce = &sync.Once{}
-var indexLog = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var indexLog = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.From == op && m.Content == "!index"
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		logOnce.Do(func() {
 			var max uint64
 			err := db.View(func(tx *bolt.Tx) error {
@@ -97,16 +96,15 @@ var indexLog = hbot.Trigger{
 			irc.Msg(op, "Indexing done!!!! Hip Hip Hurray!!!")
 			return
 		})
-		return false
 	},
 }
 
 var usersOnce = &sync.Once{}
-var indexUsers = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var indexUsers = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.From == op && m.Content == "!indexusers"
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		usersOnce.Do(func() {
 			var max uint64
 			err := db.View(func(tx *bolt.Tx) error {
@@ -155,6 +153,5 @@ var indexUsers = hbot.Trigger{
 			}
 			irc.Msg(op, "Users Indexed!!! Hip Hip Hurray!!!")
 		})
-		return false
 	},
 }

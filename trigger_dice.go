@@ -5,16 +5,16 @@ import (
 	"os"
 	"regexp"
 
-	hbot "github.com/ugjka/hellabot"
+	kitty "github.com/ugjka/kittybot"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var diceTrigReg = regexp.MustCompile(`(?i)^\s*!+(?:dice+|roll+)(?:\s+(\d+))?$`)
-var diceTrig = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var diceTrig = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return diceTrigReg.MatchString(m.Content)
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		rolls := 0
 		arr := diceTrigReg.FindStringSubmatch(m.Content)
 		if len(arr) > 1 {
@@ -29,7 +29,7 @@ var diceTrig = hbot.Trigger{
 		rand, err := os.Open("/dev/urandom")
 		if err != nil {
 			log.Error("dice", "rand open error", err)
-			return false
+			return
 		}
 		defer rand.Close()
 		bit := make([]byte, 1)
@@ -41,7 +41,7 @@ var diceTrig = hbot.Trigger{
 			_, err = rand.Read(bit)
 			if err != nil {
 				log.Error("dice", "read error", err)
-				return false
+				return
 			}
 			if int(bit[0]) >= 1 && int(bit[0]) <= 6 {
 				out += dice[int(bit[0])] + " "
@@ -49,7 +49,6 @@ var diceTrig = hbot.Trigger{
 			}
 		}
 		irc.Reply(m, out)
-		return false
 	},
 }
 

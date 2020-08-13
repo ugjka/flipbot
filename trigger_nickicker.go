@@ -5,15 +5,15 @@ import (
 	"sync"
 	"time"
 
-	hbot "github.com/ugjka/hellabot"
+	kitty "github.com/ugjka/kittybot"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-var nickickerTrig = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var nickickerTrig = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return (m.Command == "JOIN" || m.Command == "NICK") && m.Name != ircNick
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		hostmask := m.Prefix.User + "@" + m.Prefix.Host
 		if m.Command == "JOIN" {
 			err := addNickHostmask(hostmask, m.Name)
@@ -33,7 +33,7 @@ var nickickerTrig = hbot.Trigger{
 					err := addQuiet(ip, timeOut)
 					if err != nil {
 						log.Crit("could not add quiet to db", "error", err)
-						return false
+						return
 					}
 					irc.Send(fmt.Sprintf("MODE %s +q *!*@%s", ircChannel, ip))
 					irc.Send(fmt.Sprintf("NOTICE %s :you can talk after %s", m.Name, timeOut))
@@ -45,7 +45,7 @@ var nickickerTrig = hbot.Trigger{
 							log.Crit("can't remove quiet", "error", err)
 						}
 					})
-					return false
+					return
 				}
 				if time.Now().UTC().After(t) {
 					log.Info("timout from db", "ip", ip)
@@ -53,7 +53,7 @@ var nickickerTrig = hbot.Trigger{
 					err := removeQuiet(ip)
 					if err != nil {
 						log.Crit("can't remove quiet", "error", err)
-						return false
+						return
 					}
 				} else {
 					irc.Send(fmt.Sprintf("NOTICE %s :you can talk after %s", m.Name, t.Sub(time.Now())))
@@ -74,7 +74,6 @@ var nickickerTrig = hbot.Trigger{
 				irc.Send(fmt.Sprintf("REMOVE %s %s :Too many nick changes in the past 24 hours", ircChannel, m.To))
 			}
 		}
-		return false
 	},
 }
 
@@ -83,11 +82,11 @@ const nickChangesMax = 6
 
 var nickickerCleanupOnce = &sync.Once{}
 
-var nickickerCleanupTrig = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var nickickerCleanupTrig = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PING" || m.Command == "PONG" || (m.Command == "PRIVMSG" && m.To == ircChannel)
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		nickickerCleanupOnce.Do(func() {
 			log.Info("info", "starting quiet timers", "started")
 			err := quietTimers(irc)
@@ -96,6 +95,5 @@ var nickickerCleanupTrig = hbot.Trigger{
 			}
 			log.Info("info", "starting quiet timers", "executed")
 		})
-		return false
 	},
 }

@@ -10,29 +10,29 @@ import (
 	"strings"
 	"time"
 
-	hbot "github.com/ugjka/hellabot"
+	kitty "github.com/ugjka/kittybot"
 	log "gopkg.in/inconshreveable/log15.v2"
 	"gopkg.in/ugjka/go-tz.v2/tz"
 )
 
 var covidTriggerReg = regexp.MustCompile(`(?i)\s*!+(?:covid-?(?:19)?|corona(?:virus|chan)?)\s+(\w+.*)`)
-var covidTrigger = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var covidTrigger = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return covidTriggerReg.MatchString(m.Content)
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		country := covidTriggerReg.FindStringSubmatch(m.Content)[1]
 		resp, err := httpClient.Get(coronaCountryAPI + country)
 		if err != nil {
 			log.Error("covid", "get error", err)
-			return false
+			return
 		}
 		defer resp.Body.Close()
 		c := covid{}
 		err = json.NewDecoder(resp.Body).Decode(&c)
 		if err != nil {
 			log.Error("covid", "decode error", err)
-			return false
+			return
 		}
 		states := make(states, 0)
 		state := state{}
@@ -53,30 +53,28 @@ var covidTrigger = hbot.Trigger{
 		case state.State == "":
 			irc.Reply(m, c.String())
 		}
-		return false
 	},
 }
 
 var covidAllTriggerReg = regexp.MustCompile(`(?i)^\s*!+(?:covid-?(?:19)?|corona(?:virus|chan)?)$`)
-var covidAllTrigger = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var covidAllTrigger = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return covidAllTriggerReg.MatchString(m.Content)
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		resp, err := httpClient.Get(coronaAllAPI)
 		if err != nil {
 			log.Error("covid all", "get error", err)
-			return false
+			return
 		}
 		defer resp.Body.Close()
 		c := covidAll{}
 		err = json.NewDecoder(resp.Body).Decode(&c)
 		if err != nil {
 			log.Error("covid all", "decode error", err)
-			return false
+			return
 		}
 		irc.Reply(m, c.String())
-		return false
 	},
 }
 

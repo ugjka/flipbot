@@ -15,7 +15,7 @@ import (
 
 	"github.com/boltdb/bolt"
 	"github.com/hako/durafmt"
-	hbot "github.com/ugjka/hellabot"
+	kitty "github.com/ugjka/kittybot"
 	log "gopkg.in/inconshreveable/log15.v2"
 	"mvdan.cc/xurls/v2"
 )
@@ -826,7 +826,7 @@ func removeQuiet(ip string) (err error) {
 	return
 }
 
-func quietTimers(bot *hbot.Bot) (err error) {
+func quietTimers(bot *kitty.Bot) (err error) {
 	err = db.Batch(func(tx *bolt.Tx) error {
 		b := tx.Bucket(quietBucket)
 		return b.ForEach(func(k, v []byte) error {

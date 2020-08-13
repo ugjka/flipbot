@@ -11,23 +11,22 @@ import (
 	"strings"
 	"sync"
 
-	hbot "github.com/ugjka/hellabot"
+	kitty "github.com/ugjka/kittybot"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-var kickmeTrigger = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var kickmeTrigger = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && m.To == ircChannel && m.Content == "!kickme"
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		irc.Send(fmt.Sprintf("KICK %s %s :why are you kicking yourself", ircChannel, m.Name))
-		return false
 	},
 }
 
 var ipReg = regexp.MustCompile(`^\D*(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$`)
-var vpnTrigger = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var vpnTrigger = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		if m.Command == "JOIN" {
 			if !ipReg.MatchString(m.Host) {
 				return false
@@ -41,41 +40,40 @@ var vpnTrigger = hbot.Trigger{
 		}
 		return m.Command == "JOIN"
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		const warning = "VPN/Proxy/Datacenter IP addresses are banned, please identify with freenode before joining to bypass this check"
 		arr := ipReg.FindStringSubmatch(m.Host)
 		ip := arr[1]
 		vpn, err := denyListVPNCheck(ip)
 		if err != nil {
 			log.Error("denylist vpn check", "error", err)
-			return false
+			return
 		}
 		if vpn {
 			log.Info("denylist vpn detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
 			irc.Send(fmt.Sprintf("REMOVE %s %s :%s", ircChannel, m.Name, warning))
-			return false
+			return
 		}
 		vpn, err = subnetVPNCheck(ip)
 		if err != nil {
 			log.Error("subnet vpn check", "error", err)
-			return false
+			return
 		}
 		if vpn {
 			log.Info("subnet vpn detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
 			irc.Send(fmt.Sprintf("REMOVE %s %s :%s", ircChannel, m.Name, warning))
-			return false
+			return
 		}
 		vpn, err = providerVPNCheck(ip)
 		if err != nil {
 			log.Error("provider vpn check", "error", err)
-			return false
+			return
 		}
 		if vpn {
 			log.Info("provider vpn detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
 			irc.Send(fmt.Sprintf("REMOVE %s %s :%s", ircChannel, m.Name, warning))
-			return false
+			return
 		}
-		return false
 	},
 }
 
@@ -201,8 +199,8 @@ func denyListVPNCheck(ip string) (vpn bool, err error) {
 	return
 }
 
-var denyBETrigger = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var denyBETrigger = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		if m.Command == "JOIN" {
 			if m.Name == "klimdaddie" || m.Name == "yousei" || m.Name == ircNick {
 				return false
@@ -213,7 +211,7 @@ var denyBETrigger = hbot.Trigger{
 		}
 		return m.Command == "JOIN"
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		const warning = "BELGIUM is banned, please identify with freenode before joining to bypass this check"
 		ip := ""
 		if ipReg.MatchString(m.Host) {
@@ -223,21 +221,20 @@ var denyBETrigger = hbot.Trigger{
 			ipRAW, err := net.ResolveIPAddr("ip4", m.Host)
 			if err != nil {
 				log.Error("deny BE", "can't resolve host", m.Host)
-				return false
+				return
 			}
 			ip = ipRAW.String()
 		}
 		be, err := denyListBECheck(ip)
 		if err != nil {
 			log.Error("denylist Belgium check", "error", err)
-			return false
+			return
 		}
 		if be {
 			log.Info("denylist Belgium detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
 			irc.Send(fmt.Sprintf("REMOVE %s %s :%s", ircChannel, m.Name, warning))
-			return false
+			return
 		}
-		return false
 	},
 }
 

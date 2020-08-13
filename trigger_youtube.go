@@ -9,30 +9,30 @@ import (
 	"time"
 
 	"github.com/dustin/go-humanize"
-	hbot "github.com/ugjka/hellabot"
+	kitty "github.com/ugjka/kittybot"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var youtubeTrig = regexp.MustCompile(`(?i)^\s*!+(?:youtube?|yt|ytube|tube)\w*\s+(\S.*)$`)
-var youtube = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var youtube = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && youtubeTrig.MatchString(m.Content)
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		res, err := searchYt(youtubeTrig.FindStringSubmatch(m.Content)[1])
 		if err != nil {
 			log.Warn("youtube search", "error", err)
 			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
-			return false
+			return
 		}
 		if len(res.Items) == 0 {
 			irc.Reply(m, fmt.Sprintf("%s: no results!", m.Name))
-			return false
+			return
 		}
 		publishTime, err := time.Parse(time.RFC3339, res.Items[0].Snippet.PublishTime)
 		if err != nil {
 			log.Error("search youtube", "error", err)
-			return false
+			return
 		}
 		result := fmt.Sprintf("%s: [Youtube] %s | %s | %s | https://youtu.be/%s",
 			m.Name,
@@ -43,7 +43,6 @@ var youtube = hbot.Trigger{
 		)
 		result = html.UnescapeString(result)
 		irc.Reply(m, result)
-		return false
 	},
 }
 

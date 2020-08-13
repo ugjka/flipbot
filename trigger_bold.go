@@ -6,15 +6,15 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	hbot "github.com/ugjka/hellabot"
+	kitty "github.com/ugjka/kittybot"
 )
 
 var boldReg = regexp.MustCompile(`(?i)\s*!+(?:bold)\s+(\S+.*)`)
-var bold = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var bold = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return boldReg.MatchString(m.Content)
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		text := boldReg.FindStringSubmatch(m.Content)[1]
 		text = strings.ToLower(text)
 		out := ""
@@ -22,7 +22,7 @@ var bold = hbot.Trigger{
 		if m.To == irc.Nick {
 			who = m.Name
 		}
-		maxlen := 510 - 2 - irc.Prefix.Len() - len(fmt.Sprintf("PRIVMSG %s :", who))
+		maxlen := 510 - 2 - irc.Prefix().Len() - len(fmt.Sprintf("PRIVMSG %s :", who))
 		spacer := '⚬'
 		var placeholder rune
 		for _, v := range text {
@@ -37,7 +37,6 @@ var bold = hbot.Trigger{
 			out += string(placeholder)
 		}
 		irc.Reply(m, out)
-		return false
 	},
 }
 

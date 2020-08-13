@@ -4,16 +4,16 @@ import (
 	"regexp"
 	"time"
 
-	hbot "github.com/ugjka/hellabot"
+	kitty "github.com/ugjka/kittybot"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-var isDead = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var isDead = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		var isDeadReg = regexp.MustCompile(`(?i).*!+(?:(?:is)?dead+.*).*`)
 		return m.Command == "PRIVMSG" && isDeadReg.MatchString(m.Content)
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		d, err := getDead(
 			time.Minute*15,
 			time.Minute*30,
@@ -22,25 +22,23 @@ var isDead = hbot.Trigger{
 		)
 		if err != nil {
 			log.Error("getDead", "error", err)
-			return false
+			return
 		}
 		irc.Reply(m, d.String())
-		return false
 	},
 }
 
-var isRecent = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var isRecent = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		var isRecentReg = regexp.MustCompile(`(?i).*!+(?:(?:is)?recent+.*).*`)
 		return m.Command == "PRIVMSG" && isRecentReg.MatchString(m.Content)
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		r, err := getRecent(10)
 		if err != nil {
 			log.Error("getRecent", "error", err)
-			return false
+			return
 		}
 		irc.Reply(m, r.String())
-		return false
 	},
 }

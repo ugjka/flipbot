@@ -4,17 +4,17 @@ import (
 	"strings"
 	"sync"
 
-	hbot "github.com/ugjka/hellabot"
+	kitty "github.com/ugjka/kittybot"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var extjoinOnce = &sync.Once{}
 
-var extJoin = hbot.Trigger{
-	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
+var extJoin = kitty.Trigger{
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "JOIN" || m.Command == "CAP"
 	},
-	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *kitty.Bot, m *kitty.Message) {
 		if m.Command == "JOIN" {
 			extjoinOnce.Do(func() {
 				log.Info("cap", "extended-join account-notify", "requesting")
@@ -26,6 +26,5 @@ var extJoin = hbot.Trigger{
 			irc.Send("CAP END")
 			extJoinEnabled = true
 		}
-		return false
 	},
 }
