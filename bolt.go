@@ -826,10 +826,10 @@ func removeQuiet(ip string) (err error) {
 	return
 }
 
-func quietTimers(bot *kitty.Bot) (err error) {
+func quietTimers(b *kitty.Bot) (err error) {
 	err = db.Batch(func(tx *bolt.Tx) error {
-		b := tx.Bucket(quietBucket)
-		return b.ForEach(func(k, v []byte) error {
+		bucket := tx.Bucket(quietBucket)
+		return bucket.ForEach(func(k, v []byte) error {
 			now := time.Now()
 			t, err := time.Parse(time.RFC3339, string(v))
 			if err != nil {
@@ -840,7 +840,7 @@ func quietTimers(bot *kitty.Bot) (err error) {
 			ip := string(buf)
 			time.AfterFunc(t.Sub(now), func() {
 				log.Info("Quiet timer", "unbanning ip", ip)
-				bot.Send(fmt.Sprintf("MODE %s -q *!*@%s", ircChannel, ip))
+				b.Send(fmt.Sprintf("MODE %s -q *!*@%s", ircChannel, ip))
 				err := removeQuiet(ip)
 				if err != nil {
 					log.Crit("can't remove quiet", "error", err)

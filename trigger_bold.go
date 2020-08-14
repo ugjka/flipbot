@@ -11,18 +11,18 @@ import (
 
 var boldReg = regexp.MustCompile(`(?i)\s*!+(?:bold)\s+(\S+.*)`)
 var bold = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		return boldReg.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
+	Action: func(b *kitty.Bot, m *kitty.Message) {
 		text := boldReg.FindStringSubmatch(m.Content)[1]
 		text = strings.ToLower(text)
 		out := ""
 		who := m.To
-		if m.To == irc.Nick {
+		if m.To == b.Nick {
 			who = m.Name
 		}
-		maxlen := 510 - 2 - irc.Prefix().Len() - len(fmt.Sprintf("PRIVMSG %s :", who))
+		maxlen := 510 - 2 - b.Prefix().Len() - len(fmt.Sprintf("PRIVMSG %s :", who))
 		spacer := '⚬'
 		var placeholder rune
 		for _, v := range text {
@@ -36,7 +36,7 @@ var bold = kitty.Trigger{
 			}
 			out += string(placeholder)
 		}
-		irc.Reply(m, out)
+		b.Reply(m, out)
 	},
 }
 

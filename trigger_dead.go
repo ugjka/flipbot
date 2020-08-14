@@ -9,11 +9,11 @@ import (
 )
 
 var isDead = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		var isDeadReg = regexp.MustCompile(`(?i).*!+(?:(?:is)?dead+.*).*`)
 		return m.Command == "PRIVMSG" && isDeadReg.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
+	Action: func(b *kitty.Bot, m *kitty.Message) {
 		d, err := getDead(
 			time.Minute*15,
 			time.Minute*30,
@@ -24,21 +24,21 @@ var isDead = kitty.Trigger{
 			log.Error("getDead", "error", err)
 			return
 		}
-		irc.Reply(m, d.String())
+		b.Reply(m, d.String())
 	},
 }
 
 var isRecent = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		var isRecentReg = regexp.MustCompile(`(?i).*!+(?:(?:is)?recent+.*).*`)
 		return m.Command == "PRIVMSG" && isRecentReg.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
+	Action: func(b *kitty.Bot, m *kitty.Message) {
 		r, err := getRecent(10)
 		if err != nil {
 			log.Error("getRecent", "error", err)
 			return
 		}
-		irc.Reply(m, r.String())
+		b.Reply(m, r.String())
 	},
 }

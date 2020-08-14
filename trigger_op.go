@@ -16,10 +16,10 @@ import (
 
 var notifyopReg = regexp.MustCompile(`(?i).*!+(?:op+|alarm+|alert+).*`)
 var notifyop = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && m.To == ircChannel && notifyopReg.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
+	Action: func(b *kitty.Bot, m *kitty.Message) {
 		msg := gomail.NewMessage()
 		msg.SetHeader("From", msg.FormatAddress(serverEmail, "mbd"))
 		msg.SetHeader("To", email)
@@ -36,16 +36,16 @@ var notifyop = kitty.Trigger{
 			log.Crit("could not push op nick highlight", "error", err)
 			return
 		}
-		irc.Reply(m, fmt.Sprintf("%s: message emailed to %s", m.Name, op))
+		b.Reply(m, fmt.Sprintf("%s: message emailed to %s", m.Name, op))
 	},
 }
 
 var logOnce = &sync.Once{}
 var indexLog = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		return m.From == op && m.Content == "!index"
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
+	Action: func(b *kitty.Bot, m *kitty.Message) {
 		logOnce.Do(func() {
 			var max uint64
 			err := db.View(func(tx *bolt.Tx) error {
@@ -60,7 +60,7 @@ var indexLog = kitty.Trigger{
 			semaphore := make(chan struct{}, 100)
 			for i := 1; i < int(max); i++ {
 				if i%10000 == 0 {
-					irc.Msg(op, fmt.Sprintf("indexing %d out of %d", i, max))
+					b.Msg(op, fmt.Sprintf("indexing %d out of %d", i, max))
 				}
 				semaphore <- struct{}{}
 				go func(i int) {
@@ -93,7 +93,7 @@ var indexLog = kitty.Trigger{
 					<-semaphore
 				}(i)
 			}
-			irc.Msg(op, "Indexing done!!!! Hip Hip Hurray!!!")
+			b.Msg(op, "Indexing done!!!! Hip Hip Hurray!!!")
 			return
 		})
 	},
@@ -101,10 +101,10 @@ var indexLog = kitty.Trigger{
 
 var usersOnce = &sync.Once{}
 var indexUsers = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		return m.From == op && m.Content == "!indexusers"
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
+	Action: func(b *kitty.Bot, m *kitty.Message) {
 		usersOnce.Do(func() {
 			var max uint64
 			err := db.View(func(tx *bolt.Tx) error {
@@ -119,7 +119,7 @@ var indexUsers = kitty.Trigger{
 			semaphore := make(chan struct{}, 100)
 			for i := 1; i < int(max); i++ {
 				if i%10000 == 0 {
-					irc.Msg(op, fmt.Sprintf("\r%d out of %d", i, max))
+					b.Msg(op, fmt.Sprintf("\r%d out of %d", i, max))
 				}
 				semaphore <- struct{}{}
 				go func(i int) {
@@ -151,7 +151,7 @@ var indexUsers = kitty.Trigger{
 					<-semaphore
 				}(i)
 			}
-			irc.Msg(op, "Users Indexed!!! Hip Hip Hurray!!!")
+			b.Msg(op, "Users Indexed!!! Hip Hip Hurray!!!")
 		})
 	},
 }

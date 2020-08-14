@@ -11,21 +11,21 @@ import (
 
 var fliptextTrig = regexp.MustCompile(`(?i)^\s*!+flip+\w*\s+(\S.*)$`)
 var fliptext = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && fliptextTrig.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
-		irc.Reply(m, fmt.Sprintf("(╯‵Д′)╯彡%s", upside(fliptextTrig.FindStringSubmatch(m.Content)[1])))
+	Action: func(b *kitty.Bot, m *kitty.Message) {
+		b.Reply(m, fmt.Sprintf("(╯‵Д′)╯彡%s", upside(fliptextTrig.FindStringSubmatch(m.Content)[1])))
 	},
 }
 
 var unfliptextTrig = regexp.MustCompile(`(?i)^\s*!+unflip+\w*\s+(\S.*)$`)
 var unfliptext = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && unfliptextTrig.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
-		irc.Reply(m, fmt.Sprintf("%s <(•_•<)", upside(unfliptextTrig.FindStringSubmatch(m.Content)[1])))
+	Action: func(b *kitty.Bot, m *kitty.Message) {
+		b.Reply(m, fmt.Sprintf("%s <(•_•<)", upside(unfliptextTrig.FindStringSubmatch(m.Content)[1])))
 	},
 }
 

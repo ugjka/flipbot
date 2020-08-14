@@ -10,10 +10,10 @@ import (
 
 
 var trigger = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		return true
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) bool {
+	Action: func(b *kitty.Bot, m *kitty.Message) bool {
 		return false
 	},
 }
