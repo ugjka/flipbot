@@ -13,16 +13,16 @@ import (
 
 var dictTrig = regexp.MustCompile(`(?i)^\s*!+dict(?:ionary)?\w*\s+(\S.*)$`)
 var dict = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && dictTrig.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
+	Action: func(b *kitty.Bot, m *kitty.Message) {
 		cmd := exec.Command("trans", "--no-ansi", "-d", dictTrig.FindStringSubmatch(m.Content)[1])
 		errBuf := bytes.NewBuffer(nil)
 		cmd.Stderr = errBuf
 		out, err := cmd.Output()
 		if err != nil {
-			irc.Reply(m, fmt.Sprintf("%s: %s", m.Name, errRequest))
+			b.Reply(m, fmt.Sprintf("%s: %s", m.Name, errRequest))
 			log.Warn("!dict", "error", errBuf)
 			return
 		}
@@ -36,7 +36,7 @@ var dict = kitty.Trigger{
 			}
 		}
 		if len(res) > 0 {
-			irc.Reply(m, fmt.Sprintf("%s: [DEFINITIONS] %s", m.Name, limit(res, 1024)))
+			b.Reply(m, fmt.Sprintf("%s: [DEFINITIONS] %s", m.Name, limit(res, 1024)))
 			return
 		}
 		//Synonyms
@@ -48,25 +48,25 @@ var dict = kitty.Trigger{
 			}
 		}
 		if len(res) > 0 {
-			irc.Reply(m, fmt.Sprintf("%s: [SYNONYMS] %s", m.Name, limit(res, 1024)))
+			b.Reply(m, fmt.Sprintf("%s: [SYNONYMS] %s", m.Name, limit(res, 1024)))
 			return
 		}
-		irc.Reply(m, fmt.Sprintf("%s: no results", m.Name))
+		b.Reply(m, fmt.Sprintf("%s: no results", m.Name))
 	},
 }
 
 var synTrig = regexp.MustCompile(`(?i)^\s*!+syn(?:onyms?)?\w*\s+(\S.*)$`)
 var syn = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && synTrig.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
+	Action: func(b *kitty.Bot, m *kitty.Message) {
 		cmd := exec.Command("trans", "--no-ansi", "-d", synTrig.FindStringSubmatch(m.Content)[1])
 		errBuf := bytes.NewBuffer(nil)
 		cmd.Stderr = errBuf
 		out, err := cmd.Output()
 		if err != nil {
-			irc.Reply(m, fmt.Sprintf("%s: %s", m.Name, errRequest))
+			b.Reply(m, fmt.Sprintf("%s: %s", m.Name, errRequest))
 			log.Warn("!syn", "error", errBuf)
 			return
 		}
@@ -81,9 +81,9 @@ var syn = kitty.Trigger{
 			}
 		}
 		if len(res) > 0 {
-			irc.Reply(m, fmt.Sprintf("%s: [SYNONYMS] %s", m.Name, limit(res, 1024)))
+			b.Reply(m, fmt.Sprintf("%s: [SYNONYMS] %s", m.Name, limit(res, 1024)))
 			return
 		}
-		irc.Reply(m, fmt.Sprintf("%s: no results", m.Name))
+		b.Reply(m, fmt.Sprintf("%s: no results", m.Name))
 	},
 }

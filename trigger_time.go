@@ -15,18 +15,18 @@ import (
 
 var clockTrig = regexp.MustCompile(`(?i)^\s*!+times?\w*\s+(\S.*)$`)
 var clock = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && clockTrig.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
+	Action: func(b *kitty.Bot, m *kitty.Message) {
 		query := clockTrig.FindStringSubmatch(m.Content)[1]
 		timez, err := getTime(query)
 		if err != nil {
 			log.Warn("no time", "for", query, "error", err)
-			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
+			b.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		}
-		irc.Reply(m, fmt.Sprintf("%s: %s", m.Name, timez))
+		b.Reply(m, fmt.Sprintf("%s: %s", m.Name, timez))
 	},
 }
 

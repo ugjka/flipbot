@@ -13,18 +13,18 @@ import (
 
 var idkTrigReg = regexp.MustCompile(`(?i)^\s*!+idk+\s+(\S.*)$`)
 var idkTrig = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		return idkTrigReg.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
+	Action: func(b *kitty.Bot, m *kitty.Message) {
 		query := idkTrigReg.FindStringSubmatch(m.Content)[1]
 		link, err := idk(query)
 		if err != nil {
 			log.Error("idk", "error", err)
-			irc.Reply(m, fmt.Sprintf("%s: idk neither...", m.Name))
+			b.Reply(m, fmt.Sprintf("%s: idk neither...", m.Name))
 			return
 		}
-		irc.Reply(m, fmt.Sprintf("%s: %s", m.Name, link))
+		b.Reply(m, fmt.Sprintf("%s: %s", m.Name, link))
 	},
 }
 

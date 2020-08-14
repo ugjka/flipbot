@@ -13,17 +13,17 @@ import (
 
 var wikiTrig = regexp.MustCompile(`(?i)^\s*!+wiki(?:pedia)?\w*\s+(\S.*)$`)
 var wiki = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && wikiTrig.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
+	Action: func(b *kitty.Bot, m *kitty.Message) {
 		answer, link, err := searchWiki(wikiTrig.FindStringSubmatch(m.Content)[1])
 		if err != nil {
 			log.Warn("wiki", "error", err)
-			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errNoResults))
+			b.Reply(m, fmt.Sprintf("%s: %v", m.Name, errNoResults))
 			return
 		}
-		irc.Reply(m, fmt.Sprintf("%s: %s \n[%s]", m.Name, limit(answer, 2048), link))
+		b.Reply(m, fmt.Sprintf("%s: %s \n[%s]", m.Name, limit(answer, 2048), link))
 	},
 }
 

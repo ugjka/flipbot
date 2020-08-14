@@ -17,43 +17,43 @@ import (
 )
 
 var vixey = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		var vixeyTrig = regexp.MustCompile(`(?i).*!+(?:vixey.*|dash.*)(?:\s+\S*)?`)
 		return m.Command == "PRIVMSG" && vixeyTrig.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
+	Action: func(b *kitty.Bot, m *kitty.Message) {
 		const vixeyIMG = "https://i.imgur.com/6Amydph.jpg"
-		irc.Reply(m, vixeyIMG)
+		b.Reply(m, vixeyIMG)
 	},
 }
 
 var morningTrig = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		var morningReg = regexp.MustCompile(`(?i).*!+(?:goo+d)?morning(?:\s+\S*)?`)
 		return m.Command == "PRIVMSG" && morningReg.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
+	Action: func(b *kitty.Bot, m *kitty.Message) {
 		morning := []rune("☕☕☕☕🥪🥐🧈🍞🥞🥓😴🥱🙃⏰💻🧇🚬🚿🚽🪥🥣")
 		rand.Seed(time.Now().UnixNano())
 		rand.Shuffle(len(morning), func(i, j int) {
 			morning[i], morning[j] = morning[j], morning[i]
 		})
-		irc.Reply(m, string(morning))
+		b.Reply(m, string(morning))
 	},
 }
 
 var kittyParty = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		var kittyReg = regexp.MustCompile(`(?i).*!+(?:kit+y+|kitten|cat+)party+(?:\s+\S*)?`)
 		return m.Command == "PRIVMSG" && kittyReg.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
+	Action: func(b *kitty.Bot, m *kitty.Message) {
 		cats := []rune("😺😸😹😻😼😽🙀😿😾🐈🐈‍")
 		who := m.To
-		if m.To == irc.Nick {
+		if m.To == b.Nick {
 			who = m.Name
 		}
-		maxlen := 510 - 2 - irc.Prefix().Len() - len(fmt.Sprintf("PRIVMSG %s :", who))
+		maxlen := 510 - 2 - b.Prefix().Len() - len(fmt.Sprintf("PRIVMSG %s :", who))
 		msg := ""
 		rand.Seed(time.Now().UnixNano())
 		for i := 0; ; {
@@ -64,22 +64,22 @@ var kittyParty = kitty.Trigger{
 			msg += string(cats[j])
 			i += utf8.RuneLen(cats[j])
 		}
-		irc.Reply(m, msg)
+		b.Reply(m, msg)
 	},
 }
 
 var pooParty = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		var pooReg = regexp.MustCompile(`(?i).*!+(?:po+p?|shit+y?|crap)party+(?:\s+\S*)?`)
 		return m.Command == "PRIVMSG" && pooReg.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
+	Action: func(b *kitty.Bot, m *kitty.Message) {
 		poo := []rune("‍💩🚽🧻🍷🍺😵🤢🤮💊💉🌧️🥦🧄🍄")
 		who := m.To
-		if m.To == irc.Nick {
+		if m.To == b.Nick {
 			who = m.Name
 		}
-		maxlen := 510 - 2 - irc.Prefix().Len() - len(fmt.Sprintf("PRIVMSG %s :", who))
+		maxlen := 510 - 2 - b.Prefix().Len() - len(fmt.Sprintf("PRIVMSG %s :", who))
 		msg := ""
 		rand.Seed(time.Now().UnixNano())
 		for i := 0; ; {
@@ -90,114 +90,114 @@ var pooParty = kitty.Trigger{
 			msg += string(poo[j])
 			i += utf8.RuneLen(poo[j])
 		}
-		irc.Reply(m, msg)
+		b.Reply(m, msg)
 	},
 }
 
 var echo = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, "!repeat ")
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
+	Action: func(b *kitty.Bot, m *kitty.Message) {
 		msg := fmt.Sprintf("%s says: '%s'", m.Name, strings.TrimPrefix(m.Content, "!repeat "))
-		irc.Reply(m, msg)
+		b.Reply(m, msg)
 	},
 }
 
 var test = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		var testTrig = regexp.MustCompile(`(?i).*!+(?:test|testing|check|caddy\w*|ceph\w*)(?:\s+\S*)?`)
 		return m.Command == "PRIVMSG" && testTrig.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
-		irc.Reply(m, "Congratulations, all kittens tested and ready!")
+	Action: func(b *kitty.Bot, m *kitty.Message) {
+		b.Reply(m, "Congratulations, all kittens tested and ready!")
 	},
 }
 
 var hugTrig = regexp.MustCompile(`(?i)^\s*!+(?:hugs?|loves?)\s+(\S.*)$`)
 var hug = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && hugTrig.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
-		irc.Reply(m, fmt.Sprintf("%s hugs %s!", m.Name, hugTrig.FindStringSubmatch(m.Content)[1]))
+	Action: func(b *kitty.Bot, m *kitty.Message) {
+		b.Reply(m, fmt.Sprintf("%s hugs %s!", m.Name, hugTrig.FindStringSubmatch(m.Content)[1]))
 	},
 }
 
 var randomdog = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		var randomdogTrig = regexp.MustCompile(`(?i).*!+(?:dog+|dog+o|goodboi|pup+|pup+er|pup+ie)(?:\s+\S*)?`)
 		return m.Command == "PRIVMSG" && randomdogTrig.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
+	Action: func(b *kitty.Bot, m *kitty.Message) {
 		rand.Seed(time.Now().UnixNano())
 		n := rand.Intn(len(dogs) - 1)
-		irc.Reply(m, dogs[n])
+		b.Reply(m, dogs[n])
 	},
 }
 
 var shrug = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		var shrugTrig = regexp.MustCompile(`(?i).*!+(?:shrug|srug|shug|unas\w*)(?:\s+\S*)?`)
 		return m.Command == "PRIVMSG" && shrugTrig.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
-		irc.Reply(m, "¯\\_(ツ)_/¯")
+	Action: func(b *kitty.Bot, m *kitty.Message) {
+		b.Reply(m, "¯\\_(ツ)_/¯")
 	},
 }
 
 var sleep = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		var sleepTrig = regexp.MustCompile(`(?i).*!+(?:sleep|nn|nite|goodnight|night|bed|nap)(?:\s+\S*)?`)
 		return m.Command == "PRIVMSG" && sleepTrig.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
-		irc.Reply(m, "【☆goodnight☆】(●ＵωU).zZZ")
+	Action: func(b *kitty.Bot, m *kitty.Message) {
+		b.Reply(m, "【☆goodnight☆】(●ＵωU).zZZ")
 	},
 }
 
 var random = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		var randomTrig = regexp.MustCompile(`(?i).*!+(?:random|mad|madcotto|cotto|salad)(?:\s+\S*)?`)
 		return m.Command == "PRIVMSG" && randomTrig.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
-		irc.Reply(m, mar.Get("./for_sz_markov.txt"))
+	Action: func(b *kitty.Bot, m *kitty.Message) {
+		b.Reply(m, mar.Get("./for_sz_markov.txt"))
 	},
 }
 
 var ping = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		var pingTrig = regexp.MustCompile(`(?i).*!+ping+(?:\s+\S*)?`)
 		return m.Command == "PRIVMSG" && pingTrig.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
-		irc.Reply(m, "PONG")
+	Action: func(b *kitty.Bot, m *kitty.Message) {
+		b.Reply(m, "PONG")
 	},
 }
 
 var pong = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		var pongTrig = regexp.MustCompile(`(?i).*!+pong+(?:\s+\S*)?`)
 		return m.Command == "PRIVMSG" && pongTrig.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
-		irc.Reply(m, "PING")
+	Action: func(b *kitty.Bot, m *kitty.Message) {
+		b.Reply(m, "PING")
 	},
 }
 
 var flip = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		var flipTrig = regexp.MustCompile(`^(?i).*!+(?:flip+|tableflip|fliptable)(?:\s+\S*)?$`)
 		return m.Command == "PRIVMSG" && flipTrig.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
-		irc.Reply(m, "(╯‵Д′)╯彡┻━┻")
+	Action: func(b *kitty.Bot, m *kitty.Message) {
+		b.Reply(m, "(╯‵Д′)╯彡┻━┻")
 	},
 }
 
 var unflip = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		var unflipTrig = regexp.MustCompile(`^(?i).*!+unflip+(?:\s+\S*)?$`)
 		return m.Command == "PRIVMSG" && unflipTrig.MatchString(m.Content)
 	},
@@ -207,107 +207,107 @@ var unflip = kitty.Trigger{
 }
 
 var randomcat = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		var randomcatTrig = regexp.MustCompile(`^(?i)!+(?:cat+|kit+y|fluf+|kit+en+|bagpus+|pus+|pus+y)$`)
 		return m.Command == "PRIVMSG" && randomcatTrig.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
-		irc.Reply(m, catrand.GetCat())
+	Action: func(b *kitty.Bot, m *kitty.Message) {
+		b.Reply(m, catrand.GetCat())
 	},
 }
 
 var define = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		var defineTrig = regexp.MustCompile(`(?i).*!+define(?:\s+\S*)?`)
 		return m.Command == "PRIVMSG" && defineTrig.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
-		irc.Reply(m, fmt.Sprintf("%s: !define is now !urban", m.Name))
+	Action: func(b *kitty.Bot, m *kitty.Message) {
+		b.Reply(m, fmt.Sprintf("%s: !define is now !urban", m.Name))
 	},
 }
 
 var toss = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		var tossTrig = regexp.MustCompile(`(?i).*!+(?:tos+|wank|cum+|come|shek\w*)(?:\s+\S*)?`)
 		return m.Command == "PRIVMSG" && tossTrig.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
+	Action: func(b *kitty.Bot, m *kitty.Message) {
 		if strings.HasPrefix(m.Name, "shekib") {
-			irc.Reply(m, fmt.Sprintf("%s: [Hot Lebanese chick loses virginity!] https://www.youtube.com/watch?v=9y4JwyjdY4E", m.Name))
+			b.Reply(m, fmt.Sprintf("%s: [Hot Lebanese chick loses virginity!] https://www.youtube.com/watch?v=9y4JwyjdY4E", m.Name))
 			return
 		}
 		text, err := tosss()
 		if err != nil {
 			log.Warn("!toss", "error", err)
-			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
+			b.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		}
-		irc.Reply(m, fmt.Sprintf("%s: %s", m.Name, text))
+		b.Reply(m, fmt.Sprintf("%s: %s", m.Name, text))
 	},
 }
 
 var meditation = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		var meditationTrig = regexp.MustCompile(`(?i).*!+(?:meditation|meditate|advaita|monism|wisdom|ugjka)(?:\s+\S*)?`)
 		return m.Command == "PRIVMSG" && meditationTrig.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
+	Action: func(b *kitty.Bot, m *kitty.Message) {
 		rand.Seed(time.Now().UnixNano())
 		n := rand.Intn(len(meditations) - 1)
-		irc.Reply(m, fmt.Sprintf("%s: \"%s\"", m.Name, meditations[n]))
+		b.Reply(m, fmt.Sprintf("%s: \"%s\"", m.Name, meditations[n]))
 	},
 }
 
 var mydol = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		var mydolTrig = regexp.MustCompile(`(?i)!+m+y+d+o+l+(?:\s+\S*)?`)
 		return m.Command == "PRIVMSG" && mydolTrig.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
-		irc.Reply(m, "https://www.amazon.com/l/B076QJR7LF")
+	Action: func(b *kitty.Bot, m *kitty.Message) {
+		b.Reply(m, "https://www.amazon.com/l/B076QJR7LF")
 	},
 }
 
 var nature = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		var natureTrig = regexp.MustCompile(`(?i)!nature+(?:\s+\S*)?`)
 		return m.Command == "PRIVMSG" && natureTrig.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
-		irc.Reply(m, "https://www.flightradar24.com/")
+	Action: func(b *kitty.Bot, m *kitty.Message) {
+		b.Reply(m, "https://www.flightradar24.com/")
 	},
 }
 
 var god = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		var godTrig = regexp.MustCompile(`(?i).*!+(?:gods?|almighty|gibberish)(?:\s+\S*)?`)
 		return m.Command == "PRIVMSG" && godTrig.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
+	Action: func(b *kitty.Bot, m *kitty.Message) {
 		cmd := exec.Cmd{Path: "./words.sh"}
 		data, err := cmd.Output()
 		if err != nil {
 			log.Warn("!god", "error", err)
-			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
+			b.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		}
-		irc.Reply(m, fmt.Sprintf("God says: %s", string(data)))
+		b.Reply(m, fmt.Sprintf("God says: %s", string(data)))
 	},
 }
 
 var bkb = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		var bkbTrig = regexp.MustCompile(`(?i).*!+(?:b+k+b+|e+rowid+|t+r+i+p+.*|d+r+u+g+s+)(?:\s+\S*)?`)
 		return m.Command == "PRIVMSG" && bkbTrig.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
+	Action: func(b *kitty.Bot, m *kitty.Message) {
 		text, err := randomErowid()
 		if err != nil {
 			log.Warn("!bkb", "error", err)
-			irc.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
+			b.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		}
-		irc.Reply(m, fmt.Sprintf("%s: %s", m.Name, text))
+		b.Reply(m, fmt.Sprintf("%s: %s", m.Name, text))
 	},
 }
 
@@ -338,24 +338,24 @@ func randomErowid() (string, error) {
 }
 
 var help = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		var helpTrig = regexp.MustCompile(`(?i)^!+(?:help|manual|com+ands|list)(?:\s+\S*)?$`)
 		return m.Command == "PRIVMSG" && helpTrig.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
-		irc.Reply(m, "Fl1pbot's manual: https://raw.githubusercontent.com/ugjka/flipbot/master/help.txt")
+	Action: func(b *kitty.Bot, m *kitty.Message) {
+		b.Reply(m, "Fl1pbot's manual: https://raw.githubusercontent.com/ugjka/flipbot/master/help.txt")
 	},
 }
 
 var debug = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
 		var debugTrig = regexp.MustCompile(`(?i).*!+(?:debug|bug|joke|xyk)(?:\s+\S*)?`)
 		return m.Command == "PRIVMSG" && debugTrig.MatchString(m.Content)
 	},
-	Action: func(irc *kitty.Bot, m *kitty.Message) {
+	Action: func(b *kitty.Bot, m *kitty.Message) {
 		rand.Seed(time.Now().UnixNano())
 		r := rand.Intn(len(jokes))
-		irc.Reply(m, jokes[r])
+		b.Reply(m, jokes[r])
 	},
 }
 
