@@ -10,10 +10,10 @@ import (
 )
 
 var nickickerTrig = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return (m.Command == "JOIN" || m.Command == "NICK") && m.Name != ircNick
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		hostmask := m.Prefix.User + "@" + m.Prefix.Host
 		if m.Command == "JOIN" {
 			err := addNickHostmask(hostmask, m.Name)
@@ -35,11 +35,11 @@ var nickickerTrig = kitty.Trigger{
 						log.Crit("could not add quiet to db", "error", err)
 						return
 					}
-					b.Send(fmt.Sprintf("MODE %s +q *!*@%s", ircChannel, ip))
-					b.Send(fmt.Sprintf("NOTICE %s :you can talk after %s", m.Name, timeOut))
+					bot.Send(fmt.Sprintf("MODE %s +q *!*@%s", ircChannel, ip))
+					bot.Send(fmt.Sprintf("NOTICE %s :you can talk after %s", m.Name, timeOut))
 					time.AfterFunc(timeOut, func() {
 						log.Info("quiet timeout", "ip", ip)
-						b.Send(fmt.Sprintf("MODE %s -q *!*@%s", ircChannel, ip))
+						bot.Send(fmt.Sprintf("MODE %s -q *!*@%s", ircChannel, ip))
 						err := removeQuiet(ip)
 						if err != nil {
 							log.Crit("can't remove quiet", "error", err)
@@ -49,14 +49,14 @@ var nickickerTrig = kitty.Trigger{
 				}
 				if time.Now().UTC().After(t) {
 					log.Info("timout from db", "ip", ip)
-					b.Send(fmt.Sprintf("MODE %s -q *!*@%s", ircChannel, ip))
+					bot.Send(fmt.Sprintf("MODE %s -q *!*@%s", ircChannel, ip))
 					err := removeQuiet(ip)
 					if err != nil {
 						log.Crit("can't remove quiet", "error", err)
 						return
 					}
 				} else {
-					b.Send(fmt.Sprintf("NOTICE %s :you can talk after %s", m.Name, t.Sub(time.Now())))
+					bot.Send(fmt.Sprintf("NOTICE %s :you can talk after %s", m.Name, t.Sub(time.Now())))
 				}
 			}
 		}
@@ -71,7 +71,7 @@ var nickickerTrig = kitty.Trigger{
 			}
 			if kick {
 				log.Info("too many nick changes", "kicking", m.To)
-				b.Send(fmt.Sprintf("REMOVE %s %s :Too many nick changes in the past 24 hours", ircChannel, m.To))
+				bot.Send(fmt.Sprintf("REMOVE %s %s :Too many nick changes in the past 24 hours", ircChannel, m.To))
 			}
 		}
 	},
@@ -83,13 +83,13 @@ const nickChangesMax = 6
 var nickickerCleanupOnce = &sync.Once{}
 
 var nickickerCleanupTrig = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PING" || m.Command == "PONG" || (m.Command == "PRIVMSG" && m.To == ircChannel)
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		nickickerCleanupOnce.Do(func() {
 			log.Info("info", "starting quiet timers", "started")
-			err := quietTimers(b)
+			err := quietTimers(bot)
 			if err != nil {
 				log.Crit("couln't start quiet timers", "error", err)
 			}

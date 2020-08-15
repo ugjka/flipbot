@@ -17,10 +17,10 @@ import (
 
 var covidTriggerReg = regexp.MustCompile(`(?i)\s*!+(?:covid-?(?:19)?|corona(?:virus|chan)?)\s+(\w+.*)`)
 var covidTrigger = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return covidTriggerReg.MatchString(m.Content)
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		country := covidTriggerReg.FindStringSubmatch(m.Content)[1]
 		resp, err := httpClient.Get(coronaCountryAPI + country)
 		if err != nil {
@@ -46,22 +46,22 @@ var covidTrigger = kitty.Trigger{
 		}
 		switch {
 		case state.State != "" && c.IsEmpty():
-			b.Reply(m, state.String())
+			bot.Reply(m, state.String())
 		case state.State != "" && !c.IsEmpty():
-			b.Reply(m, c.String())
-			b.Reply(m, state.String())
+			bot.Reply(m, c.String())
+			bot.Reply(m, state.String())
 		case state.State == "":
-			b.Reply(m, c.String())
+			bot.Reply(m, c.String())
 		}
 	},
 }
 
 var covidAllTriggerReg = regexp.MustCompile(`(?i)^\s*!+(?:covid-?(?:19)?|corona(?:virus|chan)?)$`)
 var covidAllTrigger = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return covidAllTriggerReg.MatchString(m.Content)
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		resp, err := httpClient.Get(coronaAllAPI)
 		if err != nil {
 			log.Error("covid all", "get error", err)
@@ -74,7 +74,7 @@ var covidAllTrigger = kitty.Trigger{
 			log.Error("covid all", "decode error", err)
 			return
 		}
-		b.Reply(m, c.String())
+		bot.Reply(m, c.String())
 	},
 }
 

@@ -16,17 +16,17 @@ import (
 )
 
 var kickmeTrigger = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && m.To == ircChannel && m.Content == "!kickme"
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
-		b.Send(fmt.Sprintf("KICK %s %s :why are you kicking yourself", ircChannel, m.Name))
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
+		bot.Send(fmt.Sprintf("KICK %s %s :why are you kicking yourself", ircChannel, m.Name))
 	},
 }
 
 var ipReg = regexp.MustCompile(`^\D*(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$`)
 var vpnTrigger = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		if m.Command == "JOIN" {
 			if !ipReg.MatchString(m.Host) {
 				return false
@@ -40,7 +40,7 @@ var vpnTrigger = kitty.Trigger{
 		}
 		return m.Command == "JOIN"
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		const warning = "VPN/Proxy/Datacenter IP addresses are banned, please identify with freenode before joining to bypass this check"
 		arr := ipReg.FindStringSubmatch(m.Host)
 		ip := arr[1]
@@ -51,7 +51,7 @@ var vpnTrigger = kitty.Trigger{
 		}
 		if vpn {
 			log.Info("denylist vpn detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
-			b.Send(fmt.Sprintf("REMOVE %s %s :%s", ircChannel, m.Name, warning))
+			bot.Send(fmt.Sprintf("REMOVE %s %s :%s", ircChannel, m.Name, warning))
 			return
 		}
 		vpn, err = subnetVPNCheck(ip)
@@ -61,7 +61,7 @@ var vpnTrigger = kitty.Trigger{
 		}
 		if vpn {
 			log.Info("subnet vpn detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
-			b.Send(fmt.Sprintf("REMOVE %s %s :%s", ircChannel, m.Name, warning))
+			bot.Send(fmt.Sprintf("REMOVE %s %s :%s", ircChannel, m.Name, warning))
 			return
 		}
 		vpn, err = providerVPNCheck(ip)
@@ -71,7 +71,7 @@ var vpnTrigger = kitty.Trigger{
 		}
 		if vpn {
 			log.Info("provider vpn detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
-			b.Send(fmt.Sprintf("REMOVE %s %s :%s", ircChannel, m.Name, warning))
+			bot.Send(fmt.Sprintf("REMOVE %s %s :%s", ircChannel, m.Name, warning))
 			return
 		}
 	},
@@ -200,7 +200,7 @@ func denyListVPNCheck(ip string) (vpn bool, err error) {
 }
 
 var denyBETrigger = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		if m.Command == "JOIN" {
 			if m.Name == "klimdaddie" || m.Name == "yousei" || m.Name == ircNick {
 				return false
@@ -211,7 +211,7 @@ var denyBETrigger = kitty.Trigger{
 		}
 		return m.Command == "JOIN"
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		const warning = "BELGIUM is banned, please identify with freenode before joining to bypass this check"
 		ip := ""
 		if ipReg.MatchString(m.Host) {
@@ -232,7 +232,7 @@ var denyBETrigger = kitty.Trigger{
 		}
 		if be {
 			log.Info("denylist Belgium detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
-			b.Send(fmt.Sprintf("REMOVE %s %s :%s", ircChannel, m.Name, warning))
+			bot.Send(fmt.Sprintf("REMOVE %s %s :%s", ircChannel, m.Name, warning))
 			return
 		}
 	},

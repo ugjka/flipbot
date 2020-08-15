@@ -11,10 +11,10 @@ import (
 
 var diceTrigReg = regexp.MustCompile(`(?i)^\s*!+(?:dice+|roll+)(?:\s+(\d+))?$`)
 var diceTrig = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return diceTrigReg.MatchString(m.Content)
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		rolls := 0
 		arr := diceTrigReg.FindStringSubmatch(m.Content)
 		if len(arr) > 1 {
@@ -48,7 +48,7 @@ var diceTrig = kitty.Trigger{
 				rolls--
 			}
 		}
-		b.Reply(m, out)
+		bot.Reply(m, out)
 	},
 }
 

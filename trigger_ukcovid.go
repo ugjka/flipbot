@@ -14,39 +14,39 @@ import (
 
 var ukcovidReg = regexp.MustCompile(`(?i)^\s*!+(?:uk|gb)(?:covid\w*)?(?:\s+(\S.*))?$`)
 var ukcovid = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return ukcovidReg.MatchString(m.Content)
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		input := ukcovidReg.FindStringSubmatch(m.Content)[1]
 		input = strings.TrimSpace(input)
 		if input == "" {
 			out, err := getUKRegion("")
 			if err != nil {
 				log.Error("ukcovid", "error", err)
-				b.Reply(m, fmt.Sprintf("%s: some error happened", m.Name))
+				bot.Reply(m, fmt.Sprintf("%s: some error happened", m.Name))
 				return
 			}
-			b.Reply(m, out)
+			bot.Reply(m, out)
 			return
 		}
 		if strings.Contains(input, "death") {
 			out, err := getUKDeaths()
 			if err != nil {
 				log.Error("ukcovid", "error", err)
-				b.Reply(m, fmt.Sprintf("%s: some error happened", m.Name))
+				bot.Reply(m, fmt.Sprintf("%s: some error happened", m.Name))
 				return
 			}
-			b.Reply(m, out)
+			bot.Reply(m, out)
 			return
 		}
 		out, err := getUKRegion(input)
 		if err != nil {
 			log.Error("ukcovid", "error", err)
-			b.Reply(m, fmt.Sprintf("%s: some error happened", m.Name))
+			bot.Reply(m, fmt.Sprintf("%s: some error happened", m.Name))
 			return
 		}
-		b.Reply(m, out)
+		bot.Reply(m, out)
 	},
 }
 

@@ -15,18 +15,18 @@ import (
 
 var youtubeTrig = regexp.MustCompile(`(?i)^\s*!+(?:youtube?|yt|ytube|tube)\w*\s+(\S.*)$`)
 var youtube = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && youtubeTrig.MatchString(m.Content)
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		res, err := searchYt(youtubeTrig.FindStringSubmatch(m.Content)[1])
 		if err != nil {
 			log.Warn("youtube search", "error", err)
-			b.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
+			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		}
 		if len(res.Items) == 0 {
-			b.Reply(m, fmt.Sprintf("%s: no results!", m.Name))
+			bot.Reply(m, fmt.Sprintf("%s: no results!", m.Name))
 			return
 		}
 		publishTime, err := time.Parse(time.RFC3339, res.Items[0].Snippet.PublishTime)
@@ -42,7 +42,7 @@ var youtube = kitty.Trigger{
 			res.Items[0].ID.VideoID,
 		)
 		result = html.UnescapeString(result)
-		b.Reply(m, result)
+		bot.Reply(m, result)
 	},
 }
 

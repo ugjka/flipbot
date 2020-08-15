@@ -31,14 +31,14 @@ type Seen struct {
 var seenTrig = regexp.MustCompile("(?i)^\\s*!+seen\\w*\\s+([A-Za-z_\\-\\[\\]\\^{}|`][A-Za-z0-9_\\-\\[\\]\\^{}|`]{0,15}\\*?)$")
 
 var seen = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && seenTrig.MatchString(m.Content)
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		nick := seenTrig.FindStringSubmatch(m.Content)[1]
 		nick = strings.ToLower(nick)
 		if nick == strings.ToLower(m.Name) {
-			b.Reply(m, fmt.Sprintf("%s: I'm seeing you!", m.Name))
+			bot.Reply(m, fmt.Sprintf("%s: I'm seeing you!", m.Name))
 			return
 		}
 		seen := Seen{}
@@ -50,7 +50,7 @@ var seen = kitty.Trigger{
 		}
 		switch {
 		case err == errNotSeen:
-			b.Reply(m, fmt.Sprintf("%s: I haven't seen that nick before", m.Name))
+			bot.Reply(m, fmt.Sprintf("%s: I haven't seen that nick before", m.Name))
 			return
 		case err != nil:
 			log.Warn("getSeen", "error", err)
@@ -58,9 +58,9 @@ var seen = kitty.Trigger{
 		}
 		dur := durafmt.Parse(time.Now().UTC().Sub(seen.Seen))
 		if seen.LastMSG != "" {
-			b.Reply(m, fmt.Sprintf("%s: I saw %s %s ago. Last message: %s", m.Name, nick, roundDuration(dur.String()), seen.LastMSG))
+			bot.Reply(m, fmt.Sprintf("%s: I saw %s %s ago. Last message: %s", m.Name, nick, roundDuration(dur.String()), seen.LastMSG))
 		} else {
-			b.Reply(m, fmt.Sprintf("%s: I saw %s %s ago. Last activity: %s", m.Name, nick, roundDuration(dur.String()), seen.Command))
+			bot.Reply(m, fmt.Sprintf("%s: I saw %s %s ago. Last activity: %s", m.Name, nick, roundDuration(dur.String()), seen.Command))
 		}
 	},
 }
@@ -74,11 +74,11 @@ func roundDuration(dur string) string {
 }
 
 var watcher = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return (m.Command == "PRIVMSG" && m.To == ircChannel) || m.Command == "JOIN" ||
 			m.Command == "QUIT" || m.Command == "PART" || m.Command == "KICK"
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		name := ""
 		if m.Command == "KICK" {
 			name = m.Params[1]
@@ -109,10 +109,10 @@ var watcher = kitty.Trigger{
 
 var topTrig = regexp.MustCompile(`(?i).*!+(?:top|masters?|masterminds?|echoline).*`)
 var top = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && topTrig.MatchString(m.Content)
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		stats := make(map[string]int)
 		res := make(result, 0)
 		week := time.Now().UTC().Add(time.Hour * -24 * 7)
@@ -135,7 +135,7 @@ var top = kitty.Trigger{
 		})
 		if err != nil {
 			log.Crit("!top", "error", err)
-			b.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
+			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		}
 		for k, v := range stats {
@@ -152,15 +152,15 @@ var top = kitty.Trigger{
 			}
 			out += fmt.Sprintf("%d. %s posts, ", i+1, v)
 		}
-		b.Reply(m, out)
+		bot.Reply(m, out)
 	},
 }
 
 var logmsg = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && m.To == ircChannel
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		logCTR.Lock()
 		fmt.Fprintf(logCTR.File, "[%s] <%s>\t%s\n", time.Now().UTC().Format("06:01:02|15:04:05"), m.Name, m.Content)
 		logCTR.Unlock()
@@ -168,10 +168,10 @@ var logmsg = kitty.Trigger{
 }
 
 var logJoin = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "JOIN"
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		logCTR.Lock()
 		account := "[unknown]"
 		if len(m.Params) == 3 {
@@ -183,10 +183,10 @@ var logJoin = kitty.Trigger{
 }
 
 var logAccount = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "ACCOUNT"
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		logCTR.Lock()
 		fmt.Fprintf(logCTR.File, "[%s] [ACCOUNT]\t%s!%s@%s (%s)\n", time.Now().UTC().Format("06:01:02|15:04:05"), m.Name, m.User, m.Host, m.Params[0])
 		logCTR.Unlock()
@@ -194,10 +194,10 @@ var logAccount = kitty.Trigger{
 }
 
 var logmsgBolt = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && m.To == ircChannel
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		err := setLogMSG(&Message{
 			Time:    time.Now(),
 			Nick:    m.Name,

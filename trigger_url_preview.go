@@ -16,17 +16,17 @@ import (
 )
 
 var urltitle = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && xurls.Strict().MatchString(m.Content) && m.Name != "Skittle"
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		url := xurls.Strict().FindString(m.Content)
 		res, err := getPreview(url)
 		if err != nil {
 			log.Warn("preview", "url", url, "error", err)
 			return
 		}
-		b.Reply(m, fmt.Sprintf("%s's link: %s", m.Name, limit(res, 300)))
+		bot.Reply(m, fmt.Sprintf("%s's link: %s", m.Name, limit(res, 300)))
 	},
 }
 

@@ -11,10 +11,10 @@ import (
 
 var upvoteTrig = regexp.MustCompile(`(?i)^\s*(?:\++|!+(?:up+|upvote+)\s+)([[:alnum:]]\S{0,30})(?:\s+.*)?$`)
 var upvote = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && m.To == ircChannel && upvoteTrig.MatchString(m.Content)
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		word := upvoteTrig.FindStringSubmatch(m.Content)[1]
 		word = strings.ToLower(word)
 		votes, err := setvote(1, word)
@@ -22,17 +22,17 @@ var upvote = kitty.Trigger{
 			log.Crit("!upvote", "error", err)
 			return
 		}
-		b.Reply(m, fmt.Sprintf("%s: %.4f votes for %s. Your upvote will gradually expire in 7 days",
+		bot.Reply(m, fmt.Sprintf("%s: %.4f votes for %s. Your upvote will gradually expire in 7 days",
 			m.Name, votes, word))
 	},
 }
 
 var downvoteTrig = regexp.MustCompile(`(?i)^\s*(?:-+|!+(?:down+|downvote+)\s+)([[:alnum:]]\S{0,30})(?:\s+.*)?$`)
 var downvote = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && m.To == ircChannel && downvoteTrig.MatchString(m.Content)
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		word := downvoteTrig.FindStringSubmatch(m.Content)[1]
 		word = strings.ToLower(word)
 		votes, err := setvote(-1, word)
@@ -40,17 +40,17 @@ var downvote = kitty.Trigger{
 			log.Crit("!downvote", "error", err)
 			return
 		}
-		b.Reply(m, fmt.Sprintf("%s: %.4f votes for %s. Your downvote will gradually expire in 7 days",
+		bot.Reply(m, fmt.Sprintf("%s: %.4f votes for %s. Your downvote will gradually expire in 7 days",
 			m.Name, votes, word))
 	},
 }
 
 var rankTrig = regexp.MustCompile(`(?i)^\s*(?:\?+|!+rank+\s+)([[:alnum:]]\S{0,30})(?:\s+.*)?$`)
 var rank = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && rankTrig.MatchString(m.Content)
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		word := rankTrig.FindStringSubmatch(m.Content)[1]
 		word = strings.ToLower(word)
 		votes, err := getvotes(word)
@@ -58,17 +58,17 @@ var rank = kitty.Trigger{
 			log.Crit("!rank", "error", err)
 			return
 		}
-		b.Reply(m, fmt.Sprintf("%s: %.4f votes for %s",
+		bot.Reply(m, fmt.Sprintf("%s: %.4f votes for %s",
 			m.Name, votes, word))
 	},
 }
 
 var ranks = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		var ranksTrig = regexp.MustCompile(`(?i)^\s*!+(?:rank+s?|leader+s?|leaderboard+s?)\s*$`)
 		return m.Command == "PRIVMSG" && ranksTrig.MatchString(m.Content)
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		ranks, err := getRanks()
 		if err != nil {
 			log.Crit("!ranks", "error", err)
@@ -85,6 +85,6 @@ var ranks = kitty.Trigger{
 			out += fmt.Sprintf("%d: %s %.4f votes, ", i+1, v.name, v.votes)
 		}
 		out = strings.TrimSuffix(out, ", ") + "."
-		b.Reply(m, out)
+		bot.Reply(m, out)
 	},
 }

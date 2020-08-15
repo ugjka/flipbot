@@ -15,10 +15,10 @@ var tailTrig = regexp.MustCompile("(?i)^\\s*!+tail\\w*\\s+(?:(\\d+)\\s+)?([A-Za-
 const maxTail = 10
 
 var tail = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.To == ircChannel && m.Command == "PRIVMSG" && tailTrig.MatchString(m.Content)
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		capped := false
 		tailLen := 5
 		nick := ""
@@ -43,7 +43,7 @@ var tail = kitty.Trigger{
 			nick, _, err = getSeenPrefix(strings.TrimRight(nick, "*"))
 			switch {
 			case err == errNotSeen:
-				b.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
+				bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
 				return
 			case err != nil:
 				log.Crit("tailTrig", "error", err)
@@ -53,17 +53,17 @@ var tail = kitty.Trigger{
 		msgs, err := userTail(nick, "!tail", tailLen)
 		switch {
 		case err == errNotSeen || err == errNoResults:
-			b.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
+			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
 			return
 		case err != nil:
 			log.Crit("tailTrig", "error", err)
 			return
 		}
 		if capped {
-			b.Reply(m, fmt.Sprintf("%s: tail lenght is capped to %d", m.Name, maxTail))
+			bot.Reply(m, fmt.Sprintf("%s: tail lenght is capped to %d", m.Name, maxTail))
 		}
 		for _, msg := range msgs {
-			b.Reply(m, fmt.Sprintf("[%s] [%s] %s\n", msg.Time.Format("2006-01-02 3:04PM MST"), msg.Nick, msg.Message))
+			bot.Reply(m, fmt.Sprintf("[%s] [%s] %s\n", msg.Time.Format("2006-01-02 3:04PM MST"), msg.Nick, msg.Message))
 		}
 	},
 }

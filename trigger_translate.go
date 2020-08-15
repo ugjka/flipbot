@@ -12,17 +12,17 @@ import (
 
 var transTrig = regexp.MustCompile(`(?i)^\s*!+trans(?:late)?\w*\s+(\S.*)$`)
 var trans = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && transTrig.MatchString(m.Content)
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		res, err := translate(transTrig.FindStringSubmatch(m.Content)[1])
 		if err != nil {
 			log.Warn("trans", "error", err)
-			b.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
+			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		}
-		b.Reply(m, fmt.Sprintf("%s: %s", m.Name, limit(res, 1024)))
+		bot.Reply(m, fmt.Sprintf("%s: %s", m.Name, limit(res, 1024)))
 	},
 }
 

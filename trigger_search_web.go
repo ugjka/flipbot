@@ -15,64 +15,64 @@ import (
 
 var duckerTrig = regexp.MustCompile(`(?i)^\s*!+(?:d|(?:ducker|ddg|duck|duckduckgo)\w*)\s+(\S.*)$`)
 var ducker = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && duckerTrig.MatchString(m.Content)
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		query := duckerTrig.FindStringSubmatch(m.Content)[1]
 		res, err := duck(query)
 		if err != nil {
 			log.Warn("no ducker", "for", query, "error", err)
-			b.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
+			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		}
 		msg := fmt.Sprintf("%s: %s", m.Name, res)
-		b.Reply(m, msg)
+		bot.Reply(m, msg)
 	},
 }
 
 var googleTrig = regexp.MustCompile(`(?i)^\s*!+(?:g|goog\w*)\s+(\S.*)$`)
 var google = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && googleTrig.MatchString(m.Content)
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		query := googleTrig.FindStringSubmatch(m.Content)[1]
 		res, err := googleStuff(query)
 		if err != nil {
 			log.Warn("no googler", "for", query, "error", err)
-			b.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
+			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		}
 		if len(res) == 0 {
-			b.Reply(m, fmt.Sprintf("%s: no results!", m.Name))
+			bot.Reply(m, fmt.Sprintf("%s: no results!", m.Name))
 			return
 		}
 		msg := fmt.Sprintf("%s: %s [%s] \n(%s)", m.Name, res[0].URL, res[0].Title, res[0].Abstract)
-		b.Reply(m, msg)
+		bot.Reply(m, msg)
 	},
 }
 
 var googleNewsTrig = regexp.MustCompile(`(?i)^\s*!+news+\w*\s+(\S.*)$`)
 var googlenews = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && googleNewsTrig.MatchString(m.Content)
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		query := googleNewsTrig.FindStringSubmatch(m.Content)[1]
 		res, err := googleNews(query)
 		if err != nil {
 			log.Warn("no news", "for", query, "error", err)
-			b.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
+			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		}
 		if len(res) == 0 {
-			b.Reply(m, fmt.Sprintf("%s: no results!", m.Name))
+			bot.Reply(m, fmt.Sprintf("%s: no results!", m.Name))
 			return
 		}
 		msg := fmt.Sprintf("%s: %s [%s] [%s] \n(%s)", m.Name,
 			res[0].URL, res[0].Metadata, res[0].Title, res[0].Abstract)
-		b.Reply(m, msg)
+		bot.Reply(m, msg)
 	},
 }
 
