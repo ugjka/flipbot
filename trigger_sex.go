@@ -71,5 +71,5 @@ func choice(s []string) string {
 	if len(s) == 1 {
 		return s[0]
 	}
-	return s[rand.Intn(len(s)-1)]
+	return s[rand.Intn(len(s))]
 }

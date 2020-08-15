@@ -16,7 +16,7 @@ var ball8 = kitty.Trigger{
 	},
 	Action: func(b *kitty.Bot, m *kitty.Message) {
 		rand.Seed(time.Now().UnixNano())
-		number := rand.Intn(len(ballChoices) - 1)
+		number := rand.Intn(len(ballChoices))
 		b.Reply(m, fmt.Sprintf("%s: %s", m.Name, ballChoices[number]))
 	},
 }

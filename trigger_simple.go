@@ -57,7 +57,7 @@ var kittyParty = kitty.Trigger{
 		msg := ""
 		rand.Seed(time.Now().UnixNano())
 		for i := 0; ; {
-			j := rand.Intn(len(cats) - 1)
+			j := rand.Intn(len(cats))
 			if i+utf8.RuneLen(cats[j]) > maxlen {
 				break
 			}
@@ -83,7 +83,7 @@ var pooParty = kitty.Trigger{
 		msg := ""
 		rand.Seed(time.Now().UnixNano())
 		for i := 0; ; {
-			j := rand.Intn(len(poo) - 1)
+			j := rand.Intn(len(poo))
 			if i+utf8.RuneLen(poo[j]) > maxlen {
 				break
 			}
@@ -131,7 +131,7 @@ var randomdog = kitty.Trigger{
 	},
 	Action: func(b *kitty.Bot, m *kitty.Message) {
 		rand.Seed(time.Now().UnixNano())
-		n := rand.Intn(len(dogs) - 1)
+		n := rand.Intn(len(dogs))
 		b.Reply(m, dogs[n])
 	},
 }
@@ -253,7 +253,7 @@ var meditation = kitty.Trigger{
 	},
 	Action: func(b *kitty.Bot, m *kitty.Message) {
 		rand.Seed(time.Now().UnixNano())
-		n := rand.Intn(len(meditations) - 1)
+		n := rand.Intn(len(meditations))
 		b.Reply(m, fmt.Sprintf("%s: \"%s\"", m.Name, meditations[n]))
 	},
 }
