@@ -9,12 +9,12 @@ import (
 )
 
 var sexTrig = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		var sexTrigReg = regexp.MustCompile(`(?i)^\s*!+sex+$`)
 		return sexTrigReg.MatchString(m.Content)
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
-		b.Reply(m, altogethernow())
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
+		bot.Reply(m, altogethernow())
 	},
 }
 

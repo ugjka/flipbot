@@ -10,14 +10,14 @@ import (
 )
 
 var ball8 = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		var ball8Reg = regexp.MustCompile(`(?i)\s*!+\d*ball+(?:\s+\S*)?`)
 		return ball8Reg.MatchString(m.Content)
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		rand.Seed(time.Now().UnixNano())
 		number := rand.Intn(len(ballChoices))
-		b.Reply(m, fmt.Sprintf("%s: %s", m.Name, ballChoices[number]))
+		bot.Reply(m, fmt.Sprintf("%s: %s", m.Name, ballChoices[number]))
 	},
 }
 

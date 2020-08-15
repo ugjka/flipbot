@@ -16,10 +16,10 @@ import (
 
 var remindOnce sync.Once
 var reminder = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.To == ircChannel
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		remindOnce.Do(func() {
 			go func() {
 				ticker := time.Tick(time.Second)
@@ -37,7 +37,7 @@ var reminder = kitty.Trigger{
 						}
 						for _, v := range reminders {
 							text := fmt.Sprintf("%s's reminder: %s", v.Name, v.Message)
-							b.Msg(ircChannel, text)
+							bot.Msg(ircChannel, text)
 						}
 					}
 				}
@@ -48,26 +48,26 @@ var reminder = kitty.Trigger{
 
 var getreminderTrig = regexp.MustCompile(`(?i)^\s*!+remind(?:er|me)?\w*\s+(\S.*)$`)
 var getreminder = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.To == ircChannel && m.Command == "PRIVMSG" &&
 			getreminderTrig.MatchString(m.Content)
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		target, r, err := parse(getreminderTrig.FindStringSubmatch(m.Content)[1])
 		if err != nil {
-			b.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
+			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
 			return
 		}
 		r.Name = m.Name
 		err = setReminder(target.Format(time.RFC3339), r)
 		if err != nil {
 			log.Crit("setReminder", "error", err)
-			b.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
+			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		}
 		delta := target.Sub(time.Now())
 		dur := durafmt.Parse(delta)
-		b.Reply(m, fmt.Sprintf("%s: Your reminder will fire %s from now", m.Name, roundDuration(dur.String())))
+		bot.Reply(m, fmt.Sprintf("%s: Your reminder will fire %s from now", m.Name, roundDuration(dur.String())))
 	},
 }
 

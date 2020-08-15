@@ -22,25 +22,25 @@ var errNoLocation = errors.New("location not found")
 
 var weatherOpenTrig = regexp.MustCompile(`(?i)^\s*!+w(?:eather\w*)?\s+(\S.*)$`)
 var weatherOpen = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && weatherOpenTrig.MatchString(m.Content)
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		lon, lat, err := getLonLat(weatherOpenTrig.FindStringSubmatch(m.Content)[1])
 		if err != nil {
-			b.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
+			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		}
 		res, err := getCurrentWeather(lon, lat)
 		switch err {
 		case errNoLocation:
-			b.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
+			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		case nil:
 			break
 		default:
 			log.Warn("!w", "error", err)
-			b.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
+			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		}
 		format := "%s %s: %s, %.0fC/%.0fF, pressure %.1f hPa, humidity %d%%, wind %.1f m/s, gust %.1f m/s"
@@ -60,7 +60,7 @@ var weatherOpen = kitty.Trigger{
 			format := "%s %s: %s, %.0fC/%.0fF, pressure %.1f hPa, humidity %d%%, wind %.1f m/s"
 			out = fmt.Sprintf(format, a[:len(a)-1]...)
 		}
-		b.Reply(m, fmt.Sprintf("%s: %s", m.Name, out))
+		bot.Reply(m, fmt.Sprintf("%s: %s", m.Name, out))
 	},
 }
 
@@ -194,19 +194,19 @@ func getForecastWeather(loc string) (w OpenForecast, adress string, err error) {
 
 var wforecastOpenTrig = regexp.MustCompile(`(?i)^\s*!+(?:wf|forecast)\w*\s+(\S.*)$`)
 var wforecastOpen = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && wforecastOpenTrig.MatchString(m.Content)
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		res, _, err := getForecastWeather(wforecastOpenTrig.FindStringSubmatch(m.Content)[1])
 		switch err {
 		case errNoLocation:
-			b.Reply(m, fmt.Sprintf("%s: location unknown.", m.Name))
+			bot.Reply(m, fmt.Sprintf("%s: location unknown.", m.Name))
 			return
 		case nil:
 			break
 		default:
-			b.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
+			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			log.Error("!wf", "error", err)
 			return
 		}
@@ -214,7 +214,7 @@ var wforecastOpen = kitty.Trigger{
 		a := []interface{}{
 			m.Name, res.City.Country, res.City.Name,
 		}
-		b.Reply(m, fmt.Sprintf(format, a...))
+		bot.Reply(m, fmt.Sprintf(format, a...))
 		loc, err := time.LoadLocation(res.Zone)
 		if err != nil {
 			loc = time.UTC
@@ -241,7 +241,7 @@ var wforecastOpen = kitty.Trigger{
 				v.Main.Humidity,
 				v.Wind.Speed,
 			}
-			b.Reply(m, fmt.Sprintf(format, a...))
+			bot.Reply(m, fmt.Sprintf(format, a...))
 
 		}
 	},

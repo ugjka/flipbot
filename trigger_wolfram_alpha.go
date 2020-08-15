@@ -11,19 +11,19 @@ import (
 
 var calcTrig = regexp.MustCompile(`(?i)^\s*!+[ck]al[ck]\w*\s+(\S.*)$`)
 var calc = kitty.Trigger{
-	Condition: func(b *kitty.Bot, m *kitty.Message) bool {
+	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && calcTrig.MatchString(m.Content)
 	},
-	Action: func(b *kitty.Bot, m *kitty.Message) {
+	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		query := calcTrig.FindStringSubmatch(m.Content)[1]
 		w := &wolf.Client{AppID: wolframAPIKey}
 
 		res, err := w.GetShortAnswerQuery(query, wolf.Metric, 10)
 		if err != nil {
 			log.Warn("calc", "error", err)
-			b.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
+			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		}
-		b.Reply(m, fmt.Sprintf("%s: %s", m.Name, limit(res, 1024)))
+		bot.Reply(m, fmt.Sprintf("%s: %s", m.Name, limit(res, 1024)))
 	},
 }
