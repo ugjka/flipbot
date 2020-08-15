@@ -74,7 +74,7 @@ var pooParty = kitty.Trigger{
 		return m.Command == "PRIVMSG" && pooReg.MatchString(m.Content)
 	},
 	Action: func(b *kitty.Bot, m *kitty.Message) {
-		poo := []rune("‍💩🚽🧻🍷🍺😵🤢🤮💊💉🌧️🥦🧄🍄")
+		poo := []rune("‍💩🚽🧻🍷🍺😵🤢🤮💊💉🌧️🥦🧄🍄🌿")
 		who := m.To
 		if m.To == b.Nick {
 			who = m.Name
