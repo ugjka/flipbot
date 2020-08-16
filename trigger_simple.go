@@ -16,6 +16,8 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
+// TODO: add !duckparty !chameleonparty
+
 var vixey = kitty.Trigger{
 	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		var vixeyTrig = regexp.MustCompile(`(?i).*!+(?:vixey.*|dash.*)(?:\s+\S*)?`)

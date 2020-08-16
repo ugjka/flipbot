@@ -220,7 +220,6 @@ var denyBETrigger = kitty.Trigger{
 		} else {
 			ipRAW, err := net.ResolveIPAddr("ip4", m.Host)
 			if err != nil {
-				log.Error("deny BE", "can't resolve host", m.Host)
 				return
 			}
 			ip = ipRAW.String()
