@@ -49,8 +49,8 @@ github.com/stretchr/testify v1.2.2 h1:bSDNvY7ZPG5RlJ8otE/7V6gMiyenm9RtJ7IUVIAoJ1
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
 github.com/ugjka/catrand v0.0.0-20181113133205-3f6473988b0e h1:Z0z1C8lV2TaY76+P3OKSObh5iI+hGooTzPp1zsF38KM=
 github.com/ugjka/catrand v0.0.0-20181113133205-3f6473988b0e/go.mod h1:lsnw7rfLsYn6J7avalTL0L0kHt0Zh7QWJHxjpBu8O7k=
-github.com/ugjka/kittybot v0.0.9 h1:UaWYtqjNRzziSfRL0Cn1pcAzxd0PVvVvBomb27rC58A=
-github.com/ugjka/kittybot v0.0.9/go.mod h1:BJUM+slov6VKjCcrA4iLm64Bdt+HWeykTBaQ+AeNW6M=
+github.com/ugjka/kittybot v0.0.10 h1:LYImAK8dzKl8wxBp28aU/cFzPPDkaPvLTAXuXh3qPng=
+github.com/ugjka/kittybot v0.0.10/go.mod h1:BJUM+slov6VKjCcrA4iLm64Bdt+HWeykTBaQ+AeNW6M=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9/go.mod h1:LzIPMQfyMNhhGPhUkYOs5KpL4U8rLKemX1yGLhDgUto=
 golang.org/x/net v0.0.0-20180218175443-cbe0f9307d01/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=

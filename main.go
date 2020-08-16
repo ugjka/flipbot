@@ -69,6 +69,7 @@ func main() {
 	signal.Notify(stop, syscall.SIGHUP)
 
 	hijackSession := func(bot *kitty.Bot) {
+		bot.SASL = true
 		bot.HijackSession = true
 		bot.Password = ircPassword
 	}
