@@ -102,7 +102,7 @@ func main() {
 		logCTR.Close()
 		os.Exit(0)
 	}()
-	// Priority Triggers
+
 	bot.AddTrigger(logmsg)
 	bot.AddTrigger(logmsgBolt)
 	bot.AddTrigger(logJoin)
@@ -119,7 +119,6 @@ func main() {
 	bot.AddTrigger(notifyop)
 	bot.AddTrigger(isRecent)
 	bot.AddTrigger(isDead)
-	// New triggers below this
 	bot.AddTrigger(morningTrig)
 	bot.AddTrigger(pooParty)
 	bot.AddTrigger(kittyParty)
@@ -182,7 +181,6 @@ func main() {
 	bot.AddTrigger(toss)
 	bot.AddTrigger(dict)
 	bot.AddTrigger(syn)
-	// Slow triggers
 	bot.AddTrigger(vpnTrigger)
 	bot.AddTrigger(denyBETrigger)
 
