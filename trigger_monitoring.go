@@ -13,7 +13,6 @@ import (
 	"github.com/boltdb/bolt"
 	"github.com/hako/durafmt"
 	kitty "github.com/ugjka/kittybot"
-	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var logCTR = struct {
@@ -53,7 +52,7 @@ var seen = kitty.Trigger{
 			bot.Reply(m, fmt.Sprintf("%s: I haven't seen that nick before", m.Name))
 			return
 		case err != nil:
-			log.Warn("getSeen", "error", err)
+			bot.Warn("getSeen", "error", err)
 			return
 		}
 		dur := durafmt.Parse(time.Now().UTC().Sub(seen.Seen))
@@ -92,7 +91,7 @@ var watcher = kitty.Trigger{
 			seen.LastMSG = m.Content
 			err := setSeen(name, &seen)
 			if err != nil {
-				log.Warn("setSeen", "error", err)
+				bot.Warn("setSeen", "error", err)
 				return
 			}
 		} else {
@@ -100,7 +99,7 @@ var watcher = kitty.Trigger{
 			seen.Command = m.Command
 			err := setSeen(name, &seen)
 			if err != nil {
-				log.Warn("setSeen", "error", err)
+				bot.Warn("setSeen", "error", err)
 				return
 			}
 		}
@@ -134,7 +133,7 @@ var top = kitty.Trigger{
 			return nil
 		})
 		if err != nil {
-			log.Crit("!top", "error", err)
+			bot.Crit("!top", "error", err)
 			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		}
@@ -204,7 +203,7 @@ var logmsgBolt = kitty.Trigger{
 			Message: m.Content,
 		})
 		if err != nil {
-			log.Crit("setLogMSG", "error", err)
+			bot.Crit("setLogMSG", "error", err)
 		}
 	},
 }

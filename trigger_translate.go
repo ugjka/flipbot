@@ -5,8 +5,6 @@ import (
 	"os/exec"
 	"regexp"
 
-	log "gopkg.in/inconshreveable/log15.v2"
-
 	kitty "github.com/ugjka/kittybot"
 )
 
@@ -18,7 +16,7 @@ var trans = kitty.Trigger{
 	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		res, err := translate(transTrig.FindStringSubmatch(m.Content)[1])
 		if err != nil {
-			log.Warn("trans", "error", err)
+			bot.Warn("trans", "error", err)
 			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		}

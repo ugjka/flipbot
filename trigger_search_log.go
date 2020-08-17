@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	kitty "github.com/ugjka/kittybot"
-	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var searchLogRegex = regexp.MustCompile(`(?i)^\s*!search\s+(\S.*)$`)
@@ -23,7 +22,7 @@ var searchLog = kitty.Trigger{
 			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
 			return
 		case err != nil:
-			log.Crit("searchLog", "error", err)
+			bot.Crit("searchLog", "error", err)
 			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		}

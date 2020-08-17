@@ -7,7 +7,6 @@ import (
 	"time"
 
 	kitty "github.com/ugjka/kittybot"
-	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var setup = kitty.Trigger{
@@ -17,7 +16,7 @@ var setup = kitty.Trigger{
 	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		bot.Info("getting NAMES")
 		bot.Send("NAMES " + ircChannel)
-		log.Info("setting user modes", "modes", "+RQi")
+		bot.Info("setting user modes", "modes", "+RQi")
 		bot.Send(fmt.Sprintf("MODE %s +RQi", ircNick))
 	},
 }
@@ -43,25 +42,25 @@ var voice = kitty.Trigger{
 	},
 	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		if len(m.Params) == 3 && m.Name == "ChanServ" && m.Command == "MODE" {
-			log.Info("giving voice", "to", m.Params[2], "in", m.To)
+			bot.Info("giving voice", "to", m.Params[2], "in", m.To)
 			bot.ChMode(m.Params[2], m.To, "+v")
 			return
 		}
 		// hostmask := m.Prefix.User + "@" + m.Prefix.Host
 		// quiet, err := checkNickHostmask(hostmask, m.To)
 		// if err != nil {
-		// 	log.Crit("checkNickHostmask", "error", err)
+		// 	bot.Crit("checkNickHostmask", "error", err)
 		// }
 		// if quiet {
-		// 	log.Info("too many nick changes, not voicing", "nick", m.Name, "hostmask", hostmask)
+		// 	bot.Info("too many nick changes, not voicing", "nick", m.Name, "hostmask", hostmask)
 		// 	return false
 		// }
 		// ip := m.Prefix.Host
 		// if _, err := getQuiet(ip); err == nil {
-		// 	log.Info("nick quieted, not voicing", "nick", m.Name, "ip", ip)
+		// 	bot.Info("nick quieted, not voicing", "nick", m.Name, "ip", ip)
 		// 	return false
 		// }
-		log.Info("giving voice", "to", m.Name, "in", m.To)
+		bot.Info("giving voice", "to", m.Name, "in", m.To)
 		bot.ChMode(m.Name, m.To, "+v")
 	},
 }
@@ -79,7 +78,7 @@ var voicenames = kitty.Trigger{
 			if bot.Nick == k {
 				continue
 			}
-			log.Info("giving voice", "to", k, "in", m.Params[2])
+			bot.Info("giving voice", "to", k, "in", m.Params[2])
 			bot.ChMode(k, m.Params[2], "+v")
 		}
 	},

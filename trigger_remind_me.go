@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/hako/durafmt"
-	log "gopkg.in/inconshreveable/log15.v2"
 
 	kitty "github.com/ugjka/kittybot"
 )
@@ -32,7 +31,7 @@ var reminder = kitty.Trigger{
 						case err == errNoReminder:
 							continue Loop
 						case err != nil:
-							log.Crit("getReminders", "error", err)
+							bot.Crit("getReminders", "error", err)
 							return
 						}
 						for _, v := range reminders {
@@ -61,7 +60,7 @@ var getreminder = kitty.Trigger{
 		r.Name = m.Name
 		err = setReminder(target.Format(time.RFC3339), r)
 		if err != nil {
-			log.Crit("setReminder", "error", err)
+			bot.Crit("setReminder", "error", err)
 			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		}

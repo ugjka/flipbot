@@ -6,7 +6,6 @@ import (
 	"time"
 
 	kitty "github.com/ugjka/kittybot"
-	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var nickickerTrig = kitty.Trigger{
@@ -18,41 +17,41 @@ var nickickerTrig = kitty.Trigger{
 		if m.Command == "JOIN" {
 			err := addNickHostmask(hostmask, m.Name)
 			if err != nil {
-				log.Crit("addNickHostmask", "error", err)
+				bot.Crit("addNickHostmask", "error", err)
 			}
 			quiet, err := checkNickHostmask(hostmask, m.To)
 			if err != nil {
-				log.Crit("checkNickHostmask", "error", err)
+				bot.Crit("checkNickHostmask", "error", err)
 			}
 			if quiet {
 				const timeOut = time.Minute * 10
 				ip := m.Prefix.Host
 				t, err := getQuiet(ip)
 				if err != nil {
-					log.Info("adding quiet", "ip", ip)
+					bot.Info("adding quiet", "ip", ip)
 					err := addQuiet(ip, timeOut)
 					if err != nil {
-						log.Crit("could not add quiet to db", "error", err)
+						bot.Crit("could not add quiet to db", "error", err)
 						return
 					}
 					bot.Send(fmt.Sprintf("MODE %s +q *!*@%s", ircChannel, ip))
 					bot.Send(fmt.Sprintf("NOTICE %s :you can talk after %s", m.Name, timeOut))
 					time.AfterFunc(timeOut, func() {
-						log.Info("quiet timeout", "ip", ip)
+						bot.Info("quiet timeout", "ip", ip)
 						bot.Send(fmt.Sprintf("MODE %s -q *!*@%s", ircChannel, ip))
 						err := removeQuiet(ip)
 						if err != nil {
-							log.Crit("can't remove quiet", "error", err)
+							bot.Crit("can't remove quiet", "error", err)
 						}
 					})
 					return
 				}
 				if time.Now().UTC().After(t) {
-					log.Info("timout from db", "ip", ip)
+					bot.Info("timout from db", "ip", ip)
 					bot.Send(fmt.Sprintf("MODE %s -q *!*@%s", ircChannel, ip))
 					err := removeQuiet(ip)
 					if err != nil {
-						log.Crit("can't remove quiet", "error", err)
+						bot.Crit("can't remove quiet", "error", err)
 						return
 					}
 				} else {
@@ -63,14 +62,14 @@ var nickickerTrig = kitty.Trigger{
 		if m.Command == "NICK" {
 			err := addNickHostmask(hostmask, m.Name)
 			if err != nil {
-				log.Crit("addNickHostmask", "error", err)
+				bot.Crit("addNickHostmask", "error", err)
 			}
 			kick, err := checkNickHostmask(hostmask, m.To)
 			if err != nil {
-				log.Crit("checkNickHostmask", "error", err)
+				bot.Crit("checkNickHostmask", "error", err)
 			}
 			if kick {
-				log.Info("too many nick changes", "kicking", m.To)
+				bot.Info("too many nick changes", "kicking", m.To)
 				bot.Send(fmt.Sprintf("REMOVE %s %s :Too many nick changes in the past 24 hours", ircChannel, m.To))
 			}
 		}
@@ -88,12 +87,12 @@ var nickickerCleanupTrig = kitty.Trigger{
 	},
 	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		nickickerCleanupOnce.Do(func() {
-			log.Info("info", "starting quiet timers", "started")
+			bot.Info("info", "starting quiet timers", "started")
 			err := quietTimers(bot)
 			if err != nil {
-				log.Crit("couln't start quiet timers", "error", err)
+				bot.Crit("couln't start quiet timers", "error", err)
 			}
-			log.Info("info", "starting quiet timers", "executed")
+			bot.Info("info", "starting quiet timers", "executed")
 		})
 	},
 }

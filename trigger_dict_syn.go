@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	kitty "github.com/ugjka/kittybot"
-	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var dictTrig = regexp.MustCompile(`(?i)^\s*!+dict(?:ionary)?\w*\s+(\S.*)$`)
@@ -23,7 +22,7 @@ var dict = kitty.Trigger{
 		out, err := cmd.Output()
 		if err != nil {
 			bot.Reply(m, fmt.Sprintf("%s: %s", m.Name, errRequest))
-			log.Warn("!dict", "error", errBuf)
+			bot.Warn("!dict", "error", errBuf)
 			return
 		}
 		res := ""
@@ -67,7 +66,7 @@ var syn = kitty.Trigger{
 		out, err := cmd.Output()
 		if err != nil {
 			bot.Reply(m, fmt.Sprintf("%s: %s", m.Name, errRequest))
-			log.Warn("!syn", "error", errBuf)
+			bot.Warn("!syn", "error", errBuf)
 			return
 		}
 		res := ""

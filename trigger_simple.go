@@ -13,7 +13,6 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/ugjka/catrand"
 	kitty "github.com/ugjka/kittybot"
-	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 // TODO: add !duckparty !chameleonparty
@@ -240,7 +239,7 @@ var toss = kitty.Trigger{
 		}
 		text, err := tosss()
 		if err != nil {
-			log.Warn("!toss", "error", err)
+			bot.Warn("!toss", "error", err)
 			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		}
@@ -289,7 +288,7 @@ var god = kitty.Trigger{
 		cmd := exec.Cmd{Path: "./words.sh"}
 		data, err := cmd.Output()
 		if err != nil {
-			log.Warn("!god", "error", err)
+			bot.Warn("!god", "error", err)
 			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		}
@@ -305,7 +304,7 @@ var bkb = kitty.Trigger{
 	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		text, err := randomErowid()
 		if err != nil {
-			log.Warn("!bkb", "error", err)
+			bot.Warn("!bkb", "error", err)
 			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		}

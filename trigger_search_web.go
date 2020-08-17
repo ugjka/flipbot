@@ -10,7 +10,6 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	kitty "github.com/ugjka/kittybot"
-	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var duckerTrig = regexp.MustCompile(`(?i)^\s*!+(?:d|(?:ducker|ddg|duck|duckduckgo)\w*)\s+(\S.*)$`)
@@ -22,7 +21,7 @@ var ducker = kitty.Trigger{
 		query := duckerTrig.FindStringSubmatch(m.Content)[1]
 		res, err := duck(query)
 		if err != nil {
-			log.Warn("no ducker", "for", query, "error", err)
+			bot.Warn("no ducker", "for", query, "error", err)
 			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		}
@@ -40,7 +39,7 @@ var google = kitty.Trigger{
 		query := googleTrig.FindStringSubmatch(m.Content)[1]
 		res, err := googleStuff(query)
 		if err != nil {
-			log.Warn("no googler", "for", query, "error", err)
+			bot.Warn("no googler", "for", query, "error", err)
 			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		}
@@ -62,7 +61,7 @@ var googlenews = kitty.Trigger{
 		query := googleNewsTrig.FindStringSubmatch(m.Content)[1]
 		res, err := googleNews(query)
 		if err != nil {
-			log.Warn("no news", "for", query, "error", err)
+			bot.Warn("no news", "for", query, "error", err)
 			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		}

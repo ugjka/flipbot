@@ -16,7 +16,6 @@ import (
 	"github.com/boltdb/bolt"
 	"github.com/hako/durafmt"
 	kitty "github.com/ugjka/kittybot"
-	log "gopkg.in/inconshreveable/log15.v2"
 	"mvdan.cc/xurls/v2"
 )
 
@@ -839,11 +838,11 @@ func quietTimers(bot *kitty.Bot) (err error) {
 			copy(buf, k)
 			ip := string(buf)
 			time.AfterFunc(t.Sub(now), func() {
-				log.Info("Quiet timer", "unbanning ip", ip)
+				bot.Info("Quiet timer", "unbanning ip", ip)
 				bot.Send(fmt.Sprintf("MODE %s -q *!*@%s", ircChannel, ip))
 				err := removeQuiet(ip)
 				if err != nil {
-					log.Crit("can't remove quiet", "error", err)
+					bot.Crit("can't remove quiet", "error", err)
 				}
 			})
 			return nil
