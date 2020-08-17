@@ -9,7 +9,6 @@ import (
 	"time"
 
 	kitty "github.com/ugjka/kittybot"
-	log "gopkg.in/inconshreveable/log15.v2"
 	"gopkg.in/ugjka/go-tz.v2/tz"
 )
 
@@ -22,7 +21,7 @@ var clock = kitty.Trigger{
 		query := clockTrig.FindStringSubmatch(m.Content)[1]
 		timez, err := getTime(query)
 		if err != nil {
-			log.Warn("no time", "for", query, "error", err)
+			bot.Warn("no time", "for", query, "error", err)
 			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		}

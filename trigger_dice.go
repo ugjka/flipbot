@@ -6,7 +6,6 @@ import (
 	"regexp"
 
 	kitty "github.com/ugjka/kittybot"
-	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var diceTrigReg = regexp.MustCompile(`(?i)^\s*!+(?:dice+|roll+)(?:\s+(\d+))?$`)
@@ -28,7 +27,7 @@ var diceTrig = kitty.Trigger{
 		}
 		rand, err := os.Open("/dev/urandom")
 		if err != nil {
-			log.Error("dice", "rand open error", err)
+			bot.Error("dice", "rand open error", err)
 			return
 		}
 		defer rand.Close()
@@ -40,7 +39,7 @@ var diceTrig = kitty.Trigger{
 			}
 			_, err = rand.Read(bit)
 			if err != nil {
-				log.Error("dice", "read error", err)
+				bot.Error("dice", "read error", err)
 				return
 			}
 			if int(bit[0]) >= 1 && int(bit[0]) <= 6 {

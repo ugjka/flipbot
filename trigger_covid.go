@@ -11,7 +11,6 @@ import (
 	"time"
 
 	kitty "github.com/ugjka/kittybot"
-	log "gopkg.in/inconshreveable/log15.v2"
 	"gopkg.in/ugjka/go-tz.v2/tz"
 )
 
@@ -24,14 +23,14 @@ var covidTrigger = kitty.Trigger{
 		country := covidTriggerReg.FindStringSubmatch(m.Content)[1]
 		resp, err := httpClient.Get(coronaCountryAPI + country)
 		if err != nil {
-			log.Error("covid", "get error", err)
+			bot.Error("covid", "get error", err)
 			return
 		}
 		defer resp.Body.Close()
 		c := covid{}
 		err = json.NewDecoder(resp.Body).Decode(&c)
 		if err != nil {
-			log.Error("covid", "decode error", err)
+			bot.Error("covid", "decode error", err)
 			return
 		}
 		states := make(states, 0)
@@ -64,14 +63,14 @@ var covidAllTrigger = kitty.Trigger{
 	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		resp, err := httpClient.Get(coronaAllAPI)
 		if err != nil {
-			log.Error("covid all", "get error", err)
+			bot.Error("covid all", "get error", err)
 			return
 		}
 		defer resp.Body.Close()
 		c := covidAll{}
 		err = json.NewDecoder(resp.Body).Decode(&c)
 		if err != nil {
-			log.Error("covid all", "decode error", err)
+			bot.Error("covid all", "decode error", err)
 			return
 		}
 		bot.Reply(m, c.String())

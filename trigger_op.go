@@ -11,7 +11,6 @@ import (
 	"github.com/boltdb/bolt"
 	kitty "github.com/ugjka/kittybot"
 	gomail "gopkg.in/gomail.v2"
-	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var notifyopReg = regexp.MustCompile(`(?i).*!+(?:op+|alarm+|alert+).*`)
@@ -33,7 +32,7 @@ var notifyop = kitty.Trigger{
 		d := gomail.NewDialer("127.0.0.1", 25, "", "")
 
 		if err := d.DialAndSend(msg); err != nil {
-			log.Crit("could not push op nick highlight", "error", err)
+			bot.Crit("could not push op nick highlight", "error", err)
 			return
 		}
 		bot.Reply(m, fmt.Sprintf("%s: message emailed to %s", m.Name, op))
@@ -54,7 +53,7 @@ var indexLog = kitty.Trigger{
 				return nil
 			})
 			if err != nil {
-				log.Crit("indexLog", "error", err)
+				bot.Crit("indexLog", "error", err)
 				return
 			}
 			semaphore := make(chan struct{}, 100)
@@ -88,7 +87,7 @@ var indexLog = kitty.Trigger{
 						return err
 					})
 					if err != nil {
-						log.Crit("indexLog", "error", err)
+						bot.Crit("indexLog", "error", err)
 					}
 					<-semaphore
 				}(i)
@@ -113,7 +112,7 @@ var indexUsers = kitty.Trigger{
 				return nil
 			})
 			if err != nil {
-				log.Crit("indexUsers", "error", err)
+				bot.Crit("indexUsers", "error", err)
 				return
 			}
 			semaphore := make(chan struct{}, 100)
@@ -146,7 +145,7 @@ var indexUsers = kitty.Trigger{
 						return err
 					})
 					if err != nil {
-						log.Crit("indexUsers", "error", err)
+						bot.Crit("indexUsers", "error", err)
 					}
 					<-semaphore
 				}(i)

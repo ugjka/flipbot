@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	kitty "github.com/ugjka/kittybot"
-	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var urbanTrig = regexp.MustCompile(`(?i)^\s*!(?:urban+|ud+)\w*\s+(\S.*)$`)
@@ -21,7 +20,7 @@ var urban = kitty.Trigger{
 		query = strings.ToLower(query)
 		defs, err := LookupWordDefinition(query)
 		if err != nil {
-			log.Warn("urban", "error", err)
+			bot.Warn("urban", "error", err)
 			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		}

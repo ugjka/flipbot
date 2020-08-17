@@ -10,7 +10,6 @@ import (
 
 	"github.com/dustin/go-humanize"
 	kitty "github.com/ugjka/kittybot"
-	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var youtubeTrig = regexp.MustCompile(`(?i)^\s*!+(?:youtube?|yt|ytube|tube)\w*\s+(\S.*)$`)
@@ -21,7 +20,7 @@ var youtube = kitty.Trigger{
 	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		res, err := searchYt(youtubeTrig.FindStringSubmatch(m.Content)[1])
 		if err != nil {
-			log.Warn("youtube search", "error", err)
+			bot.Warn("youtube search", "error", err)
 			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		}
@@ -31,7 +30,7 @@ var youtube = kitty.Trigger{
 		}
 		publishTime, err := time.Parse(time.RFC3339, res.Items[0].Snippet.PublishTime)
 		if err != nil {
-			log.Error("search youtube", "error", err)
+			bot.Error("search youtube", "error", err)
 			return
 		}
 		result := fmt.Sprintf("%s: [Youtube] %s | %s | %s | https://youtu.be/%s",

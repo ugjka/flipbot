@@ -8,7 +8,6 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	kitty "github.com/ugjka/kittybot"
-	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var idkTrigReg = regexp.MustCompile(`(?i)^\s*!+idk+\s+(\S.*)$`)
@@ -20,7 +19,7 @@ var idkTrig = kitty.Trigger{
 		query := idkTrigReg.FindStringSubmatch(m.Content)[1]
 		link, err := idk(query)
 		if err != nil {
-			log.Error("idk", "error", err)
+			bot.Error("idk", "error", err)
 			bot.Reply(m, fmt.Sprintf("%s: idk neither...", m.Name))
 			return
 		}

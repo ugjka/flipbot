@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	kitty "github.com/ugjka/kittybot"
-	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var tailTrig = regexp.MustCompile("(?i)^\\s*!+tail\\w*\\s+(?:(\\d+)\\s+)?([A-Za-z_\\-\\[\\]\\^{}|`][A-Za-z0-9_\\-\\[\\]\\^{}|`]{0,15}\\*?)$")
@@ -46,7 +45,7 @@ var tail = kitty.Trigger{
 				bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
 				return
 			case err != nil:
-				log.Crit("tailTrig", "error", err)
+				bot.Crit("tailTrig", "error", err)
 				return
 			}
 		}
@@ -56,7 +55,7 @@ var tail = kitty.Trigger{
 			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, err))
 			return
 		case err != nil:
-			log.Crit("tailTrig", "error", err)
+			bot.Crit("tailTrig", "error", err)
 			return
 		}
 		if capped {

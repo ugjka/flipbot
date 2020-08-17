@@ -46,31 +46,31 @@ var vpnTrigger = kitty.Trigger{
 		ip := arr[1]
 		vpn, err := denyListVPNCheck(ip)
 		if err != nil {
-			log.Error("denylist vpn check", "error", err)
+			bot.Error("denylist vpn check", "error", err)
 			return
 		}
 		if vpn {
-			log.Info("denylist vpn detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
+			bot.Info("denylist vpn detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
 			bot.Send(fmt.Sprintf("REMOVE %s %s :%s", ircChannel, m.Name, warning))
 			return
 		}
 		vpn, err = subnetVPNCheck(ip)
 		if err != nil {
-			log.Error("subnet vpn check", "error", err)
+			bot.Error("subnet vpn check", "error", err)
 			return
 		}
 		if vpn {
-			log.Info("subnet vpn detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
+			bot.Info("subnet vpn detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
 			bot.Send(fmt.Sprintf("REMOVE %s %s :%s", ircChannel, m.Name, warning))
 			return
 		}
 		vpn, err = providerVPNCheck(ip)
 		if err != nil {
-			log.Error("provider vpn check", "error", err)
+			bot.Error("provider vpn check", "error", err)
 			return
 		}
 		if vpn {
-			log.Info("provider vpn detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
+			bot.Info("provider vpn detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
 			bot.Send(fmt.Sprintf("REMOVE %s %s :%s", ircChannel, m.Name, warning))
 			return
 		}
@@ -226,11 +226,11 @@ var denyBETrigger = kitty.Trigger{
 		}
 		be, err := denyListBECheck(ip)
 		if err != nil {
-			log.Error("denylist Belgium check", "error", err)
+			bot.Error("denylist Belgium check", "error", err)
 			return
 		}
 		if be {
-			log.Info("denylist Belgium detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
+			bot.Info("denylist Belgium detected", "kicking", fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host))
 			bot.Send(fmt.Sprintf("REMOVE %s %s :%s", ircChannel, m.Name, warning))
 			return
 		}

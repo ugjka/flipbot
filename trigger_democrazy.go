@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	kitty "github.com/ugjka/kittybot"
-	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var upvoteTrig = regexp.MustCompile(`(?i)^\s*(?:\++|!+(?:up+|upvote+)\s+)([[:alnum:]]\S{0,30})(?:\s+.*)?$`)
@@ -19,7 +18,7 @@ var upvote = kitty.Trigger{
 		word = strings.ToLower(word)
 		votes, err := setvote(1, word)
 		if err != nil {
-			log.Crit("!upvote", "error", err)
+			bot.Crit("!upvote", "error", err)
 			return
 		}
 		bot.Reply(m, fmt.Sprintf("%s: %.4f votes for %s. Your upvote will gradually expire in 7 days",
@@ -37,7 +36,7 @@ var downvote = kitty.Trigger{
 		word = strings.ToLower(word)
 		votes, err := setvote(-1, word)
 		if err != nil {
-			log.Crit("!downvote", "error", err)
+			bot.Crit("!downvote", "error", err)
 			return
 		}
 		bot.Reply(m, fmt.Sprintf("%s: %.4f votes for %s. Your downvote will gradually expire in 7 days",
@@ -55,7 +54,7 @@ var rank = kitty.Trigger{
 		word = strings.ToLower(word)
 		votes, err := getvotes(word)
 		if err != nil {
-			log.Crit("!rank", "error", err)
+			bot.Crit("!rank", "error", err)
 			return
 		}
 		bot.Reply(m, fmt.Sprintf("%s: %.4f votes for %s",
@@ -71,7 +70,7 @@ var ranks = kitty.Trigger{
 	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		ranks, err := getRanks()
 		if err != nil {
-			log.Crit("!ranks", "error", err)
+			bot.Crit("!ranks", "error", err)
 			return
 		}
 		out := "Leaderboard: "

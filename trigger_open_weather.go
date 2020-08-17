@@ -11,7 +11,6 @@ import (
 	"time"
 
 	kitty "github.com/ugjka/kittybot"
-	log "gopkg.in/inconshreveable/log15.v2"
 	"gopkg.in/ugjka/go-tz.v2/tz"
 )
 
@@ -39,7 +38,7 @@ var weatherOpen = kitty.Trigger{
 		case nil:
 			break
 		default:
-			log.Warn("!w", "error", err)
+			bot.Warn("!w", "error", err)
 			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		}
@@ -207,7 +206,7 @@ var wforecastOpen = kitty.Trigger{
 			break
 		default:
 			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
-			log.Error("!wf", "error", err)
+			bot.Error("!wf", "error", err)
 			return
 		}
 		format := "%s's forecast for %s %s"

@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	kitty "github.com/ugjka/kittybot"
-	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var ukcovidReg = regexp.MustCompile(`(?i)^\s*!+(?:uk|gb)(?:covid\w*)?(?:\s+(\S.*))?$`)
@@ -23,7 +22,7 @@ var ukcovid = kitty.Trigger{
 		if input == "" {
 			out, err := getUKRegion("")
 			if err != nil {
-				log.Error("ukcovid", "error", err)
+				bot.Error("ukcovid", "error", err)
 				bot.Reply(m, fmt.Sprintf("%s: some error happened", m.Name))
 				return
 			}
@@ -33,7 +32,7 @@ var ukcovid = kitty.Trigger{
 		if strings.Contains(input, "death") {
 			out, err := getUKDeaths()
 			if err != nil {
-				log.Error("ukcovid", "error", err)
+				bot.Error("ukcovid", "error", err)
 				bot.Reply(m, fmt.Sprintf("%s: some error happened", m.Name))
 				return
 			}
@@ -42,7 +41,7 @@ var ukcovid = kitty.Trigger{
 		}
 		out, err := getUKRegion(input)
 		if err != nil {
-			log.Error("ukcovid", "error", err)
+			bot.Error("ukcovid", "error", err)
 			bot.Reply(m, fmt.Sprintf("%s: some error happened", m.Name))
 			return
 		}

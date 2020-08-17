@@ -11,7 +11,6 @@ import (
 	kitty "github.com/ugjka/kittybot"
 
 	"github.com/PuerkitoBio/goquery"
-	log "gopkg.in/inconshreveable/log15.v2"
 	"mvdan.cc/xurls/v2"
 )
 
@@ -23,7 +22,7 @@ var urltitle = kitty.Trigger{
 		url := xurls.Strict().FindString(m.Content)
 		res, err := getPreview(url)
 		if err != nil {
-			log.Warn("preview", "url", url, "error", err)
+			bot.Warn("preview", "url", url, "error", err)
 			return
 		}
 		bot.Reply(m, fmt.Sprintf("%s's link: %s", m.Name, limit(res, 300)))

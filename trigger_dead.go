@@ -5,7 +5,6 @@ import (
 	"time"
 
 	kitty "github.com/ugjka/kittybot"
-	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var isDead = kitty.Trigger{
@@ -21,7 +20,7 @@ var isDead = kitty.Trigger{
 			time.Hour*2,
 		)
 		if err != nil {
-			log.Error("getDead", "error", err)
+			bot.Error("getDead", "error", err)
 			return
 		}
 		bot.Reply(m, d.String())
@@ -36,7 +35,7 @@ var isRecent = kitty.Trigger{
 	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		r, err := getRecent(10)
 		if err != nil {
-			log.Error("getRecent", "error", err)
+			bot.Error("getRecent", "error", err)
 			return
 		}
 		bot.Reply(m, r.String())

@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	kitty "github.com/ugjka/kittybot"
-	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 type memoItem struct {
@@ -27,7 +26,7 @@ var memo = kitty.Trigger{
 		msg := matches[2]
 		err := setMemo(nick, memoItem{m.Name, msg})
 		if err != nil {
-			log.Crit("setMemo", "error", err)
+			bot.Crit("setMemo", "error", err)
 			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		}
@@ -45,7 +44,7 @@ var memowatcher = kitty.Trigger{
 		case err == errNoMemo:
 			return
 		case err != nil:
-			log.Crit("getMemo", "error", err)
+			bot.Crit("getMemo", "error", err)
 			return
 		}
 		for _, v := range memos {

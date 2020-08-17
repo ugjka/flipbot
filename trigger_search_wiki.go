@@ -8,7 +8,6 @@ import (
 
 	wikimedia "github.com/pmylund/go-wikimedia"
 	kitty "github.com/ugjka/kittybot"
-	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var wikiTrig = regexp.MustCompile(`(?i)^\s*!+wiki(?:pedia)?\w*\s+(\S.*)$`)
@@ -19,7 +18,7 @@ var wiki = kitty.Trigger{
 	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		answer, link, err := searchWiki(wikiTrig.FindStringSubmatch(m.Content)[1])
 		if err != nil {
-			log.Warn("wiki", "error", err)
+			bot.Warn("wiki", "error", err)
 			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errNoResults))
 			return
 		}

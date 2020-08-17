@@ -6,7 +6,6 @@ import (
 
 	wolf "github.com/Krognol/go-wolfram"
 	kitty "github.com/ugjka/kittybot"
-	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var calcTrig = regexp.MustCompile(`(?i)^\s*!+[ck]al[ck]\w*\s+(\S.*)$`)
@@ -20,7 +19,7 @@ var calc = kitty.Trigger{
 
 		res, err := w.GetShortAnswerQuery(query, wolf.Metric, 10)
 		if err != nil {
-			log.Warn("calc", "error", err)
+			bot.Warn("calc", "error", err)
 			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		}
