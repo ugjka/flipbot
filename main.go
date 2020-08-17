@@ -100,6 +100,7 @@ func main() {
 		logCTR.Close()
 		os.Exit(0)
 	}()
+
 	bot.AddTrigger(morningTrig)
 	bot.AddTrigger(pooParty)
 	bot.AddTrigger(kittyParty)
@@ -156,6 +157,8 @@ func main() {
 	//bot.AddTrigger(voice)
 	//bot.AddTrigger(memo)
 	//bot.AddTrigger(memowatcher)
+	bot.AddTrigger(&pinger{})
+	bot.AddTrigger(setup)
 	//bot.AddTrigger(setmodes)
 	//bot.AddTrigger(voicenames)
 	bot.AddTrigger(help)

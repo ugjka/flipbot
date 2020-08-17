@@ -10,41 +10,31 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-var namesCall sync.Once
-
-var names = kitty.Trigger{
+var setup = kitty.Trigger{
 	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
-		return m.To == ircChannel
+		return m.Command == "JOIN" && m.Name == ircNick
 	},
 	Action: func(bot *kitty.Bot, m *kitty.Message) {
-		namesCall.Do(func() {
-			log.Info("firstrun", "action", "getting names")
-			bot.Send("NAMES " + ircChannel)
-		})
+		bot.Info("getting NAMES")
+		bot.Send("NAMES " + ircChannel)
+		log.Info("setting user modes", "modes", "+RQi")
+		bot.Send(fmt.Sprintf("MODE %s +RQi", ircNick))
 	},
 }
 
-var modes sync.Once
-var setmodes = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
-		return m.To == ircChannel
-	},
-	Action: func(bot *kitty.Bot, m *kitty.Message) {
-		modes.Do(func() {
-			go func(irc *kitty.Bot) {
-				for {
-					time.Sleep(time.Second * 30)
-					irc.Send("PING " + ircServer)
-				}
-			}(bot)
-			log.Info("setting modes for self", "modes", "+RQi")
-			bot.Send(fmt.Sprintf("MODE %s +RQi", ircNick))
-			time.AfterFunc(time.Second*60, func() {
-				log.Info("failover", "action", "sending pass")
-				bot.Msg("NickServ", fmt.Sprintf("IDENTIFY %s %s", ircNick, ircPassword))
-			})
-		})
-	},
+type pinger struct {
+	once sync.Once
+}
+
+func (p *pinger) Handle(bot *kitty.Bot, m *kitty.Message) {
+	p.once.Do(func() {
+		go func(bot *kitty.Bot) {
+			for {
+				time.Sleep(time.Second * 30)
+				bot.Send("PING " + ircServer)
+			}
+		}(bot)
+	})
 }
 
 var voice = kitty.Trigger{
