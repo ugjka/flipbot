@@ -54,7 +54,7 @@ var kittyParty = kitty.Trigger{
 		if m.To == bot.Nick {
 			who = m.Name
 		}
-		maxlen := 510 - 2 - bot.Prefix().Len() - len(fmt.Sprintf("PRIVMSG %s :", who))
+		maxlen := bot.MsgMaxSize(who)
 		msg := ""
 		rand.Seed(time.Now().UnixNano())
 		for i := 0; ; {
@@ -80,7 +80,7 @@ var pooParty = kitty.Trigger{
 		if m.To == bot.Nick {
 			who = m.Name
 		}
-		maxlen := 510 - 2 - bot.Prefix().Len() - len(fmt.Sprintf("PRIVMSG %s :", who))
+		maxlen := bot.MsgMaxSize(who)
 		msg := ""
 		rand.Seed(time.Now().UnixNano())
 		for i := 0; ; {
