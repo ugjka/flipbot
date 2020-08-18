@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"regexp"
 	"strings"
 	"unicode/utf8"
@@ -22,7 +21,7 @@ var bold = kitty.Trigger{
 		if m.To == bot.Nick {
 			who = m.Name
 		}
-		maxlen := 510 - 2 - bot.Prefix().Len() - len(fmt.Sprintf("PRIVMSG %s :", who))
+		maxlen := bot.MsgMaxSize(who)
 		spacer := '⚬'
 		var placeholder rune
 		for _, v := range text {
