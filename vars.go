@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"net/http"
 	"regexp"
-	"strings"
 	"time"
 
 	"github.com/boltdb/bolt"
+	kitty "github.com/ugjka/kittybot"
 )
 
 const emailVar = "FLIPBOT_EMAIL"
@@ -49,11 +49,13 @@ var meditations []string
 
 var whitespace = regexp.MustCompile(`\s+`)
 
-func limit(in string, textLimit int) string {
-	if len(in) > textLimit {
-		return strings.ToValidUTF8(in[:textLimit]+"...", "")
+func limitReply(b *kitty.Bot, m *kitty.Message, msg string, msgCount int) string {
+	limit := b.MsgMaxReplySize(m)
+	limit *= msgCount
+	if len(msg) > limit {
+		msg = msg[:limit-3] + "..."
 	}
-	return in
+	return msg
 }
 
 var errRequest = fmt.Errorf("an error occurred while processing your request")

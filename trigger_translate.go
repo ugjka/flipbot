@@ -20,7 +20,9 @@ var trans = kitty.Trigger{
 			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errRequest))
 			return
 		}
-		bot.Reply(m, fmt.Sprintf("%s: %s", m.Name, limit(res, 1024)))
+		msg := fmt.Sprintf("%s: %s", m.Name, res)
+		msg = limitReply(bot, m, msg, 1)
+		bot.Reply(m, msg)
 	},
 }
 

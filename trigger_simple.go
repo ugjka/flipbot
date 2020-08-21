@@ -50,11 +50,7 @@ var kittyParty = kitty.Trigger{
 	},
 	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		cats := []rune("😺😸😹😻😼😽🙀😿😾🐈🐈‍")
-		who := m.To
-		if m.To == bot.Nick {
-			who = m.Name
-		}
-		maxlen := bot.MsgMaxSize(who)
+		maxlen := bot.MsgMaxReplySize(m)
 		msg := ""
 		rand.Seed(time.Now().UnixNano())
 		for i := 0; ; {
@@ -76,11 +72,7 @@ var pooParty = kitty.Trigger{
 	},
 	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		poo := []rune("‍💩🚽🧻🍷🍺😵🤢🤮💊💉🌧️🥦🧄🍄🌿")
-		who := m.To
-		if m.To == bot.Nick {
-			who = m.Name
-		}
-		maxlen := bot.MsgMaxSize(who)
+		maxlen := bot.MsgMaxReplySize(m)
 		msg := ""
 		rand.Seed(time.Now().UnixNano())
 		for i := 0; ; {

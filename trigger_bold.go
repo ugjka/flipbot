@@ -17,11 +17,7 @@ var bold = kitty.Trigger{
 		text := boldReg.FindStringSubmatch(m.Content)[1]
 		text = strings.ToLower(text)
 		out := ""
-		who := m.To
-		if m.To == bot.Nick {
-			who = m.Name
-		}
-		maxlen := bot.MsgMaxSize(who)
+		maxlen := bot.MsgMaxReplySize(m)
 		spacer := '⚬'
 		var placeholder rune
 		for _, v := range text {
