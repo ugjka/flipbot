@@ -15,7 +15,9 @@ var fliptext = kitty.Trigger{
 		return m.Command == "PRIVMSG" && fliptextTrig.MatchString(m.Content)
 	},
 	Action: func(bot *kitty.Bot, m *kitty.Message) {
-		bot.Reply(m, fmt.Sprintf("(╯‵Д′)╯彡%s", upside(fliptextTrig.FindStringSubmatch(m.Content)[1])))
+		msg := fmt.Sprintf("(╯‵Д′)╯彡%s", upside(fliptextTrig.FindStringSubmatch(m.Content)[1]))
+		msg = limitReply(bot, m, msg, 1)
+		bot.Reply(m, msg)
 	},
 }
 
@@ -25,7 +27,9 @@ var unfliptext = kitty.Trigger{
 		return m.Command == "PRIVMSG" && unfliptextTrig.MatchString(m.Content)
 	},
 	Action: func(bot *kitty.Bot, m *kitty.Message) {
-		bot.Reply(m, fmt.Sprintf("%s <(•_•<)", upside(unfliptextTrig.FindStringSubmatch(m.Content)[1])))
+		msg := fmt.Sprintf("%s <(•_•<)", upside(unfliptextTrig.FindStringSubmatch(m.Content)[1]))
+		msg = limitReply(bot, m, msg, 1)
+		bot.Reply(m, msg)
 	},
 }
 

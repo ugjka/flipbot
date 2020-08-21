@@ -22,8 +22,8 @@ var diceTrig = kitty.Trigger{
 				rolls = 1
 			}
 		}
-		if rolls > 100 {
-			rolls = 100
+		if rolls > 500 {
+			rolls = 500
 		}
 		rand, err := os.Open("/dev/urandom")
 		if err != nil {
@@ -47,7 +47,7 @@ var diceTrig = kitty.Trigger{
 				rolls--
 			}
 		}
-		bot.Reply(m, out)
+		bot.Reply(m, limitReply(bot, m, out, 1))
 	},
 }
 

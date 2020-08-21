@@ -35,7 +35,9 @@ var dict = kitty.Trigger{
 			}
 		}
 		if len(res) > 0 {
-			bot.Reply(m, fmt.Sprintf("%s: [DEFINITIONS] %s", m.Name, limit(res, 1024)))
+			msg := fmt.Sprintf("%s: [DEFINITIONS] %s", m.Name, res)
+			msg = limitReply(bot, m, msg, 1)
+			bot.Reply(m, msg)
 			return
 		}
 		//Synonyms
@@ -47,7 +49,9 @@ var dict = kitty.Trigger{
 			}
 		}
 		if len(res) > 0 {
-			bot.Reply(m, fmt.Sprintf("%s: [SYNONYMS] %s", m.Name, limit(res, 1024)))
+			msg := fmt.Sprintf("%s: [SYNONYMS] %s", m.Name, res)
+			msg = limitReply(bot, m, msg, 1)
+			bot.Reply(m, msg)
 			return
 		}
 		bot.Reply(m, fmt.Sprintf("%s: no results", m.Name))
@@ -80,7 +84,9 @@ var syn = kitty.Trigger{
 			}
 		}
 		if len(res) > 0 {
-			bot.Reply(m, fmt.Sprintf("%s: [SYNONYMS] %s", m.Name, limit(res, 1024)))
+			msg := fmt.Sprintf("%s: [SYNONYMS] %s", m.Name, res)
+			msg = limitReply(bot, m, msg, 1)
+			bot.Reply(m, msg)
 			return
 		}
 		bot.Reply(m, fmt.Sprintf("%s: no results", m.Name))

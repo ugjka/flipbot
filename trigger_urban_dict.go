@@ -37,7 +37,10 @@ var urban = kitty.Trigger{
 		replacer := strings.NewReplacer("[", "", "]", "")
 		result.Definition = replacer.Replace(result.Definition)
 		result.Definition = strings.TrimSpace(result.Definition)
-		bot.Reply(m, fmt.Sprintf("%s: %s \n[%s]", m.Name, limit(result.Definition, 1024), result.Permalink))
+		msg := fmt.Sprintf("%s: %s", m.Name, result.Definition)
+		msg = limitReply(bot, m, msg, 4)
+		bot.Reply(m, msg)
+		bot.Reply(m, fmt.Sprintf("[%s]", result.Permalink))
 	},
 }
 

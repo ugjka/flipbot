@@ -25,7 +25,9 @@ var urltitle = kitty.Trigger{
 			bot.Warn("preview", "url", url, "error", err)
 			return
 		}
-		bot.Reply(m, fmt.Sprintf("%s's link: %s", m.Name, limit(res, 300)))
+		msg := fmt.Sprintf("%s's link: %s", m.Name, res)
+		msg = limitReply(bot, m, msg, 1)
+		bot.Reply(m, msg)
 	},
 }
 

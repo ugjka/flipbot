@@ -26,6 +26,7 @@ var ducker = kitty.Trigger{
 			return
 		}
 		msg := fmt.Sprintf("%s: %s", m.Name, res)
+		msg = limitReply(bot, m, msg, 1)
 		bot.Reply(m, msg)
 	},
 }
@@ -47,7 +48,8 @@ var google = kitty.Trigger{
 			bot.Reply(m, fmt.Sprintf("%s: no results!", m.Name))
 			return
 		}
-		msg := fmt.Sprintf("%s: %s [%s] \n(%s)", m.Name, res[0].URL, res[0].Title, res[0].Abstract)
+		msg := fmt.Sprintf("%s: %s [%s] (%s)", m.Name, res[0].URL, res[0].Title, res[0].Abstract)
+		msg = limitReply(bot, m, msg, 1)
 		bot.Reply(m, msg)
 	},
 }
@@ -69,8 +71,9 @@ var googlenews = kitty.Trigger{
 			bot.Reply(m, fmt.Sprintf("%s: no results!", m.Name))
 			return
 		}
-		msg := fmt.Sprintf("%s: %s [%s] [%s] \n(%s)", m.Name,
+		msg := fmt.Sprintf("%s: %s [%s] [%s] (%s)", m.Name,
 			res[0].URL, res[0].Metadata, res[0].Title, res[0].Abstract)
+		msg = limitReply(bot, m, msg, 1)
 		bot.Reply(m, msg)
 	},
 }

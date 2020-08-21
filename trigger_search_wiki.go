@@ -22,7 +22,10 @@ var wiki = kitty.Trigger{
 			bot.Reply(m, fmt.Sprintf("%s: %v", m.Name, errNoResults))
 			return
 		}
-		bot.Reply(m, fmt.Sprintf("%s: %s \n[%s]", m.Name, limit(answer, 2048), link))
+		msg := fmt.Sprintf("%s: %s", m.Name, answer)
+		msg = limitReply(bot, m, msg, 5)
+		bot.Reply(m, msg)
+		bot.Reply(m, fmt.Sprintf("[%s]", link))
 	},
 }
 
@@ -54,7 +57,7 @@ func searchWiki(query string) (answer, link string, err error) {
 		"titles":          {res.Query.Search[0].Title},
 		"explaintext":     {"true"},
 		"exsectionformat": {"plain"},
-		"exchars":         {"2048"},
+		"exchars":         {"4096"},
 		"redirects":       {"true"},
 	}
 	res, err = w.Query(f)
