@@ -14,13 +14,13 @@ require (
 	github.com/mmcdole/gofeed v1.0.0
 	github.com/pmylund/go-wikimedia v0.0.0-20130802042651-ca2b93c3aea0
 	github.com/ugjka/catrand v0.0.0-20181113133205-3f6473988b0e
-	github.com/ugjka/kittybot v0.0.16
-	golang.org/x/net v0.0.0-20200813134508-3edf25e44fcc // indirect
-	golang.org/x/sys v0.0.0-20200820212457-1fb795427249 // indirect
+	github.com/ugjka/kittybot v0.0.19
+	golang.org/x/net v0.0.0-20200822124328-c89045814202 // indirect
+	golang.org/x/sys v0.0.0-20200821140526-fda516888d29 // indirect
 	golang.org/x/text v0.3.3 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 	gopkg.in/inconshreveable/log15.v2 v2.0.0-20200109203555-b30bc20e4fd1
-	gopkg.in/ugjka/go-tz.v2 v2.0.9
+	gopkg.in/ugjka/go-tz.v2 v2.0.10
 	mvdan.cc/xurls/v2 v2.2.0
 )

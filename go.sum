@@ -51,6 +51,8 @@ github.com/ugjka/catrand v0.0.0-20181113133205-3f6473988b0e h1:Z0z1C8lV2TaY76+P3
 github.com/ugjka/catrand v0.0.0-20181113133205-3f6473988b0e/go.mod h1:lsnw7rfLsYn6J7avalTL0L0kHt0Zh7QWJHxjpBu8O7k=
 github.com/ugjka/kittybot v0.0.16 h1:xoq+wOprKtapOhamBKZg7j+CwROtk0V1OXtE+B3eilY=
 github.com/ugjka/kittybot v0.0.16/go.mod h1:BJUM+slov6VKjCcrA4iLm64Bdt+HWeykTBaQ+AeNW6M=
+github.com/ugjka/kittybot v0.0.19 h1:oT9MB/bfIvMf1p+deprcypM3x2Wnpmrs/0jLHJQQG7M=
+github.com/ugjka/kittybot v0.0.19/go.mod h1:BJUM+slov6VKjCcrA4iLm64Bdt+HWeykTBaQ+AeNW6M=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9/go.mod h1:LzIPMQfyMNhhGPhUkYOs5KpL4U8rLKemX1yGLhDgUto=
 golang.org/x/net v0.0.0-20180218175443-cbe0f9307d01/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
@@ -61,6 +63,8 @@ golang.org/x/net v0.0.0-20200202094626-16171245cfb2 h1:CCH4IOTTfewWjGOlSp+zGcjut
 golang.org/x/net v0.0.0-20200202094626-16171245cfb2/go.mod h1:z5CRVTTTmAJ677TzLLGU+0bjPO0LkuOLi4/5GtJWs/s=
 golang.org/x/net v0.0.0-20200813134508-3edf25e44fcc h1:zK/HqS5bZxDptfPJNq8v7vJfXtkU7r9TLIoSr1bXaP4=
 golang.org/x/net v0.0.0-20200813134508-3edf25e44fcc/go.mod h1:/O7V0waA8r7cgGh81Ro3o1hOxt32SMVPicZroKQ2sZA=
+golang.org/x/net v0.0.0-20200822124328-c89045814202 h1:VvcQYSHwXgi7W+TpUR6A9g6Up98WAHf3f/ulnJ62IyA=
+golang.org/x/net v0.0.0-20200822124328-c89045814202/go.mod h1:/O7V0waA8r7cgGh81Ro3o1hOxt32SMVPicZroKQ2sZA=
 golang.org/x/sys v0.0.0-20190215142949-d0b11bdaac8a/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
 golang.org/x/sys v0.0.0-20190412213103-97732733099d/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20200116001909-b77594299b42/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
@@ -70,6 +74,8 @@ golang.org/x/sys v0.0.0-20200812155832-6a926be9bd1d h1:QQrM/CCYEzTs91GZylDCQjGHu
 golang.org/x/sys v0.0.0-20200812155832-6a926be9bd1d/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20200820212457-1fb795427249 h1:tKP05IMsVLZ4VeeCEFmrIUmxAAx6UD8IBdPtYlYNa8g=
 golang.org/x/sys v0.0.0-20200820212457-1fb795427249/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+golang.org/x/sys v0.0.0-20200821140526-fda516888d29 h1:mNuhGagCf3lDDm5C0376C/sxh6V7fy9WbdEu/YDNA04=
+golang.org/x/sys v0.0.0-20200821140526-fda516888d29/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/text v0.3.0 h1:g61tztE5qeGQ89tm6NTjjM9VPIm088od1l6aSorWRWg=
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 golang.org/x/text v0.3.3 h1:cokOdA+Jmi5PJGXLlLllQSgYigAEfHXJAERHVMaCc2k=
@@ -88,5 +94,7 @@ gopkg.in/sorcix/irc.v2 v2.0.0-20200812151606-3f15758ea8c7 h1:XS4tmz0w7EYviIrBpFV
 gopkg.in/sorcix/irc.v2 v2.0.0-20200812151606-3f15758ea8c7/go.mod h1:PmJkUcwbuPi1FiZ9Rarr6wzVMvzkO7uWqH1jwrMkgW0=
 gopkg.in/ugjka/go-tz.v2 v2.0.9 h1:2ECB40UPBRJ6G53XE6zf7LMsiI038orvYfJKx/eir3g=
 gopkg.in/ugjka/go-tz.v2 v2.0.9/go.mod h1:1iX2y1/xUdZjNIyGW/dLRRinbWrntuHYc9oIkGWFvz4=
+gopkg.in/ugjka/go-tz.v2 v2.0.10 h1:ZexLHhXcYiRoaxXAnjmwG1zCRq/Xn2KB5gZkZhOkQnE=
+gopkg.in/ugjka/go-tz.v2 v2.0.10/go.mod h1:1iX2y1/xUdZjNIyGW/dLRRinbWrntuHYc9oIkGWFvz4=
 mvdan.cc/xurls/v2 v2.2.0 h1:NSZPykBXJFCetGZykLAxaL6SIpvbVy/UFEniIfHAa8A=
 mvdan.cc/xurls/v2 v2.2.0/go.mod h1:EV1RMtya9D6G5DMYPGD8zTQzaHet6Jh8gFlRgGRJeO8=
