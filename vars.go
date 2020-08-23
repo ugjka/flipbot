@@ -50,7 +50,7 @@ var meditations []string
 var whitespace = regexp.MustCompile(`\s+`)
 
 func limitReply(b *kitty.Bot, m *kitty.Message, msg string, msgCount int) string {
-	limit := b.MsgMaxReplySize(m)
+	limit := b.ReplyMaxSize(m)
 	limit *= msgCount
 	if len(msg) > limit {
 		msg = msg[:limit-3] + "..."
