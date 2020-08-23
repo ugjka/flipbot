@@ -80,7 +80,7 @@ var watcher = kitty.Trigger{
 	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return (m.Command == "PRIVMSG" && m.To == ircChannel) || m.Command == "JOIN" ||
 			m.Command == "QUIT" || m.Command == "PART" || m.Command == "KICK" ||
-			m.Command == "ACCOUNT" || m.Command == "AWAY"
+			m.Command == "ACCOUNT" || m.Command == "AWAY" || m.Command == "SETNAME"
 	},
 	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		if m.Command == "JOIN" {
