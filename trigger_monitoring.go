@@ -80,9 +80,31 @@ var watcher = kitty.Trigger{
 	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return (m.Command == "PRIVMSG" && m.To == ircChannel) || m.Command == "JOIN" ||
 			m.Command == "QUIT" || m.Command == "PART" || m.Command == "KICK" ||
-			m.Command == "ACCOUNT" || m.Command == "AWAY" || m.Command == "SETNAME"
+			m.Command == "ACCOUNT" || m.Command == "AWAY" || m.Command == "SETNAME" ||
+			m.Command == "NICK"
 	},
 	Action: func(bot *kitty.Bot, m *kitty.Message) {
+		if m.Command == "NICK" {
+			seen := Seen{}
+			name := strings.ToLower(m.From)
+			seen, _ = getSeen(name)
+			seen.Command = "NICK"
+			seen.Seen = time.Now().UTC()
+			err := setSeen(name, &seen)
+			if err != nil {
+				bot.Warn("set seen", "error", err)
+			}
+			seen = Seen{}
+			name = strings.ToLower(m.To)
+			seen, _ = getSeen(name)
+			seen.Command = "NICK"
+			seen.Seen = time.Now().UTC()
+			err = setSeen(name, &seen)
+			if err != nil {
+				bot.Warn("set seen", "error", err)
+			}
+			return
+		}
 		if m.Command == "JOIN" {
 			account := "*"
 			if len(m.Params) == 3 {
