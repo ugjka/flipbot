@@ -51,8 +51,8 @@ github.com/ugjka/catrand v0.0.0-20181113133205-3f6473988b0e h1:Z0z1C8lV2TaY76+P3
 github.com/ugjka/catrand v0.0.0-20181113133205-3f6473988b0e/go.mod h1:lsnw7rfLsYn6J7avalTL0L0kHt0Zh7QWJHxjpBu8O7k=
 github.com/ugjka/ircmsg v0.0.1 h1:yy2gT4pAE1SU9eyp3H8ihjenbBaXKv6CwB02j0AL6WE=
 github.com/ugjka/ircmsg v0.0.1/go.mod h1:aAhyU2onRMc8CvDO4QDK/0VMKQBh4riIt2GnwupgTlE=
-github.com/ugjka/kittybot v0.0.22 h1:0d+hhmnUcSFT0WAOZYh1FeVevsg/nWXSVDp1WSAcJh8=
-github.com/ugjka/kittybot v0.0.22/go.mod h1:BS1gtWanKT0IZ+9qSS2sra7V74VHiq3SQjLBzNkn6Vg=
+github.com/ugjka/kittybot v0.0.23 h1:AIS0rFvDwZkzdatlierh6I31yjIxeFFZfViK2L7qxgM=
+github.com/ugjka/kittybot v0.0.23/go.mod h1:BS1gtWanKT0IZ+9qSS2sra7V74VHiq3SQjLBzNkn6Vg=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9/go.mod h1:LzIPMQfyMNhhGPhUkYOs5KpL4U8rLKemX1yGLhDgUto=
 golang.org/x/net v0.0.0-20180218175443-cbe0f9307d01/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
