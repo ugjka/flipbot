@@ -14,9 +14,8 @@ require (
 	github.com/mmcdole/gofeed v1.0.0
 	github.com/pmylund/go-wikimedia v0.0.0-20130802042651-ca2b93c3aea0
 	github.com/ugjka/catrand v0.0.0-20181113133205-3f6473988b0e
-	github.com/ugjka/kittybot v0.0.19
+	github.com/ugjka/kittybot v0.0.21
 	golang.org/x/net v0.0.0-20200822124328-c89045814202 // indirect
-	golang.org/x/sys v0.0.0-20200821140526-fda516888d29 // indirect
 	golang.org/x/text v0.3.3 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df

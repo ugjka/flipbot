@@ -56,11 +56,15 @@ var seen = kitty.Trigger{
 			return
 		}
 		dur := durafmt.Parse(time.Now().UTC().Sub(seen.Seen))
-		if seen.LastMSG != "" {
-			bot.Reply(m, fmt.Sprintf("%s: I saw %s %s ago. Last message: %s", m.Name, nick, roundDuration(dur.String()), seen.LastMSG))
-		} else {
-			bot.Reply(m, fmt.Sprintf("%s: I saw %s %s ago. Last activity: %s", m.Name, nick, roundDuration(dur.String()), seen.Command))
+		msg := fmt.Sprintf("%s: I saw %s %s ago. ", m.Name, nick, roundDuration(dur.String()))
+		if seen.Command != "" {
+			msg += fmt.Sprintf("Last activity: %s. ", seen.Command)
 		}
+		if seen.LastMSG != "" {
+			msg += fmt.Sprintf("Last message: %s", seen.LastMSG)
+		}
+		msg = limitReply(bot, m, msg, 1)
+		bot.Reply(m, msg)
 	},
 }
 
@@ -75,9 +79,49 @@ func roundDuration(dur string) string {
 var watcher = kitty.Trigger{
 	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return (m.Command == "PRIVMSG" && m.To == ircChannel) || m.Command == "JOIN" ||
-			m.Command == "QUIT" || m.Command == "PART" || m.Command == "KICK"
+			m.Command == "QUIT" || m.Command == "PART" || m.Command == "KICK" ||
+			m.Command == "ACCOUNT" || m.Command == "AWAY" || m.Command == "SETNAME" ||
+			m.Command == "NICK"
 	},
 	Action: func(bot *kitty.Bot, m *kitty.Message) {
+		if m.Command == "NICK" {
+			seen := Seen{}
+			name := strings.ToLower(m.From)
+			seen, _ = getSeen(name)
+			seen.Command = "NICK"
+			seen.Seen = time.Now().UTC()
+			err := setSeen(name, &seen)
+			if err != nil {
+				bot.Warn("set seen", "error", err)
+			}
+			seen = Seen{}
+			name = strings.ToLower(m.To)
+			seen, _ = getSeen(name)
+			seen.Command = "NICK"
+			seen.Seen = time.Now().UTC()
+			err = setSeen(name, &seen)
+			if err != nil {
+				bot.Warn("set seen", "error", err)
+			}
+			return
+		}
+		if m.Command == "JOIN" {
+			account := "*"
+			if len(m.Params) == 3 {
+				account = m.Params[1]
+			}
+			if account != "*" {
+				seen := Seen{}
+				name := strings.ToLower(account)
+				seen, _ = getSeen(name)
+				seen.Command = "JOIN"
+				seen.Seen = time.Now().UTC()
+				err := setSeen(name, &seen)
+				if err != nil {
+					bot.Warn("set seen", "error", err)
+				}
+			}
+		}
 		name := ""
 		if m.Command == "KICK" {
 			name = m.Params[1]
@@ -86,16 +130,17 @@ var watcher = kitty.Trigger{
 		}
 		seen := Seen{}
 		name = strings.ToLower(name)
+		seen, _ = getSeen(name)
+		seen.Seen = time.Now().UTC()
 		if m.Command == "PRIVMSG" {
-			seen.Seen = time.Now().UTC()
 			seen.LastMSG = m.Content
+			seen.Command = m.Command
 			err := setSeen(name, &seen)
 			if err != nil {
 				bot.Warn("setSeen", "error", err)
 				return
 			}
 		} else {
-			seen.Seen = time.Now().UTC()
 			seen.Command = m.Command
 			err := setSeen(name, &seen)
 			if err != nil {
