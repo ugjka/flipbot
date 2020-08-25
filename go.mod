@@ -1,6 +1,6 @@
 module flipbot
 
-go 1.14
+go 1.15
 
 require (
 	github.com/Krognol/go-wolfram v0.0.0-20180610151123-5b91101b92a8
@@ -14,7 +14,7 @@ require (
 	github.com/mmcdole/gofeed v1.0.0
 	github.com/pmylund/go-wikimedia v0.0.0-20130802042651-ca2b93c3aea0
 	github.com/ugjka/catrand v0.0.0-20181113133205-3f6473988b0e
-	github.com/ugjka/kittybot v0.0.25
+	github.com/ugjka/kittybot v0.0.26
 	golang.org/x/net v0.0.0-20200822124328-c89045814202 // indirect
 	golang.org/x/text v0.3.3 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
