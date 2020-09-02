@@ -9,8 +9,6 @@ import (
 	"strings"
 	"syscall"
 
-	grmon "github.com/bcicen/grmon/agent"
-
 	kitty "github.com/ugjka/kittybot"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
@@ -47,7 +45,6 @@ func main() {
 	check(serverEmail, serverEmailVar)
 	wolframAPIKey = os.Getenv(wolframAPIKeyVar)
 	check(wolframAPIKey, wolframAPIKeyVar)
-	grmon.Start()
 
 	var err error
 	meddata, err := ioutil.ReadFile("meditations.txt")

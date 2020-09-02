@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"net/url"
 	"os/exec"
 	"regexp"
@@ -126,16 +125,11 @@ func googleNews(q string) (res GooglerNewsResults, err error) {
 func duck(s string) (out string, err error) {
 	m := url.Values{}
 	m.Add("q", s)
-	req, err := http.NewRequest("GET", "https://duckduckgo.com/html/?"+m.Encode(), nil)
-	if err != nil {
-		return
-	}
-	req.Header.Set("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
-	req.Header.Set("Accept-Language", "en-US,en;q=0.9")
-	req.Header.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
-	req.Header.Set("Connection", "keep-alive")
+	m.Add("b", "")
+	m.Add("kl", "")
+	m.Add("df", "")
 
-	res, err := httpClient.Do(req)
+	res, err := httpClient.PostForm("https://html.duckduckgo.com/html/", m)
 	if err != nil {
 		return
 	}
@@ -145,9 +139,10 @@ func duck(s string) (out string, err error) {
 		return
 	}
 	sel := doc.Find(".result").Not(".result--ad").First().Find(".result__a")
+	snippet := sel.Parent().Parent().Find(".result__snippet")
 	url, ok := sel.Attr("href")
 	if !ok {
 		return "no results!", nil
 	}
-	return fmt.Sprintf("%s [%s]", url, sel.Text()), nil
+	return fmt.Sprintf("%s [%s] %s", url, sel.Text(), snippet.Text()), nil
 }
