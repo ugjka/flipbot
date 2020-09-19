@@ -2,14 +2,12 @@ package main
 
 import (
 	cookiejar "flipbot/jar"
-	"flipbot/subwatch"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"os/signal"
 	"strings"
 	"syscall"
-	"time"
 
 	kitty "github.com/ugjka/kittybot"
 	log "gopkg.in/inconshreveable/log15.v2"
@@ -105,15 +103,15 @@ func main() {
 	bot.AddTrigger(logJoin)
 	bot.AddTrigger(logAccount)
 	bot.AddTrigger(watcher)
-	bot.AddTrigger(urltitle)
-	bot.AddTrigger(voicenames)
-	bot.AddTrigger(voice)
+	//bot.AddTrigger(urltitle)
+	//bot.AddTrigger(voicenames)
+	//bot.AddTrigger(voice)
 	bot.AddTrigger(setup)
 	bot.AddTrigger(&pinger{})
 	bot.AddTrigger(memowatcher)
 	bot.AddTrigger(getreminder)
 	bot.AddTrigger(kickmeTrigger)
-	bot.AddTrigger(notifyop)
+	//bot.AddTrigger(notifyop)
 	bot.AddTrigger(isRecent)
 	bot.AddTrigger(isDead)
 	bot.AddTrigger(morningTrig)
@@ -136,9 +134,9 @@ func main() {
 	bot.AddTrigger(ranks)
 	bot.AddTrigger(echo)
 	bot.AddTrigger(bkb)
-	//bot.AddTrigger(tail)
+	bot.AddTrigger(tail)
 	//bot.AddTrigger(indexUsers)
-	//bot.AddTrigger(searchLog)
+	bot.AddTrigger(searchLog)
 	//bot.AddTrigger(indexLog)
 	bot.AddTrigger(nature)
 	bot.AddTrigger(mydol)
@@ -178,26 +176,26 @@ func main() {
 	bot.AddTrigger(toss)
 	bot.AddTrigger(dict)
 	bot.AddTrigger(syn)
-	bot.AddTrigger(vpnTrigger)
-	bot.AddTrigger(denyBETrigger)
+	//bot.AddTrigger(vpnTrigger)
+	//bot.AddTrigger(denyBETrigger)
 
 	logHandler := log.LvlFilterHandler(log.LvlInfo, log.StdoutHandler)
 	bot.Logger.SetHandler(logHandler)
 
-	sub := &subwatch.Bot{
-		Endpoints:      []string{subreddit},
-		FetchInterval:  2 * time.Minute,
-		Round:          2 * time.Minute,
-		UserAgent:      "IRC bot for " + subreddit,
-		PrintSubreddit: false,
-	}
-	subbot, receive := subwatch.New(sub)
-	go subbot.Start()
-	go func() {
-		for {
-			bot.Msg(bot.Channels[0], <-receive)
-		}
-	}()
+	// sub := &subwatch.Bot{
+	// 	Endpoints:      []string{subreddit},
+	// 	FetchInterval:  2 * time.Minute,
+	// 	Round:          2 * time.Minute,
+	// 	UserAgent:      "IRC bot for " + subreddit,
+	// 	PrintSubreddit: false,
+	// }
+	// subbot, receive := subwatch.New(sub)
+	// go subbot.Start()
+	// go func() {
+	// 	for {
+	// 		bot.Msg(bot.Channels[0], <-receive)
+	// 	}
+	// }()
 	bot.Run()
 	fmt.Println("Bot shutting down.")
 }
