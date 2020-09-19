@@ -37,6 +37,8 @@ FL1PBOT'S COMMANDS
 !flip <text> :flips the given text (ascii only)
 !hug <nick> :hug someone
 !seen <nick> :show the last time fl1pbot saw the given nick online
+!search <word> :search messages
+!tail <nick> :show last 5 message from nick
 !urban <word> :get Urban Dictionary definition for the given word
 !time <location> :get time for the given location
 !google <query> :get first result from google for the given query

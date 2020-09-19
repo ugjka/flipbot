@@ -336,7 +336,7 @@ var help = kitty.Trigger{
 		return m.Command == "PRIVMSG" && helpTrig.MatchString(m.Content)
 	},
 	Action: func(bot *kitty.Bot, m *kitty.Message) {
-		bot.Reply(m, "Fl1pbot's manual: https://raw.githubusercontent.com/ugjka/flipbot/master/help.txt")
+		bot.Reply(m, "Mysterybot's manual: https://raw.githubusercontent.com/ugjka/flipbot/mysterybot/help.txt")
 	},
 }
 
