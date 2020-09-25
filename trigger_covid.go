@@ -77,9 +77,9 @@ var covidAllTrigger = kitty.Trigger{
 	},
 }
 
-var coronaCountryAPI = "https://disease.sh/v3/covid-19/countries/"
-var coronaAllAPI = "https://disease.sh/v3/covid-19/all"
-var coronaStatesAPI = "https://disease.sh/v3/covid-19/states/"
+const coronaCountryAPI = "https://disease.sh/v3/covid-19/countries/"
+const coronaAllAPI = "https://disease.sh/v3/covid-19/all"
+const coronaStatesAPI = "https://disease.sh/v3/covid-19/states/"
 
 type covid struct {
 	Updated     int64
