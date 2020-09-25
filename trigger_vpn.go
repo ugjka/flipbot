@@ -31,7 +31,8 @@ var vpnTrigger = kitty.Trigger{
 			if !ipReg.MatchString(m.Host) {
 				return false
 			}
-			if m.Name == "klimdaddie" || m.Name == "yousei" || m.Name == ircNick {
+			if strings.Contains(strings.ToLower(m.Name), "klimdaddie") || m.Name == "yousei" ||
+				m.Name == ircNick || strings.Contains(strings.ToLower(m.Name), "madcotto") {
 				return false
 			}
 			if len(m.Params) == 3 && m.Params[1] != "*" {
@@ -202,7 +203,8 @@ func denyListVPNCheck(ip string) (vpn bool, err error) {
 var denyBETrigger = kitty.Trigger{
 	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		if m.Command == "JOIN" {
-			if m.Name == "klimdaddie" || m.Name == "yousei" || m.Name == ircNick {
+			if strings.Contains(strings.ToLower(m.Name), "klimdaddie") || m.Name == "yousei" ||
+				m.Name == ircNick || strings.Contains(strings.ToLower(m.Name), "madcotto") {
 				return false
 			}
 			if len(m.Params) == 3 && m.Params[1] != "*" {
