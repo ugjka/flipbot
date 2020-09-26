@@ -185,7 +185,7 @@ func main() {
 	bot.Logger.SetHandler(logHandler)
 
 	sub := &subwatch.Bot{
-		Endpoints:      []string{subreddit},
+		Endpoints:      []string{subreddit, "/r/paranormal/new", "/r/ufo/new", "/r/ufos/new"},
 		FetchInterval:  2 * time.Minute,
 		Round:          2 * time.Minute,
 		UserAgent:      "IRC bot for " + subreddit,
