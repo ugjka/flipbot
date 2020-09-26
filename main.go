@@ -2,12 +2,14 @@ package main
 
 import (
 	cookiejar "flipbot/jar"
+	"flipbot/subwatch"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"os/signal"
 	"strings"
 	"syscall"
+	"time"
 
 	kitty "github.com/ugjka/kittybot"
 	log "gopkg.in/inconshreveable/log15.v2"
@@ -182,20 +184,20 @@ func main() {
 	logHandler := log.LvlFilterHandler(log.LvlInfo, log.StdoutHandler)
 	bot.Logger.SetHandler(logHandler)
 
-	// sub := &subwatch.Bot{
-	// 	Endpoints:      []string{subreddit},
-	// 	FetchInterval:  2 * time.Minute,
-	// 	Round:          2 * time.Minute,
-	// 	UserAgent:      "IRC bot for " + subreddit,
-	// 	PrintSubreddit: false,
-	// }
-	// subbot, receive := subwatch.New(sub)
-	// go subbot.Start()
-	// go func() {
-	// 	for {
-	// 		bot.Msg(bot.Channels[0], <-receive)
-	// 	}
-	// }()
+	sub := &subwatch.Bot{
+		Endpoints:      []string{subreddit},
+		FetchInterval:  2 * time.Minute,
+		Round:          2 * time.Minute,
+		UserAgent:      "IRC bot for " + subreddit,
+		PrintSubreddit: false,
+	}
+	subbot, receive := subwatch.New(sub)
+	go subbot.Start()
+	go func() {
+		for {
+			bot.Msg(bot.Channels[0], <-receive)
+		}
+	}()
 	bot.Run()
 	fmt.Println("Bot shutting down.")
 }
