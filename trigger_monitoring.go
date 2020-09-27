@@ -172,6 +172,9 @@ var top = kitty.Trigger{
 				if msg.Time.Before(week) {
 					break
 				}
+				if strings.ToLower(msg.Nick) == "gonzobot" || strings.ToLower(msg.Nick) == "flipbot" {
+					continue
+				}
 				total++
 				stats[strings.ToLower(msg.Nick)]++
 			}
