@@ -185,11 +185,11 @@ func main() {
 	bot.Logger.SetHandler(logHandler)
 
 	sub := &subwatch.Bot{
-		Endpoints:      []string{subreddit, "/r/paranormal/new", "/r/ufo/new", "/r/ufos/new"},
+		Endpoints:      []string{subreddit, "/r/paranormal/new", "/r/ufo/new", "/r/ufos/new", "/r/aliens/new", "/r/alien/new"},
 		FetchInterval:  2 * time.Minute,
 		Round:          2 * time.Minute,
 		UserAgent:      "IRC bot for " + subreddit,
-		PrintSubreddit: false,
+		PrintSubreddit: true,
 	}
 	subbot, receive := subwatch.New(sub)
 	go subbot.Start()
