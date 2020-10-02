@@ -69,7 +69,6 @@ func main() {
 
 	hijackSession := func(bot *kitty.Bot) {
 		bot.HijackSession = true
-		bot.SASL = true
 		bot.Password = ircPassword
 	}
 
