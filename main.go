@@ -74,10 +74,8 @@ func main() {
 	channels := func(bot *kitty.Bot) {
 		bot.Channels = []string{ircChannel}
 	}
-	bot, err := kitty.NewBot(fmt.Sprintf("%s:%s", ircServer, ircPort), ircNick, channels, hijackSession)
-	if err != nil {
-		panic(err)
-	}
+	bot := kitty.NewBot(fmt.Sprintf("%s:%s", ircServer, ircPort), ircNick, channels, hijackSession)
+
 	go func() {
 		db, err = initDB("flipbot.db")
 		if err != nil {
