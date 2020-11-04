@@ -133,7 +133,7 @@ func main() {
 	bot.AddTrigger(ranks)
 	bot.AddTrigger(echo)
 	bot.AddTrigger(bkb)
-	//bot.AddTrigger(tail)
+	bot.AddTrigger(tail)
 	//bot.AddTrigger(indexUsers)
 	//bot.AddTrigger(searchLog)
 	//bot.AddTrigger(indexLog)
