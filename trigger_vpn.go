@@ -45,6 +45,10 @@ var vpnTrigger = kitty.Trigger{
 		const warning = "VPN/Proxy/Datacenter IP addresses are banned, please identify with freenode before joining to bypass this check"
 		arr := ipReg.FindStringSubmatch(m.Host)
 		ip := arr[1]
+		//echoline's ip
+		if ip == "45.77.80.34" {
+			return
+		}
 		vpn, err := denyListVPNCheck(ip)
 		if err != nil {
 			bot.Error("denylist vpn check", "error", err)
