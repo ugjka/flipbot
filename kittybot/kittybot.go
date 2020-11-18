@@ -113,7 +113,7 @@ func parseMessage(s *discordgo.Session, m *discordgo.MessageCreate) (msg *Messag
 	msg = new(Message)
 	msg.Content = m.Content
 	msg.Command = "PRIVMSG"
-	msg.Name = m.Author.Username
+	msg.Name = m.Member.Nick
 	msg.To = m.ChannelID
 	msg.Session = s
 	return msg
