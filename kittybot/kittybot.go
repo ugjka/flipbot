@@ -34,8 +34,8 @@ func NewBot(token string) *Bot {
 	bot := Bot{
 		started:  time.Now(),
 		token:    token,
-		outgoing: make(chan *Message),
-		incoming: make(chan *discordgo.MessageCreate),
+		outgoing: make(chan *Message, 1),
+		incoming: make(chan *discordgo.MessageCreate, 1),
 	}
 	// Discard logs by default
 	bot.Logger = log.New("id", logext.RandId(8))
