@@ -47,7 +47,7 @@ func OSMGetter(url string) (data []byte, err error) {
 	if err != nil {
 		return
 	}
-	req.Header.Set("User-Agent", fmt.Sprintf("%s (irc bot) for Freenode %s", ircNick, subreddit))
+	req.Header.Set("User-Agent", fmt.Sprintf("%s (irc bot) for Freenode", subreddit))
 	get, err := httpClient.Do(req)
 	if err != nil {
 		return

@@ -17,7 +17,7 @@ import (
 // Bot implements an irc bot to be connected to a given server
 type Bot struct {
 	token       string
-	outgoing    chan *Message
+	outgoing    chan string
 	incoming    chan *discordgo.MessageCreate
 	handlers    []Handler
 	session     *discordgo.Session
@@ -34,7 +34,7 @@ func NewBot(token string) *Bot {
 	bot := Bot{
 		started:  time.Now(),
 		token:    token,
-		outgoing: make(chan *Message, 1),
+		outgoing: make(chan string, 1),
 		incoming: make(chan *discordgo.MessageCreate, 1),
 	}
 	// Discard logs by default
@@ -44,40 +44,14 @@ func NewBot(token string) *Bot {
 	return &bot
 }
 
-// Handles message speed throtling
-func (bot *Bot) handleOutgoingMessages() {
-	for {
-		msg := <-bot.outgoing
-		bot.session.ChannelMessageSend(msg.To, msg.Content)
-	}
-}
-
-func (bot *Bot) handleIncomingMessages() {
-	for {
-		msg := parseMessage(<-bot.incoming)
-		go func() {
-			for _, h := range bot.handlers {
-				go h.Handle(bot, msg)
-			}
-		}()
-	}
-}
-
 func (bot *Bot) messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	bot.sessionOnce.Do(func() {
 		bot.session = s
 	})
-	// Ignore all messages created by the bot itself
-	// This isn't required in this specific example but it's a good practice.
-	if m.Author.ID == s.State.User.ID {
-		return
+	msg := parseMessage(s, m)
+	for _, handler := range bot.handlers {
+		handler.Handle(bot, msg)
 	}
-	// If the message is "ping" reply with "Pong!"
-	bot.incoming <- m
-
-	// If the message is "pong" reply with "Ping!"
-	msg := <-bot.outgoing
-	s.ChannelMessageSend(msg.To, msg.Content)
 }
 
 // Run runs
@@ -94,9 +68,6 @@ func (bot *Bot) Run() {
 		fmt.Println("error opening connection,", err)
 		return
 	}
-	bot.Debug("starting bot goroutines")
-	go bot.handleIncomingMessages()
-	go bot.handleOutgoingMessages()
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
 	<-sig
@@ -143,15 +114,17 @@ type Message struct {
 	Command string
 	Name    string
 	To      string
+	Session *discordgo.Session
 }
 
 // parseMessage takes a string and attempts to create a Message struct.
 // Returns nil if the Message is invalid.
-func parseMessage(raw *discordgo.MessageCreate) (m *Message) {
-	m = new(Message)
-	m.Content = raw.Content
-	m.Command = "PRIVMSG"
-	m.Name = raw.Author.Username
-	m.To = raw.ChannelID
-	return m
+func parseMessage(s *discordgo.Session, m *discordgo.MessageCreate) (msg *Message) {
+	msg = new(Message)
+	msg.Content = m.Content
+	msg.Command = "PRIVMSG"
+	msg.Name = m.Author.Username
+	msg.To = m.ChannelID
+	msg.Session = s
+	return msg
 }

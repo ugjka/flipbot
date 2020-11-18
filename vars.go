@@ -20,14 +20,9 @@ const opVar = "FLIPBOT_OP"
 const serverEmailVar = "FLIPBOT_SERVER_MAIL"
 const wolframAPIKeyVar = "FLIPBOT_WOLF"
 
-var ircPort string
 var email string
 var youtubeAPIKey string
 var subreddit string
-var ircServer string
-var ircNick string
-var ircPassword string
-var ircChannel string
 var openWeatherMapAPIKey string
 var op string
 var serverEmail string

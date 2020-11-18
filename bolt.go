@@ -13,7 +13,6 @@ import (
 
 	"github.com/dustin/go-humanize"
 
-	kitty "flipbot/kittybot"
 	"github.com/boltdb/bolt"
 	"github.com/hako/durafmt"
 	"mvdan.cc/xurls/v2"
@@ -378,99 +377,6 @@ func getOSMCache(url string) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-func setMemo(nick string, memo memoItem) (err error) {
-	items := make(memos, 0)
-	err = db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket(memoBucket)
-		if v := b.Get([]byte(nick)); v != nil {
-			return json.Unmarshal(v, &items)
-		}
-		return nil
-	})
-	if err != nil {
-		return
-	}
-	items = append(items, memo)
-	return db.Batch(func(tx *bolt.Tx) error {
-		b := tx.Bucket(memoBucket)
-		data, err := json.Marshal(items)
-		if err != nil {
-			return err
-		}
-		return b.Put([]byte(nick), data)
-	})
-}
-
-func getMemo(nick string) (items memos, err error) {
-	items = make(memos, 0)
-	err = db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket(memoBucket)
-		if v := b.Get([]byte(nick)); v != nil {
-			return json.Unmarshal(v, &items)
-		}
-		return errNoMemo
-	})
-	if err != nil {
-		return
-	}
-	err = db.Batch(func(tx *bolt.Tx) error {
-		b := tx.Bucket(memoBucket)
-		return b.Delete([]byte(nick))
-	})
-	return
-}
-
-func getReminder() (reminders ReminderItems, err error) {
-	var tmp string
-	err = db.View(func(tx *bolt.Tx) error {
-		c := tx.Bucket(reminderBucket).Cursor()
-		if k, v := c.First(); k != nil {
-			tmp = string(k)
-			rem, err := time.Parse(time.RFC3339, string(k))
-			if err != nil {
-				return err
-			}
-			if rem.After(time.Now()) {
-				return errNoReminder
-			}
-			return json.Unmarshal(v, &reminders)
-		}
-		return nil
-	})
-	if err != nil {
-		return
-	}
-	err = db.Batch(func(tx *bolt.Tx) error {
-		b := tx.Bucket(reminderBucket)
-		return b.Delete([]byte(tmp))
-	})
-	return
-}
-
-func setReminder(target string, reminder ReminderItem) (err error) {
-	reminders := make(ReminderItems, 0)
-	err = db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket(reminderBucket)
-		if v := b.Get([]byte(target)); v != nil {
-			return json.Unmarshal(v, &reminders)
-		}
-		return nil
-	})
-	if err != nil {
-		return
-	}
-	reminders = append(reminders, reminder)
-	err = db.Batch(func(tx *bolt.Tx) error {
-		b := tx.Bucket(reminderBucket)
-		data, err := json.Marshal(reminders)
-		if err != nil {
-			return err
-		}
-		return b.Put([]byte(target), data)
-	})
-	return
-}
-
 var urls = xurls.Relaxed()
 var word = regexp.MustCompile("(!?\\w+[\"']?\\w+)")
 
@@ -761,39 +667,6 @@ func addNickHostmask(hostmask, nick string) error {
 	return err
 }
 
-func checkNickHostmask(hostmask, nick string) (kick bool, err error) {
-	nick = strings.TrimRight(nick, "_")
-	err = db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket(hostmaskBucket)
-		hb := b.Bucket([]byte(hostmask))
-		if hb == nil {
-			return nil
-		}
-		c := hb.Cursor()
-		key, value := c.Last()
-		if key != nil && string(value) == nick {
-			return nil
-		}
-		target := time.Now().UTC().Add(-nickChangeWindow)
-		count := 0
-		for k, _ := c.Last(); k != nil; k, _ = c.Prev() {
-			t, err := time.Parse(time.RFC3339, string(k))
-			if err != nil {
-				return err
-			}
-			if t.Before(target) {
-				break
-			}
-			count++
-		}
-		if count >= nickChangesMax {
-			kick = true
-		}
-		return nil
-	})
-	return kick, err
-}
-
 func addQuiet(ip string, dur time.Duration) (err error) {
 	err = db.Batch(func(tx *bolt.Tx) error {
 		b := tx.Bucket(quietBucket)
@@ -821,32 +694,6 @@ func removeQuiet(ip string) (err error) {
 	err = db.Batch(func(tx *bolt.Tx) error {
 		b := tx.Bucket(quietBucket)
 		return b.Delete([]byte(ip))
-	})
-	return
-}
-
-func quietTimers(bot *kitty.Bot) (err error) {
-	err = db.Batch(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket(quietBucket)
-		return bucket.ForEach(func(k, v []byte) error {
-			now := time.Now()
-			t, err := time.Parse(time.RFC3339, string(v))
-			if err != nil {
-				return err
-			}
-			buf := make([]byte, len(k))
-			copy(buf, k)
-			ip := string(buf)
-			time.AfterFunc(t.Sub(now), func() {
-				bot.Info("Quiet timer", "unbanning ip", ip)
-				bot.Send(fmt.Sprintf("MODE %s -q *!*@%s", ircChannel, ip))
-				err := removeQuiet(ip)
-				if err != nil {
-					bot.Crit("can't remove quiet", "error", err)
-				}
-			})
-			return nil
-		})
 	})
 	return
 }

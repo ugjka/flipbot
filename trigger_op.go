@@ -13,7 +13,7 @@ import (
 var notifyopReg = regexp.MustCompile(`(?i).*!+(?:op+|alarm+|alert+).*`)
 var notifyop = kitty.Trigger{
 	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
-		return m.Command == "PRIVMSG" && m.To == ircChannel && notifyopReg.MatchString(m.Content)
+		return m.Command == "PRIVMSG" && notifyopReg.MatchString(m.Content)
 	},
 	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		msg := gomail.NewMessage()

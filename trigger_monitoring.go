@@ -126,33 +126,6 @@ var top = kitty.Trigger{
 	},
 }
 
-var logmsg = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
-		return m.Command == "PRIVMSG" && m.To == ircChannel
-	},
-	Action: func(bot *kitty.Bot, m *kitty.Message) {
-		logCTR.Lock()
-		fmt.Fprintf(logCTR.File, "[%s] <%s>\t%s\n", time.Now().UTC().Format("06:01:02|15:04:05"), m.Name, m.Content)
-		logCTR.Unlock()
-	},
-}
-
-var logmsgBolt = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
-		return m.Command == "PRIVMSG" && m.To == ircChannel
-	},
-	Action: func(bot *kitty.Bot, m *kitty.Message) {
-		err := setLogMSG(&Message{
-			Time:    time.Now(),
-			Nick:    m.Name,
-			Message: m.Content,
-		})
-		if err != nil {
-			bot.Crit("setLogMSG", "error", err)
-		}
-	},
-}
-
 //Message is an irc message
 type Message struct {
 	Time    time.Time

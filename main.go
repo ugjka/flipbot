@@ -58,7 +58,7 @@ func main() {
 	signal.Notify(stop, syscall.SIGTERM)
 	signal.Notify(stop, syscall.SIGHUP)
 
-	bot := kitty.NewBot("Bot " + discordToken)
+	bot := kitty.NewBot(discordToken)
 
 	go func() {
 		db, err = initDB("flipbot.db")
@@ -79,8 +79,6 @@ func main() {
 		logCTR.Close()
 		os.Exit(0)
 	}()
-
-	bot.AddTrigger(getreminder)
 	bot.AddTrigger(notifyop)
 	bot.AddTrigger(morningTrig)
 	bot.AddTrigger(pooParty)
@@ -120,7 +118,6 @@ func main() {
 	bot.AddTrigger(test)
 	bot.AddTrigger(googlenews)
 	bot.AddTrigger(ducker)
-	bot.AddTrigger(reminder)
 	bot.AddTrigger(hug)
 	bot.AddTrigger(debug)
 	bot.AddTrigger(calc)
