@@ -65,6 +65,7 @@ func (bot *Bot) Run() {
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
 	<-sig
+	dg.Close()
 	bot.Info("disconnected")
 	return
 }
