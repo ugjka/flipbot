@@ -11,7 +11,6 @@ require (
 	github.com/dustin/go-humanize v1.0.0
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect
-	github.com/hako/durafmt v0.0.0-20200710122514-c0fb7b4da026
 	github.com/inconshreveable/log15 v0.0.0-20201112154412-8562bdadbbac // indirect
 	github.com/mattn/go-colorable v0.1.8 // indirect
 	github.com/pmylund/go-wikimedia v0.0.0-20130802042651-ca2b93c3aea0

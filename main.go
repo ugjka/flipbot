@@ -66,17 +66,10 @@ func main() {
 			panic(err)
 		}
 	}()
-	//Log messages
-	logCTR.File, err = os.OpenFile("messages.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-	if err != nil {
-		panic(err)
-	}
-	defer logCTR.Close()
 
 	go func() {
 		<-stop
 		db.Close()
-		logCTR.Close()
 		os.Exit(0)
 	}()
 	bot.AddTrigger(notifyop)
