@@ -2,12 +2,11 @@ package main
 
 import (
 	cookiejar "flipbot/jar"
+	kitty "flipbot/kittybot"
 	"fmt"
 	"net/http"
 	"regexp"
 	"time"
-
-	kitty "flipbot/kittybot"
 
 	"github.com/boltdb/bolt"
 )
