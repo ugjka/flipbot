@@ -30,8 +30,10 @@ type Bot struct {
 func NewBot(token string) *Bot {
 	// Defaults are set here
 	bot := Bot{
-		started: time.Now(),
-		token:   token,
+		started:  time.Now(),
+		token:    token,
+		outgoing: make(chan *Message),
+		incoming: make(chan *discordgo.MessageCreate),
 	}
 	// Discard logs by default
 	bot.Logger = log.New("id", logext.RandId(8))
