@@ -11,6 +11,7 @@ import (
 	"unicode/utf8"
 
 	kitty "flipbot/kittybot"
+
 	"github.com/PuerkitoBio/goquery"
 	"github.com/ugjka/catrand"
 )
@@ -50,7 +51,7 @@ var kittyParty = kitty.Trigger{
 	},
 	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		cats := []rune("😺😸😹😻😼😽🙀😿😾🐈🐈‍")
-		maxlen := bot.ReplyMaxSize(m)
+		maxlen := 512
 		msg := ""
 		rand.Seed(time.Now().UnixNano())
 		for i := 0; ; {
@@ -72,7 +73,7 @@ var pooParty = kitty.Trigger{
 	},
 	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		poo := []rune("‍💩🚽🧻🍷🍺😵🤢🤮💊💉🌧️🥦🧄🍄🌿")
-		maxlen := bot.ReplyMaxSize(m)
+		maxlen := 512
 		msg := ""
 		rand.Seed(time.Now().UnixNano())
 		for i := 0; ; {

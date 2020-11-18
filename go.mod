@@ -7,9 +7,10 @@ require (
 	github.com/PuerkitoBio/goquery v1.6.0
 	github.com/andybalholm/cascadia v1.2.0 // indirect
 	github.com/boltdb/bolt v1.3.1
+	github.com/bwmarrin/discordgo v0.22.0
 	github.com/dustin/go-humanize v1.0.0
-	github.com/ftrvxmtrx/fd v0.0.0-20150925145434-c6d800382fff
 	github.com/go-stack/stack v1.8.0 // indirect
+	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/hako/durafmt v0.0.0-20200710122514-c0fb7b4da026
 	github.com/inconshreveable/log15 v0.0.0-20201112154412-8562bdadbbac // indirect
 	github.com/martinlindhe/base36 v1.1.0
@@ -17,7 +18,7 @@ require (
 	github.com/mmcdole/gofeed v1.1.0
 	github.com/pmylund/go-wikimedia v0.0.0-20130802042651-ca2b93c3aea0
 	github.com/ugjka/catrand v0.0.0-20181113133205-3f6473988b0e
-	github.com/ugjka/ircmsg v0.0.3
+	golang.org/x/crypto v0.0.0-20201117144127-c1f2f97bffc9 // indirect
 	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b // indirect
 	golang.org/x/sys v0.0.0-20201117222635-ba5294a509c7 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect

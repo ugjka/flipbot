@@ -11,6 +11,7 @@ import (
 	"time"
 
 	kitty "flipbot/kittybot"
+
 	"github.com/boltdb/bolt"
 	"github.com/hako/durafmt"
 )
@@ -76,81 +77,6 @@ func roundDuration(dur string) string {
 	return strings.Join(arr[:2], " ")
 }
 
-var watcher = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
-		return (m.Command == "PRIVMSG" && m.To == ircChannel) || m.Command == "JOIN" ||
-			m.Command == "QUIT" || m.Command == "PART" || m.Command == "KICK" ||
-			m.Command == "ACCOUNT" || m.Command == "AWAY" || m.Command == "SETNAME" ||
-			m.Command == "NICK"
-	},
-	Action: func(bot *kitty.Bot, m *kitty.Message) {
-		if m.Command == "NICK" {
-			seen := Seen{}
-			name := strings.ToLower(m.From)
-			seen, _ = getSeen(name)
-			seen.Command = "NICK"
-			seen.Seen = time.Now().UTC()
-			err := setSeen(name, &seen)
-			if err != nil {
-				bot.Warn("set seen", "error", err)
-			}
-			seen = Seen{}
-			name = strings.ToLower(m.To)
-			seen, _ = getSeen(name)
-			seen.Command = "NICK"
-			seen.Seen = time.Now().UTC()
-			err = setSeen(name, &seen)
-			if err != nil {
-				bot.Warn("set seen", "error", err)
-			}
-			return
-		}
-		if m.Command == "JOIN" {
-			account := "*"
-			if len(m.Params) == 3 {
-				account = m.Params[1]
-			}
-			if account != "*" {
-				seen := Seen{}
-				name := strings.ToLower(account)
-				seen, _ = getSeen(name)
-				seen.Command = "JOIN"
-				seen.Seen = time.Now().UTC()
-				err := setSeen(name, &seen)
-				if err != nil {
-					bot.Warn("set seen", "error", err)
-				}
-			}
-		}
-		name := ""
-		if m.Command == "KICK" {
-			name = m.Params[1]
-		} else {
-			name = m.Name
-		}
-		seen := Seen{}
-		name = strings.ToLower(name)
-		seen, _ = getSeen(name)
-		seen.Seen = time.Now().UTC()
-		if m.Command == "PRIVMSG" {
-			seen.LastMSG = m.Content
-			seen.Command = m.Command
-			err := setSeen(name, &seen)
-			if err != nil {
-				bot.Warn("setSeen", "error", err)
-				return
-			}
-		} else {
-			seen.Command = m.Command
-			err := setSeen(name, &seen)
-			if err != nil {
-				bot.Warn("setSeen", "error", err)
-				return
-			}
-		}
-	},
-}
-
 var topTrig = regexp.MustCompile(`(?i).*!+(?:top|masters?|masterminds?|echoline).*`)
 var top = kitty.Trigger{
 	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
@@ -207,32 +133,6 @@ var logmsg = kitty.Trigger{
 	Action: func(bot *kitty.Bot, m *kitty.Message) {
 		logCTR.Lock()
 		fmt.Fprintf(logCTR.File, "[%s] <%s>\t%s\n", time.Now().UTC().Format("06:01:02|15:04:05"), m.Name, m.Content)
-		logCTR.Unlock()
-	},
-}
-
-var logJoin = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
-		return m.Command == "JOIN"
-	},
-	Action: func(bot *kitty.Bot, m *kitty.Message) {
-		logCTR.Lock()
-		account := "[unknown]"
-		if len(m.Params) == 3 {
-			account = m.Params[1]
-		}
-		fmt.Fprintf(logCTR.File, "[%s] [JOIN]\t%s!%s@%s (%s) account: %s\n", time.Now().UTC().Format("06:01:02|15:04:05"), m.Name, m.User, m.Host, m.Trailing(), account)
-		logCTR.Unlock()
-	},
-}
-
-var logAccount = kitty.Trigger{
-	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
-		return m.Command == "ACCOUNT"
-	},
-	Action: func(bot *kitty.Bot, m *kitty.Message) {
-		logCTR.Lock()
-		fmt.Fprintf(logCTR.File, "[%s] [ACCOUNT]\t%s!%s@%s (%s)\n", time.Now().UTC().Format("06:01:02|15:04:05"), m.Name, m.User, m.Host, m.Params[0])
 		logCTR.Unlock()
 	},
 }

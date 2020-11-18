@@ -3,7 +3,6 @@ package main
 import (
 	"regexp"
 	"strings"
-	"unicode/utf8"
 
 	kitty "flipbot/kittybot"
 )
@@ -17,7 +16,6 @@ var bold = kitty.Trigger{
 		text := boldReg.FindStringSubmatch(m.Content)[1]
 		text = strings.ToLower(text)
 		out := ""
-		maxlen := bot.ReplyMaxSize(m)
 		spacer := '⚬'
 		var placeholder rune
 		for _, v := range text {
@@ -25,9 +23,6 @@ var bold = kitty.Trigger{
 				placeholder = r
 			} else {
 				placeholder = spacer
-			}
-			if len([]byte(out))+utf8.RuneLen(placeholder) > maxlen {
-				break
 			}
 			out += string(placeholder)
 		}

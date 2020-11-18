@@ -28,16 +28,6 @@ func main() {
 	check(youtubeAPIKey, youtubeAPIKeyVar)
 	subreddit = os.Getenv(subredditVar)
 	check(subreddit, subredditVar)
-	ircServer = os.Getenv(ircServerVar)
-	check(ircServer, ircServerVar)
-	ircPort = os.Getenv(ircPortVar)
-	check(ircPort, ircPasswordVar)
-	ircNick = os.Getenv(ircNickVar)
-	check(ircNick, ircNickVar)
-	ircPassword = os.Getenv(ircPasswordVar)
-	check(ircPassword, ircPasswordVar)
-	ircChannel = os.Getenv(ircChannelVar)
-	check(ircChannel, ircChannelVar)
 	openWeatherMapAPIKey = os.Getenv(openWeatherMapAPIKeyVar)
 	check(openWeatherMapAPIKey, openWeatherMapAPIKeyVar)
 	op = os.Getenv(opVar)
@@ -46,6 +36,8 @@ func main() {
 	check(serverEmail, serverEmailVar)
 	wolframAPIKey = os.Getenv(wolframAPIKeyVar)
 	check(wolframAPIKey, wolframAPIKeyVar)
+	discordToken = os.Getenv(discordTokenVar)
+	check(discordToken, discordTokenVar)
 
 	var err error
 	meddata, err := ioutil.ReadFile("meditations.txt")
@@ -66,16 +58,7 @@ func main() {
 	signal.Notify(stop, syscall.SIGTERM)
 	signal.Notify(stop, syscall.SIGHUP)
 
-	hijackSession := func(bot *kitty.Bot) {
-		//bot.SASL = true
-		bot.HijackSession = true
-		bot.Password = ircPassword
-	}
-
-	channels := func(bot *kitty.Bot) {
-		bot.Channels = []string{ircChannel}
-	}
-	bot := kitty.NewBot(fmt.Sprintf("%s:%s", ircServer, ircPort), ircNick, channels, hijackSession)
+	bot := kitty.NewBot("Bot " + discordToken)
 
 	go func() {
 		db, err = initDB("flipbot.db")
@@ -97,28 +80,12 @@ func main() {
 		os.Exit(0)
 	}()
 
-	//bot.AddTrigger(logmsg)
-	//bot.AddTrigger(logmsgBolt)
-	//bot.AddTrigger(logJoin)
-	//bot.AddTrigger(logAccount)
-	//bot.AddTrigger(watcher)
-	//bot.AddTrigger(urltitle)
-	//bot.AddTrigger(voicenames)
-	//bot.AddTrigger(voice)
-	bot.AddTrigger(setup)
-	bot.AddTrigger(&pinger{})
-	//bot.AddTrigger(memowatcher)
 	bot.AddTrigger(getreminder)
-	//bot.AddTrigger(kickmeTrigger)
 	bot.AddTrigger(notifyop)
-	//bot.AddTrigger(isRecent)
-	//bot.AddTrigger(isDead)
 	bot.AddTrigger(morningTrig)
 	bot.AddTrigger(pooParty)
 	bot.AddTrigger(kittyParty)
 	bot.AddTrigger(vixey)
-	// bot.AddTrigger(nickickerTrig)
-	// bot.AddTrigger(nickickerCleanupTrig)
 	bot.AddTrigger(ukcovid)
 	bot.AddTrigger(idkTrig)
 	bot.AddTrigger(sexTrig)
@@ -127,16 +94,8 @@ func main() {
 	bot.AddTrigger(diceTrig)
 	bot.AddTrigger(covidTrigger)
 	bot.AddTrigger(covidAllTrigger)
-	//bot.AddTrigger(upvote)
-	//bot.AddTrigger(downvote)
-	//bot.AddTrigger(rank)
-	//bot.AddTrigger(ranks)
 	bot.AddTrigger(echo)
 	bot.AddTrigger(bkb)
-	//bot.AddTrigger(tail)
-	//bot.AddTrigger(indexUsers)
-	//bot.AddTrigger(searchLog)
-	//bot.AddTrigger(indexLog)
 	bot.AddTrigger(nature)
 	bot.AddTrigger(mydol)
 	bot.AddTrigger(flip)
@@ -148,8 +107,6 @@ func main() {
 	bot.AddTrigger(shrug)
 	bot.AddTrigger(urban)
 	bot.AddTrigger(define)
-	//bot.AddTrigger(seen)
-	//bot.AddTrigger(top)
 	bot.AddTrigger(clock)
 	bot.AddTrigger(google)
 	bot.AddTrigger(wiki)
@@ -159,7 +116,6 @@ func main() {
 	bot.AddTrigger(weatherOpen)
 	bot.AddTrigger(wforecastOpen)
 	bot.AddTrigger(trans)
-	//bot.AddTrigger(memo)
 	bot.AddTrigger(help)
 	bot.AddTrigger(test)
 	bot.AddTrigger(googlenews)
@@ -172,11 +128,8 @@ func main() {
 	bot.AddTrigger(randomdog)
 	bot.AddTrigger(pong)
 	bot.AddTrigger(meditation)
-	//bot.AddTrigger(toss)
 	bot.AddTrigger(dict)
 	bot.AddTrigger(syn)
-	//bot.AddTrigger(vpnTrigger)
-	//bot.AddTrigger(denyBETrigger)
 
 	logHandler := log.LvlFilterHandler(log.LvlInfo, log.StdoutHandler)
 	bot.Logger.SetHandler(logHandler)

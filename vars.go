@@ -8,17 +8,14 @@ import (
 	"time"
 
 	kitty "flipbot/kittybot"
+
 	"github.com/boltdb/bolt"
 )
 
 const emailVar = "FLIPBOT_EMAIL"
 const youtubeAPIKeyVar = "FLIPBOT_YOUTUBE"
 const subredditVar = "FLIPBOT_SUB"
-const ircServerVar = "FLIPBOT_SERVER"
-const ircPortVar = "FLIPBOT_PORT"
-const ircNickVar = "FLIPBOT_NICK"
-const ircPasswordVar = "FLIPBOT_PASS"
-const ircChannelVar = "FLIPBOT_CHAN"
+const discordTokenVar = "DISCORD"
 const openWeatherMapAPIKeyVar = "FLIPBOT_OW"
 const opVar = "FLIPBOT_OP"
 const serverEmailVar = "FLIPBOT_SERVER_MAIL"
@@ -36,6 +33,7 @@ var openWeatherMapAPIKey string
 var op string
 var serverEmail string
 var wolframAPIKey string
+var discordToken string
 
 var db = new(bolt.DB)
 
@@ -50,7 +48,7 @@ var meditations []string
 var whitespace = regexp.MustCompile(`\s+`)
 
 func limitReply(b *kitty.Bot, m *kitty.Message, msg string, msgCount int) string {
-	limit := b.ReplyMaxSize(m)
+	limit := 512
 	limit *= msgCount
 	if len(msg) > limit {
 		msg = msg[:limit-3] + "..."
