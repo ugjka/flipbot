@@ -87,16 +87,16 @@ func (bot *Bot) Run() {
 		fmt.Println("error creating Discord session,", err)
 		return
 	}
-	err = dg.Open()
-	if err != nil {
-		fmt.Println("error opening connection,", err)
-		return
-	}
 	dg.Identify.Intents = discordgo.MakeIntent(discordgo.IntentsGuildMessages)
 	bot.Debug("starting bot goroutines")
 	go bot.handleIncomingMessages()
 	go bot.handleOutgoingMessages()
 
+	err = dg.Open()
+	if err != nil {
+		fmt.Println("error opening connection,", err)
+		return
+	}
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
 	<-sig
