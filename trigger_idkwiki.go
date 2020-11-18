@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"regexp"
 
+	kitty "flipbot/kittybot"
 	"github.com/PuerkitoBio/goquery"
-	kitty "github.com/ugjka/kittybot"
 )
 
 var idkTrigReg = regexp.MustCompile(`(?i)^\s*!+idk+\s+(\S.*)$`)

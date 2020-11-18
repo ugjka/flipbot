@@ -5,7 +5,7 @@ import (
 	"os"
 	"regexp"
 
-	kitty "github.com/ugjka/kittybot"
+	kitty "flipbot/kittybot"
 )
 
 var diceTrigReg = regexp.MustCompile(`(?i)^\s*!+(?:dice+|roll+)(?:\s+(\d+))?$`)

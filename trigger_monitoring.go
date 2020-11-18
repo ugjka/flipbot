@@ -10,9 +10,9 @@ import (
 	"sync"
 	"time"
 
+	kitty "flipbot/kittybot"
 	"github.com/boltdb/bolt"
 	"github.com/hako/durafmt"
-	kitty "github.com/ugjka/kittybot"
 )
 
 var logCTR = struct {

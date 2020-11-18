@@ -6,8 +6,8 @@ import (
 	"regexp"
 	"strings"
 
+	kitty "flipbot/kittybot"
 	wikimedia "github.com/pmylund/go-wikimedia"
-	kitty "github.com/ugjka/kittybot"
 )
 
 var wikiTrig = regexp.MustCompile(`(?i)^\s*!+wiki(?:pedia)?\w*\s+(\S.*)$`)

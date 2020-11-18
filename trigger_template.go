@@ -4,7 +4,7 @@ package main
 package main
 
 import (
-	kitty "github.com/ugjka/kittybot"
+	kitty "flipbot/kittybot"
 )
 
 

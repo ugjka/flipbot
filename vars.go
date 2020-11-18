@@ -7,8 +7,8 @@ import (
 	"regexp"
 	"time"
 
+	kitty "flipbot/kittybot"
 	"github.com/boltdb/bolt"
-	kitty "github.com/ugjka/kittybot"
 )
 
 const emailVar = "FLIPBOT_EMAIL"

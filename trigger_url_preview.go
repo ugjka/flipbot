@@ -8,7 +8,7 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	kitty "github.com/ugjka/kittybot"
+	kitty "flipbot/kittybot"
 
 	"github.com/PuerkitoBio/goquery"
 	"mvdan.cc/xurls/v2"

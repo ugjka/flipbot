@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
+	kitty "flipbot/kittybot"
 	"github.com/boltdb/bolt"
-	kitty "github.com/ugjka/kittybot"
 	gomail "gopkg.in/gomail.v2"
 )
 

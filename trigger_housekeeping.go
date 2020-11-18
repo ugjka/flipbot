@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	kitty "github.com/ugjka/kittybot"
+	kitty "flipbot/kittybot"
 )
 
 var setup = kitty.Trigger{

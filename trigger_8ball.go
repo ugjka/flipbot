@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"time"
 
-	kitty "github.com/ugjka/kittybot"
+	kitty "flipbot/kittybot"
 )
 
 var ball8 = kitty.Trigger{

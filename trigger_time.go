@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"time"
 
-	kitty "github.com/ugjka/kittybot"
+	kitty "flipbot/kittybot"
 	"gopkg.in/ugjka/go-tz.v2/tz"
 )
 

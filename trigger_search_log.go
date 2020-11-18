@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strings"
 
-	kitty "github.com/ugjka/kittybot"
+	kitty "flipbot/kittybot"
 )
 
 var searchLogRegex = regexp.MustCompile(`(?i)^\s*!search\s+(\S.*)$`)

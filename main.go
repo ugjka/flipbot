@@ -9,7 +9,8 @@ import (
 	"strings"
 	"syscall"
 
-	kitty "github.com/ugjka/kittybot"
+	kitty "flipbot/kittybot"
+
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 

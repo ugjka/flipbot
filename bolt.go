@@ -13,9 +13,9 @@ import (
 
 	"github.com/dustin/go-humanize"
 
+	kitty "flipbot/kittybot"
 	"github.com/boltdb/bolt"
 	"github.com/hako/durafmt"
-	kitty "github.com/ugjka/kittybot"
 	"mvdan.cc/xurls/v2"
 )
 

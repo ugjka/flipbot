@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	kitty "github.com/ugjka/kittybot"
+	kitty "flipbot/kittybot"
 )
 
 var nickickerTrig = kitty.Trigger{

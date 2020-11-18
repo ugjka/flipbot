@@ -10,9 +10,9 @@ import (
 	"time"
 	"unicode/utf8"
 
+	kitty "flipbot/kittybot"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/ugjka/catrand"
-	kitty "github.com/ugjka/kittybot"
 )
 
 // TODO: add !duckparty !chameleonparty

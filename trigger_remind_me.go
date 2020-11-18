@@ -10,7 +10,7 @@ import (
 
 	"github.com/hako/durafmt"
 
-	kitty "github.com/ugjka/kittybot"
+	kitty "flipbot/kittybot"
 )
 
 var remindOnce sync.Once

@@ -7,8 +7,8 @@ import (
 	"os/exec"
 	"regexp"
 
+	kitty "flipbot/kittybot"
 	"github.com/PuerkitoBio/goquery"
-	kitty "github.com/ugjka/kittybot"
 )
 
 var duckerTrig = regexp.MustCompile(`(?i)^\s*!+(?:d|(?:ducker|ddg|duck|duckduckgo)\w*)\s+(\S.*)$`)

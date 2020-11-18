@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"time"
 
-	kitty "github.com/ugjka/kittybot"
+	kitty "flipbot/kittybot"
 )
 
 var sexTrig = kitty.Trigger{

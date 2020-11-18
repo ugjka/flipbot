@@ -8,8 +8,8 @@ import (
 	"regexp"
 	"time"
 
+	kitty "flipbot/kittybot"
 	"github.com/dustin/go-humanize"
-	kitty "github.com/ugjka/kittybot"
 )
 
 var youtubeTrig = regexp.MustCompile(`(?i)^\s*!+(?:youtube?|yt|ytube|tube)\w*\s+(\S.*)$`)

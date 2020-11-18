@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"regexp"
 
+	kitty "flipbot/kittybot"
 	wolf "github.com/Krognol/go-wolfram"
-	kitty "github.com/ugjka/kittybot"
 )
 
 var calcTrig = regexp.MustCompile(`(?i)^\s*!+[ck]al[ck]\w*\s+(\S.*)$`)
