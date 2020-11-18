@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
-	"sync"
 	"syscall"
 	"time"
 
@@ -16,12 +15,10 @@ import (
 
 // Bot implements an irc bot to be connected to a given server
 type Bot struct {
-	token       string
-	outgoing    chan string
-	incoming    chan *discordgo.MessageCreate
-	handlers    []Handler
-	session     *discordgo.Session
-	sessionOnce sync.Once
+	token    string
+	outgoing chan string
+	handlers []Handler
+	session  *discordgo.Session
 	// When did we start? Used for uptime
 	started time.Time
 	// Log15 loggger
@@ -35,7 +32,6 @@ func NewBot(token string) *Bot {
 		started:  time.Now(),
 		token:    token,
 		outgoing: make(chan string, 1),
-		incoming: make(chan *discordgo.MessageCreate, 1),
 	}
 	// Discard logs by default
 	bot.Logger = log.New("id", logext.RandId(8))
@@ -45,9 +41,7 @@ func NewBot(token string) *Bot {
 }
 
 func (bot *Bot) messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
-	bot.sessionOnce.Do(func() {
-		bot.session = s
-	})
+	bot.session = s
 	msg := parseMessage(s, m)
 	for _, handler := range bot.handlers {
 		handler.Handle(bot, msg)
@@ -73,11 +67,6 @@ func (bot *Bot) Run() {
 	<-sig
 	bot.Info("disconnected")
 	return
-}
-
-// Uptime returns the uptime of the bot
-func (bot *Bot) Uptime() string {
-	return fmt.Sprintf("Started: %s, Uptime: %s", bot.started, time.Since(bot.started))
 }
 
 // Handler is used to subscribe and react to events on the bot Server
