@@ -89,15 +89,14 @@ func (bot *Bot) Run() {
 	}
 	dg.Identify.Intents = discordgo.MakeIntent(discordgo.IntentsGuildMessages)
 	dg.AddHandler(bot.messageCreate)
-	bot.Debug("starting bot goroutines")
-	go bot.handleIncomingMessages()
-	go bot.handleOutgoingMessages()
-
 	err = dg.Open()
 	if err != nil {
 		fmt.Println("error opening connection,", err)
 		return
 	}
+	bot.Debug("starting bot goroutines")
+	go bot.handleIncomingMessages()
+	go bot.handleOutgoingMessages()
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
 	<-sig
