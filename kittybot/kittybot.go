@@ -87,6 +87,11 @@ func (bot *Bot) Run() {
 		fmt.Println("error creating Discord session,", err)
 		return
 	}
+	err = dg.Open()
+	if err != nil {
+		fmt.Println("error opening connection,", err)
+		return
+	}
 	dg.Identify.Intents = discordgo.MakeIntent(discordgo.IntentsGuildMessages)
 	bot.Debug("starting bot goroutines")
 	go bot.handleIncomingMessages()
