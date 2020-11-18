@@ -13,9 +13,7 @@ require (
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/hako/durafmt v0.0.0-20200710122514-c0fb7b4da026
 	github.com/inconshreveable/log15 v0.0.0-20201112154412-8562bdadbbac // indirect
-	github.com/martinlindhe/base36 v1.1.0
 	github.com/mattn/go-colorable v0.1.8 // indirect
-	github.com/mmcdole/gofeed v1.1.0
 	github.com/pmylund/go-wikimedia v0.0.0-20130802042651-ca2b93c3aea0
 	github.com/ugjka/catrand v0.0.0-20181113133205-3f6473988b0e
 	golang.org/x/crypto v0.0.0-20201117144127-c1f2f97bffc9 // indirect
