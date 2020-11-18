@@ -88,6 +88,7 @@ func (bot *Bot) Run() {
 		return
 	}
 	dg.Identify.Intents = discordgo.MakeIntent(discordgo.IntentsGuildMessages)
+	dg.AddHandler(bot.messageCreate)
 	bot.Debug("starting bot goroutines")
 	go bot.handleIncomingMessages()
 	go bot.handleOutgoingMessages()
