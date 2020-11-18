@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 	"time"
 
@@ -15,11 +16,12 @@ import (
 
 // Bot implements an irc bot to be connected to a given server
 type Bot struct {
-	token    string
-	outgoing chan *Message
-	incoming chan *discordgo.MessageCreate
-	handlers []Handler
-	session  *discordgo.Session
+	token       string
+	outgoing    chan *Message
+	incoming    chan *discordgo.MessageCreate
+	handlers    []Handler
+	session     *discordgo.Session
+	sessionOnce sync.Once
 	// When did we start? Used for uptime
 	started time.Time
 	// Log15 loggger
@@ -62,7 +64,9 @@ func (bot *Bot) handleIncomingMessages() {
 }
 
 func (bot *Bot) messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
-
+	bot.sessionOnce.Do(func() {
+		bot.session = s
+	})
 	// Ignore all messages created by the bot itself
 	// This isn't required in this specific example but it's a good practice.
 	if m.Author.ID == s.State.User.ID {
