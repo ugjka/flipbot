@@ -114,7 +114,7 @@ func parseMessage(s *discordgo.Session, m *discordgo.MessageCreate) (msg *Messag
 	msg.Content = m.Content
 	msg.Command = "PRIVMSG"
 	msg.Name = m.Author.Username
-	if m.Member != nil && m.Member.Nick != "" {
+	if m.Member != nil {
 		msg.Name = m.Member.Nick
 	}
 	msg.To = m.ChannelID
