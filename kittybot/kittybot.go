@@ -18,7 +18,6 @@ type Bot struct {
 	token    string
 	outgoing chan string
 	handlers []Handler
-	session  *discordgo.Session
 	// When did we start? Used for uptime
 	started time.Time
 	// Log15 loggger
@@ -41,7 +40,6 @@ func NewBot(token string) *Bot {
 }
 
 func (bot *Bot) messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
-	bot.session = s
 	msg := parseMessage(s, m)
 	for _, handler := range bot.handlers {
 		handler.Handle(bot, msg)
@@ -114,10 +112,8 @@ func parseMessage(s *discordgo.Session, m *discordgo.MessageCreate) (msg *Messag
 	msg.Content = m.Content
 	msg.Command = "PRIVMSG"
 	msg.Name = m.Author.Username
-	if m.Member != nil {
-		if m.Member.Nick != "" {
-			msg.Name = m.Member.Nick
-		}
+	if m.Member != nil && m.Member.Nick != "" {
+		msg.Name = m.Member.Nick
 	}
 	msg.To = m.ChannelID
 	msg.Session = s
