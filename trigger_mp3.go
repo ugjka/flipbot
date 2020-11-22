@@ -53,7 +53,7 @@ var youtubedl = kitty.Trigger{
 			bot.Error("youtube-dl", "error", err)
 			return
 		}
-		bot.Reply(m, link)
+		bot.ReplyMP3(m, link)
 	},
 }
 
