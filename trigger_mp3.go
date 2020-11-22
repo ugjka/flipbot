@@ -131,6 +131,11 @@ func (yt *ytdlOptions) Fetch() (string, error) {
 
 func ytdlVideoDuration(url string) (time.Duration, error) {
 	options := []string{
+		"--embed-thumbnail",
+		"--add-metadata",
+		"-x",
+		"--audio-format=mp3",
+		"--audio-quality=3",
 		"--restrict-filenames",
 		"--playlist-items=1",
 		"--no-playlist",
@@ -152,6 +157,11 @@ func ytdlVideoDuration(url string) (time.Duration, error) {
 
 func ytdlFilename(url string) (string, error) {
 	options := []string{
+		"--embed-thumbnail",
+		"--add-metadata",
+		"-x",
+		"--audio-format=mp3",
+		"--audio-quality=3",
 		"--restrict-filenames",
 		"--playlist-items=1",
 		"--no-playlist",
