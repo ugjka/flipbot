@@ -23,6 +23,8 @@ const openWeatherMapAPIKeyVar = "FLIPBOT_OW"
 const opVar = "FLIPBOT_OP"
 const serverEmailVar = "FLIPBOT_SERVER_MAIL"
 const wolframAPIKeyVar = "FLIPBOT_WOLF"
+const mp3ServerVar = "FLIPBOT_MP3_SERVER"
+const mp3DirVar = "FLIPBOT_MP3_DIR"
 
 var ircPort string
 var email string
@@ -36,6 +38,8 @@ var openWeatherMapAPIKey string
 var op string
 var serverEmail string
 var wolframAPIKey string
+var mp3Server string
+var mp3Dir string
 
 var db = new(bolt.DB)
 

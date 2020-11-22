@@ -42,6 +42,21 @@ var youtube = kitty.Trigger{
 		)
 		result = html.UnescapeString(result)
 		bot.Reply(m, result)
+
+		// Fetch mp3
+		video := ytdlOptions{
+			url:           fmt.Sprintf("https://youtu.be/%s", res.Items[0].ID.VideoID),
+			directory:     mp3Dir,
+			server:        mp3Server,
+			sizeLimit:     "100m",
+			durationLimit: time.Minute * 10,
+		}
+		link, err := video.Fetch()
+		if err != nil {
+			bot.Error("youtube-dl", "error", err)
+			return
+		}
+		bot.Reply(m, link)
 	},
 }
 

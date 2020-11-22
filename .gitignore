@@ -8,5 +8,5 @@ flipbot2
 play
 messages.log
 export.sh
-*test.go
 flipbot.db*
+tmp
