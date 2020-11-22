@@ -35,7 +35,10 @@ var youtubedl = kitty.Trigger{
 		res, err := http.Get(url)
 		if err == nil {
 			content := res.Header.Get("Content-Type")
-			if strings.Contains(content, "audio") || strings.Contains(content, "video") {
+			if strings.Contains(content, "audio") ||
+				strings.Contains(content, "video") ||
+				strings.Contains(content, "image") {
+
 				res.Body.Close()
 				return
 			}
@@ -152,7 +155,6 @@ func ytdlVideoDuration(url string) (time.Duration, error) {
 }
 
 func ytdlFilename(url string) (string, error) {
-	const extension = "mp3"
 	options := []string{
 		"--embed-thumbnail",
 		"--add-metadata",
