@@ -47,6 +47,10 @@ func main() {
 	check(serverEmail, serverEmailVar)
 	wolframAPIKey = os.Getenv(wolframAPIKeyVar)
 	check(wolframAPIKey, wolframAPIKeyVar)
+	mp3Server = os.Getenv(mp3ServerVar)
+	check(mp3Server, mp3ServerVar)
+	mp3Dir = os.Getenv(mp3DirVar)
+	check(mp3Dir, mp3DirVar)
 
 	var err error
 	meddata, err := ioutil.ReadFile("meditations.txt")
