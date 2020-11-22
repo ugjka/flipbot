@@ -12,7 +12,6 @@ func (bot *Bot) Reply(m *Message, text string) {
 func (bot *Bot) ReplyMP3(m *Message, text string) {
 	//bot.Info("Discord", " chan", m.To)
 	m.Session.ChannelMessageSendEmbed(m.To, &discordgo.MessageEmbed{
-		URL:  text,
-		Type: discordgo.EmbedTypeVideo,
+		URL: text,
 	})
 }
