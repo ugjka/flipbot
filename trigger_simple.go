@@ -1,9 +1,9 @@
 package main
 
 import (
-	mar "flipbot/markov"
 	"fmt"
 	"math/rand"
+	mar "mysterybot/markov"
 	"os/exec"
 	"regexp"
 	"strings"

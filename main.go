@@ -1,10 +1,10 @@
 package main
 
 import (
-	cookiejar "flipbot/jar"
-	"flipbot/subwatch"
 	"fmt"
 	"io/ioutil"
+	cookiejar "mysterybot/jar"
+	"mysterybot/subwatch"
 	"os"
 	"os/signal"
 	"strings"

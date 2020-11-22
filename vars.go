@@ -1,8 +1,8 @@
 package main
 
 import (
-	cookiejar "flipbot/jar"
 	"fmt"
+	cookiejar "mysterybot/jar"
 	"net/http"
 	"regexp"
 	"time"
