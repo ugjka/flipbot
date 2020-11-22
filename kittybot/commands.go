@@ -13,6 +13,6 @@ func (bot *Bot) ReplyMP3(m *Message, text string) {
 	//bot.Info("Discord", " chan", m.To)
 	m.Session.ChannelMessageSendEmbed(m.To, &discordgo.MessageEmbed{
 		URL:   text,
-		Title: mp3,
+		Title: "mp3",
 	})
 }
