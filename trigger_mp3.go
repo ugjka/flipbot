@@ -90,15 +90,15 @@ func (yt *ytdlOptions) Fetch() (string, error) {
 		"--embed-thumbnail",
 		"--add-metadata",
 		"-x",
-		"--audio-format", "mp3",
-		"--audio-quality", "3",
+		"--audio-format=mp3",
+		"--audio-quality=3",
 		"--restrict-filenames",
-		"--playlist-items", "1",
+		"--playlist-items=1",
 		"--no-playlist",
 		"--quiet",
 		"--no-warnings",
 		"--no-progress",
-		"--match-filter", "!is_live",
+		"--match-filter=!is_live",
 	}
 	filename, err := ytdlFilename(yt.url)
 	if err != nil {
@@ -128,13 +128,18 @@ func (yt *ytdlOptions) Fetch() (string, error) {
 
 func ytdlVideoDuration(url string) (time.Duration, error) {
 	options := []string{
-		"--playlist-items", "1",
+		"--embed-thumbnail",
+		"--add-metadata",
+		"-x",
+		"--audio-format=mp3",
+		"--restrict-filenames",
+		"--playlist-items=1",
 		"--no-playlist",
 		"--get-duration",
 		"--quiet",
 		"--no-warnings",
 		"--no-progress",
-		"--match-filter", "!is_live",
+		"--match-filter=!is_live",
 	}
 	cmd := exec.Command("youtube-dl", append(options, url)...)
 	out := bytes.NewBuffer(nil)
@@ -148,14 +153,18 @@ func ytdlVideoDuration(url string) (time.Duration, error) {
 
 func ytdlFilename(url string) (string, error) {
 	options := []string{
+		"--embed-thumbnail",
+		"--add-metadata",
+		"-x",
+		"--audio-format=mp3",
 		"--restrict-filenames",
-		"--playlist-items", "1",
+		"--playlist-items=1",
 		"--no-playlist",
 		"--get-filename",
 		"--quiet",
 		"--no-warnings",
 		"--no-progress",
-		"--match-filter", "!is_live",
+		"--match-filter=!is_live",
 	}
 	cmd := exec.Command("youtube-dl", append(options, url)...)
 	out := bytes.NewBuffer(nil)
