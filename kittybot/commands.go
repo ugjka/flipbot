@@ -22,5 +22,6 @@ func (bot *Bot) ReplyRich(m *Message, r Rich) {
 		URL:         r.URL,
 		Title:       r.Title,
 		Description: r.Description,
+		Type:        discordgo.EmbedTypeVideo,
 	})
 }
