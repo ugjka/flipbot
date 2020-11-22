@@ -35,7 +35,7 @@ func TestYtdlFetch(t *testing.T) {
 		sizeLimit:     "100m",
 		durationLimit: time.Minute * 10,
 	}
-	log.Println(yt.ytdlFetch())
+	log.Println(yt.Fetch())
 }
 
 func TestEmptyDir(t *testing.T) {
