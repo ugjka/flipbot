@@ -53,7 +53,11 @@ var youtubedl = kitty.Trigger{
 			bot.Error("youtube-dl", "error", err)
 			return
 		}
-		bot.ReplyMP3(m, link)
+		bot.ReplyRich(m, kitty.Rich{
+			URL:         link,
+			Title:       "MP3 File",
+			Description: fmt.Sprintf("MP3 download of %s's link", m.Name),
+		})
 	},
 }
 
