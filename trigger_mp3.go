@@ -53,10 +53,14 @@ var youtubedl = kitty.Trigger{
 			bot.Error("youtube-dl", "error", err)
 			return
 		}
+		desc := strings.TrimPrefix(link, fmt.Sprintf("https://%s/", mp3Server))
+		if len(desc) > 45 {
+			desc = desc[:45] + "..."
+		}
 		bot.ReplyRich(m, kitty.Rich{
 			URL:         link,
 			Title:       fmt.Sprintf("MP3 download of %s's link", m.Name),
-			Description: strings.TrimPrefix(link, fmt.Sprintf("https://%s/", mp3Server)),
+			Description: desc,
 		})
 	},
 }
