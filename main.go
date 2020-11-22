@@ -181,6 +181,7 @@ func main() {
 	bot.AddTrigger(syn)
 	bot.AddTrigger(vpnTrigger)
 	bot.AddTrigger(denyBETrigger)
+	bot.AddTrigger(youtubedl)
 
 	logHandler := log.LvlFilterHandler(log.LvlInfo, log.StdoutHandler)
 	bot.Logger.SetHandler(logHandler)
