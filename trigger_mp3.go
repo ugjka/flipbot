@@ -55,8 +55,8 @@ var youtubedl = kitty.Trigger{
 		}
 		bot.ReplyRich(m, kitty.Rich{
 			URL:         link,
-			Title:       "Audio file",
-			Description: fmt.Sprintf("MP3 download of %s's link", m.Name),
+			Title:       fmt.Sprintf("MP3 download of %s's link", m.Name),
+			Description: strings.TrimPrefix(link, fmt.Sprintf("https://%s/", mp3Server)),
 		})
 	},
 }
