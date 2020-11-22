@@ -42,7 +42,7 @@ func NewBot(token string) *Bot {
 func (bot *Bot) messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	msg := parseMessage(s, m)
 	for _, handler := range bot.handlers {
-		handler.Handle(bot, msg)
+		go handler.Handle(bot, msg)
 	}
 }
 
