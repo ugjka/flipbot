@@ -1,6 +1,6 @@
 # KittyBot
 
-[![GoDoc](https://godoc.org/flipbot/kittybot?status.png)](https://godoc.org/flipbot/kittybot)
+[![GoDoc](https://godoc.org/bootybot/kittybot?status.png)](https://godoc.org/bootybot/kittybot)
 [![Donate](paypal.svg?raw=true)](https://www.paypal.me/ugjka)
 
 Hard fork of [github.com/whyrusleeping/hellabot](https://github.com/whyrusleeping/hellabot)

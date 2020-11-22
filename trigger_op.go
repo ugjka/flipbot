@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"time"
 
-	kitty "flipbot/kittybot"
+	kitty "bootybot/kittybot"
 
 	gomail "gopkg.in/gomail.v2"
 )

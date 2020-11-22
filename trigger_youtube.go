@@ -8,7 +8,7 @@ import (
 	"regexp"
 	"time"
 
-	kitty "flipbot/kittybot"
+	kitty "bootybot/kittybot"
 
 	"github.com/dustin/go-humanize"
 )

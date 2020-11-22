@@ -6,7 +6,8 @@ import (
 	"net/http"
 	"regexp"
 
-	kitty "flipbot/kittybot"
+	kitty "bootybot/kittybot"
+
 	"github.com/PuerkitoBio/goquery"
 )
 

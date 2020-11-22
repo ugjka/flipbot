@@ -1,7 +1,7 @@
 package main
 
 import (
-	cookiejar "flipbot/jar"
+	cookiejar "bootybot/jar"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -9,7 +9,7 @@ import (
 	"strings"
 	"syscall"
 
-	kitty "flipbot/kittybot"
+	kitty "bootybot/kittybot"
 
 	log "gopkg.in/inconshreveable/log15.v2"
 )

@@ -4,7 +4,7 @@ package main
 package main
 
 import (
-	kitty "flipbot/kittybot"
+	kitty "bootybot/kittybot"
 )
 
 

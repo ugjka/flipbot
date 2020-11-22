@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"regexp"
 
-	kitty "flipbot/kittybot"
+	kitty "bootybot/kittybot"
 )
 
 // This trigger flips the table

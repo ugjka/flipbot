@@ -1,8 +1,8 @@
 package main
 
 import (
+	kitty "bootybot/kittybot"
 	"bytes"
-	kitty "flipbot/kittybot"
 	"fmt"
 	"io/ioutil"
 	"net/http"

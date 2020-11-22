@@ -1,7 +1,7 @@
 package main
 
 import (
-	mar "flipbot/markov"
+	mar "bootybot/markov"
 	"fmt"
 	"math/rand"
 	"os/exec"
@@ -10,7 +10,7 @@ import (
 	"time"
 	"unicode/utf8"
 
-	kitty "flipbot/kittybot"
+	kitty "bootybot/kittybot"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/ugjka/catrand"

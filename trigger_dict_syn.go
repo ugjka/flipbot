@@ -7,7 +7,7 @@ import (
 	"regexp"
 	"strings"
 
-	kitty "flipbot/kittybot"
+	kitty "bootybot/kittybot"
 )
 
 var dictTrig = regexp.MustCompile(`(?i)^\s*!+dict(?:ionary)?\w*\s+(\S.*)$`)

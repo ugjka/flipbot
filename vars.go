@@ -1,8 +1,8 @@
 package main
 
 import (
-	cookiejar "flipbot/jar"
-	kitty "flipbot/kittybot"
+	cookiejar "bootybot/jar"
+	kitty "bootybot/kittybot"
 	"fmt"
 	"net/http"
 	"regexp"

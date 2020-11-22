@@ -1,4 +1,4 @@
-module flipbot
+module bootybot
 
 go 1.15
 
@@ -17,7 +17,7 @@ require (
 	github.com/ugjka/catrand v0.0.0-20181113133205-3f6473988b0e
 	golang.org/x/crypto v0.0.0-20201117144127-c1f2f97bffc9 // indirect
 	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b // indirect
-	golang.org/x/sys v0.0.0-20201118182958-a01c418693c7 // indirect
+	golang.org/x/sys v0.0.0-20201119102817-f84b799fce68 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 	gopkg.in/inconshreveable/log15.v2 v2.0.0-20200109203555-b30bc20e4fd1

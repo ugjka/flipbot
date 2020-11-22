@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"regexp"
 
-	kitty "flipbot/kittybot"
+	kitty "bootybot/kittybot"
+
 	wolf "github.com/Krognol/go-wolfram"
 )
 

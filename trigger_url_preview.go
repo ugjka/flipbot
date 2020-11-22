@@ -8,7 +8,7 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	kitty "flipbot/kittybot"
+	kitty "bootybot/kittybot"
 
 	"github.com/PuerkitoBio/goquery"
 	"mvdan.cc/xurls/v2"

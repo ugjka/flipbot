@@ -8,7 +8,7 @@ import (
 	"sort"
 	"strings"
 
-	kitty "flipbot/kittybot"
+	kitty "bootybot/kittybot"
 )
 
 var ukcovidReg = regexp.MustCompile(`(?i)^\s*!+(?:uk|gb)(?:covid\w*)?(?:\s+(\S.*))?$`)

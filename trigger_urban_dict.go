@@ -7,7 +7,7 @@ import (
 	"regexp"
 	"strings"
 
-	kitty "flipbot/kittybot"
+	kitty "bootybot/kittybot"
 )
 
 var urbanTrig = regexp.MustCompile(`(?i)^\s*!(?:urban+|ud+)\w*\s+(\S.*)$`)

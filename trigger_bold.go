@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"strings"
 
-	kitty "flipbot/kittybot"
+	kitty "bootybot/kittybot"
 )
 
 var boldReg = regexp.MustCompile(`(?i)\s*!+(?:bold)\s+(\S+.*)`)

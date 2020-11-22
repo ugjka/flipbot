@@ -10,7 +10,8 @@ import (
 	"strings"
 	"time"
 
-	kitty "flipbot/kittybot"
+	kitty "bootybot/kittybot"
+
 	"gopkg.in/ugjka/go-tz.v2/tz"
 )
 

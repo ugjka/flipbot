@@ -5,7 +5,7 @@ import (
 	"os/exec"
 	"regexp"
 
-	kitty "flipbot/kittybot"
+	kitty "bootybot/kittybot"
 )
 
 var transTrig = regexp.MustCompile(`(?i)^\s*!+trans(?:late)?\w*\s+(\S.*)$`)

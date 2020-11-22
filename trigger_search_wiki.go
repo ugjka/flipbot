@@ -6,7 +6,8 @@ import (
 	"regexp"
 	"strings"
 
-	kitty "flipbot/kittybot"
+	kitty "bootybot/kittybot"
+
 	wikimedia "github.com/pmylund/go-wikimedia"
 )
 
