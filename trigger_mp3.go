@@ -60,13 +60,6 @@ var youtubedl = kitty.Trigger{
 	},
 }
 
-// 10 minute limit
-// youtube-dl --embed-thumbnail --add-metadata -x --audio-format mp3 --restrict-filenames --playlist-items 1  https://www.youtube.com/watch?v=HJOHoiPGpac
-//youtube-dl --get-duration https://www.youtube.com/watch?v=HJOHoiPGpac
-//-q, --quiet                      Activate quiet mode
-//--no-warnings                    Ignore warnings
-//--get-filename
-
 func ytdlParseDuration(format string) (time.Duration, error) {
 	if strings.TrimSpace(format) == "" {
 		return 0, nil
@@ -105,7 +98,7 @@ func (yt *ytdlOptions) Fetch() (string, error) {
 	}
 	filename, err := ytdlFilename(yt.url)
 	if err != nil {
-		return "", fmt.Errorf("no video filename")
+		return "", err
 	}
 	if _, err := os.Stat(yt.directory + "/" + filename); err == nil {
 		return "https://" + yt.server + "/" + filename, nil
@@ -115,28 +108,24 @@ func (yt *ytdlOptions) Fetch() (string, error) {
 		return "", err
 	}
 	if dur > yt.durationLimit {
-		return "", fmt.Errorf("video too long")
+		return "", fmt.Errorf("ytdl: video too long")
 	}
 	if dur == 0 {
 		options = append(options, "--max-filesize="+yt.sizeLimit)
 	}
 	cmd := exec.Command("youtube-dl", append(options, yt.url)...)
 	cmd.Dir = yt.directory
+	errout := bytes.NewBuffer(nil)
+	cmd.Stderr = errout
 	err = cmd.Run()
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("yt fetch: %v", errout.String())
 	}
 	return "https://" + yt.server + "/" + filename, nil
 }
 
 func ytdlVideoDuration(url string) (time.Duration, error) {
 	options := []string{
-		"--embed-thumbnail",
-		"--add-metadata",
-		"-x",
-		"--audio-format=mp3",
-		"--audio-quality=3",
-		"--restrict-filenames",
 		"--playlist-items=1",
 		"--no-playlist",
 		"--get-duration",
@@ -146,22 +135,19 @@ func ytdlVideoDuration(url string) (time.Duration, error) {
 		"--match-filter=!is_live",
 	}
 	cmd := exec.Command("youtube-dl", append(options, url)...)
-	out := bytes.NewBuffer(nil)
-	cmd.Stdout = out
+	stdout := bytes.NewBuffer(nil)
+	errout := bytes.NewBuffer(nil)
+	cmd.Stdout = stdout
+	cmd.Stderr = errout
 	err := cmd.Run()
 	if err != nil {
-		return 0, err
+		return 0, fmt.Errorf("ytdl duration: %s", errout.String())
 	}
-	return ytdlParseDuration(strings.TrimSpace(out.String()))
+	return ytdlParseDuration(strings.TrimSpace(stdout.String()))
 }
 
 func ytdlFilename(url string) (string, error) {
 	options := []string{
-		"--embed-thumbnail",
-		"--add-metadata",
-		"-x",
-		"--audio-format=mp3",
-		"--audio-quality=3",
 		"--restrict-filenames",
 		"--playlist-items=1",
 		"--no-playlist",
@@ -172,16 +158,18 @@ func ytdlFilename(url string) (string, error) {
 		"--match-filter=!is_live",
 	}
 	cmd := exec.Command("youtube-dl", append(options, url)...)
-	out := bytes.NewBuffer(nil)
-	cmd.Stdout = out
+	stdout := bytes.NewBuffer(nil)
+	errout := bytes.NewBuffer(nil)
+	cmd.Stdout = stdout
+	cmd.Stderr = errout
 	err := cmd.Run()
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("ytdl filename: %s", errout.String())
 	}
-	if strings.TrimSpace(out.String()) == "" {
-		return "", fmt.Errorf("no filename, live stream?")
+	if strings.TrimSpace(stdout.String()) == "" {
+		return "", fmt.Errorf("ytdl: no filename, live stream?")
 	}
-	dots := strings.Split(out.String(), ".")
+	dots := strings.Split(stdout.String(), ".")
 	dots[len(dots)-1] = "mp3"
 	return strings.Join(dots, "."), nil
 }
