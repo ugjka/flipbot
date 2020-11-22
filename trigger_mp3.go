@@ -118,7 +118,7 @@ func (yt *ytdlOptions) Fetch() (string, error) {
 		return "", fmt.Errorf("video too long")
 	}
 	if dur == 0 {
-		options = append(options, "--max-filesize", yt.sizeLimit)
+		options = append(options, "--max-filesize="+yt.sizeLimit)
 	}
 	cmd := exec.Command("youtube-dl", append(options, yt.url)...)
 	cmd.Dir = yt.directory
@@ -131,10 +131,6 @@ func (yt *ytdlOptions) Fetch() (string, error) {
 
 func ytdlVideoDuration(url string) (time.Duration, error) {
 	options := []string{
-		"--embed-thumbnail",
-		"--add-metadata",
-		"-x",
-		"--audio-format=mp3",
 		"--restrict-filenames",
 		"--playlist-items=1",
 		"--no-playlist",
@@ -156,10 +152,6 @@ func ytdlVideoDuration(url string) (time.Duration, error) {
 
 func ytdlFilename(url string) (string, error) {
 	options := []string{
-		"--embed-thumbnail",
-		"--add-metadata",
-		"-x",
-		"--audio-format=mp3",
 		"--restrict-filenames",
 		"--playlist-items=1",
 		"--no-playlist",
