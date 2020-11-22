@@ -112,7 +112,7 @@ func (yt *ytdlOptions) Fetch() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	if dur > yt.durationLimit || dur < time.Minute {
+	if dur > yt.durationLimit {
 		return "", fmt.Errorf("ytdl: video too long or short")
 	}
 	if dur == 0 {
