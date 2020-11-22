@@ -10,5 +10,10 @@ messages.log
 export.sh
 flipbot.db*
 tmp
+<<<<<<< HEAD
 bootybot
 mysterybot
+=======
+mysterybot
+bootybot
+>>>>>>> master

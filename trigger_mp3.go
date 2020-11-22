@@ -35,10 +35,7 @@ var youtubedl = kitty.Trigger{
 		res, err := http.Get(url)
 		if err == nil {
 			content := res.Header.Get("Content-Type")
-			if strings.Contains(content, "audio") ||
-				strings.Contains(content, "video") ||
-				strings.Contains(content, "image") {
-
+			if content != "text/html" {
 				res.Body.Close()
 				return
 			}
