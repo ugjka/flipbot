@@ -89,10 +89,7 @@ type ytdlOptions struct {
 
 func (yt *ytdlOptions) Fetch() (string, error) {
 	options := []string{
-		"--no-part",
-		"--no-continue",
-		"--no-part",
-		"--no-cache-dir",
+		"--no-mtime",
 		"--embed-thumbnail",
 		"--add-metadata",
 		"-x",
@@ -100,7 +97,6 @@ func (yt *ytdlOptions) Fetch() (string, error) {
 		"--audio-quality=3",
 		"--restrict-filenames",
 		"--playlist-items=1",
-		"--no-playlist",
 		"--quiet",
 		"--no-warnings",
 		"--no-progress",
