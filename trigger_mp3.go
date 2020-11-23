@@ -89,7 +89,7 @@ type ytdlOptions struct {
 
 func (yt *ytdlOptions) Fetch() (string, error) {
 	options := []string{
-		"--no-mtime",
+		"--no-part",
 		"--embed-thumbnail",
 		"--add-metadata",
 		"-x",
@@ -102,9 +102,12 @@ func (yt *ytdlOptions) Fetch() (string, error) {
 		"--no-progress",
 		"--match-filter=!is_live",
 	}
-	filename, err := ytdlFilename(yt.url)
+	raw, filename, err := ytdlFilename(yt.url)
 	if err != nil {
 		return "", err
+	}
+	if _, err := os.Stat(yt.directory + "/" + raw); err == nil {
+		return "", fmt.Errorf("video already downloading")
 	}
 	if _, err := os.Stat(yt.directory + "/" + filename); err == nil {
 		return "https://" + yt.server + "/" + filename, nil
@@ -152,7 +155,7 @@ func ytdlVideoDuration(url string) (time.Duration, error) {
 	return ytdlParseDuration(strings.TrimSpace(stdout.String()))
 }
 
-func ytdlFilename(url string) (string, error) {
+func ytdlFilename(url string) (raw, mp3 string, err error) {
 	options := []string{
 		"--restrict-filenames",
 		"--playlist-items=1",
@@ -168,16 +171,16 @@ func ytdlFilename(url string) (string, error) {
 	errout := bytes.NewBuffer(nil)
 	cmd.Stdout = stdout
 	cmd.Stderr = errout
-	err := cmd.Run()
+	err = cmd.Run()
 	if err != nil {
-		return "", fmt.Errorf("ytdl filename: %s", errout.String())
+		return "", "", fmt.Errorf("ytdl filename: %s", errout.String())
 	}
 	if strings.TrimSpace(stdout.String()) == "" {
-		return "", fmt.Errorf("ytdl: no filename, live stream?")
+		return "", "", fmt.Errorf("ytdl: no filename, live stream?")
 	}
 	dots := strings.Split(stdout.String(), ".")
 	dots[len(dots)-1] = "mp3"
-	return strings.Join(dots, "."), nil
+	return stdout.String(), strings.Join(dots, "."), nil
 }
 
 func freeSpace(dir string) (int, error) {
