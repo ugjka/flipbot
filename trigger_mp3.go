@@ -80,6 +80,7 @@ type ytdlOptions struct {
 
 func (yt *ytdlOptions) Fetch() (string, error) {
 	options := []string{
+		"--no-mtime",
 		"--embed-thumbnail",
 		"--add-metadata",
 		"-x",
