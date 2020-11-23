@@ -70,3 +70,5 @@ var errNoReminder = fmt.Errorf("no reminder expired")
 var errNoResults = fmt.Errorf("no results")
 
 var extJoinEnabled = false
+
+var youtubeMaxDLDur = time.Hour * 2
