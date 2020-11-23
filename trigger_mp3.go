@@ -124,7 +124,7 @@ func (yt *ytdlOptions) Fetch() (string, error) {
 		options = append(options, "--max-filesize="+yt.sizeLimit)
 	}
 	cmd := exec.Command("youtube-dl", append(options, yt.url)...)
-	cmd.Dir = yt.directory
+	cmd.Dir = yt.directory + "/"
 	errout := bytes.NewBuffer(nil)
 	cmd.Stderr = errout
 	err = cmd.Run()
