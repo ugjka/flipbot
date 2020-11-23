@@ -24,7 +24,6 @@ func (bot *Bot) ReplyRich(m *Message, r Rich) {
 	if Self(m) {
 		return
 	}
-	//bot.Info("Discord", " chan", m.To)
 	m.Session.ChannelMessageSendEmbed(m.To, &discordgo.MessageEmbed{
 		URL:         r.URL,
 		Title:       r.Title,

@@ -45,9 +45,6 @@ var youtube = kitty.Trigger{
 		result = html.UnescapeString(result)
 		bot.Reply(m, result)
 		// Fetch MP3
-		if kitty.Self(m) {
-			return
-		}
 		bytes, err := freeSpace(mp3Dir)
 		if err != nil {
 			bot.Error("df", "error", err)
