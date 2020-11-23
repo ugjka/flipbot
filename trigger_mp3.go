@@ -3,6 +3,7 @@ package main
 import (
 	kitty "bootybot/kittybot"
 	"bytes"
+	"crypto/sha1"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -88,6 +89,12 @@ type ytdlOptions struct {
 }
 
 func (yt *ytdlOptions) Fetch() (string, error) {
+	tmpfile := "/tmp/" + fmt.Sprintf("%x", sha1.Sum([]byte(yt.url)))
+	if _, err := os.Stat(tmpfile); err == nil {
+		return "", fmt.Errorf("video already downloading")
+	}
+	ioutil.WriteFile(tmpfile, []byte{}, 0777)
+	defer os.Remove(tmpfile)
 	options := []string{
 		"--no-part",
 		"--embed-thumbnail",
@@ -102,12 +109,9 @@ func (yt *ytdlOptions) Fetch() (string, error) {
 		"--no-progress",
 		"--match-filter=!is_live",
 	}
-	raw, filename, err := ytdlFilename(yt.url)
+	filename, err := ytdlFilename(yt.url)
 	if err != nil {
 		return "", err
-	}
-	if _, err := os.Stat(yt.directory + "/" + raw); err == nil {
-		return "", fmt.Errorf("video already downloading")
 	}
 	if _, err := os.Stat(yt.directory + "/" + filename); err == nil {
 		return "https://" + yt.server + "/" + filename, nil
@@ -155,7 +159,7 @@ func ytdlVideoDuration(url string) (time.Duration, error) {
 	return ytdlParseDuration(strings.TrimSpace(stdout.String()))
 }
 
-func ytdlFilename(url string) (raw, mp3 string, err error) {
+func ytdlFilename(url string) (string, error) {
 	options := []string{
 		"--restrict-filenames",
 		"--playlist-items=1",
@@ -171,16 +175,16 @@ func ytdlFilename(url string) (raw, mp3 string, err error) {
 	errout := bytes.NewBuffer(nil)
 	cmd.Stdout = stdout
 	cmd.Stderr = errout
-	err = cmd.Run()
+	err := cmd.Run()
 	if err != nil {
-		return "", "", fmt.Errorf("ytdl filename: %s", errout.String())
+		return "", fmt.Errorf("ytdl filename: %s", errout.String())
 	}
 	if strings.TrimSpace(stdout.String()) == "" {
-		return "", "", fmt.Errorf("ytdl: no filename, live stream?")
+		return "", fmt.Errorf("ytdl: no filename, live stream?")
 	}
 	dots := strings.Split(stdout.String(), ".")
 	dots[len(dots)-1] = "mp3"
-	return stdout.String(), strings.Join(dots, "."), nil
+	return strings.Join(dots, "."), nil
 }
 
 func freeSpace(dir string) (int, error) {

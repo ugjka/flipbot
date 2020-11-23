@@ -117,7 +117,7 @@ func TestGetYTDLFilename(t *testing.T) {
 		},
 	}
 	for _, tc := range tt {
-		_, f, err := ytdlFilename(tc.url)
+		f, err := ytdlFilename(tc.url)
 		if !tc.err && err != nil {
 			t.Errorf("unexpected error for %s: %v", tc.url, err)
 			continue
