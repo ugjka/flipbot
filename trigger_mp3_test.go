@@ -33,7 +33,7 @@ func TestYtdlFetch(t *testing.T) {
 		directory:     "tmp",
 		server:        "mp3.ugjka.net",
 		sizeLimit:     "100m",
-		durationLimit: time.Minute * 10,
+		durationLimit: youtubeMaxDLDur,
 	}
 	log.Println(yt.Fetch())
 }
