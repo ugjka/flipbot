@@ -103,12 +103,14 @@ type Message struct {
 	Name    string
 	To      string
 	Session *discordgo.Session
+	m       *discordgo.MessageCreate
 }
 
 // parseMessage takes a string and attempts to create a Message struct.
 // Returns nil if the Message is invalid.
 func parseMessage(s *discordgo.Session, m *discordgo.MessageCreate) (msg *Message) {
 	msg = new(Message)
+	msg.m = m
 	msg.Content = m.Content
 	msg.Command = "PRIVMSG"
 	msg.Name = m.Author.Username
