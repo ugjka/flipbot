@@ -16,6 +16,7 @@ type Rich struct {
 	URL         string
 	Title       string
 	Description string
+	IconURL     string
 }
 
 // ReplyRich sends a message to where the message came from (user or channel)
@@ -28,6 +29,11 @@ func (bot *Bot) ReplyRich(m *Message, r Rich) {
 		URL:         r.URL,
 		Title:       r.Title,
 		Description: r.Description,
+		Thumbnail: &discordgo.MessageEmbedThumbnail{
+			URL:    r.IconURL,
+			Width:  50,
+			Height: 50,
+		},
 	})
 }
 
