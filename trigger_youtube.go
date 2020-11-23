@@ -78,7 +78,7 @@ var youtube = kitty.Trigger{
 			URL:         link,
 			Title:       fmt.Sprintf("MP3 download of %s's link", m.Name),
 			Description: desc,
-			IconURL:     "https://raw.githubusercontent.com/ugjka/flipbot/bootybot/music2.png",
+			IconURL:     "https://raw.githubusercontent.com/ugjka/flipbot/bootybot/icon.png",
 		})
 	},
 }

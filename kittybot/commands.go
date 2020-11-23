@@ -23,9 +23,7 @@ func (bot *Bot) ReplyRich(m *Message, r Rich) {
 		Title:       r.Title,
 		Description: r.Description,
 		Thumbnail: &discordgo.MessageEmbedThumbnail{
-			URL:    r.IconURL,
-			Width:  40,
-			Height: 40,
+			URL: r.IconURL,
 		},
 	})
 }
