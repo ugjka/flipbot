@@ -16,13 +16,9 @@ import (
 
 var youtubedl = kitty.Trigger{
 	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
-		return m.Command == "PRIVMSG" && xurls.Relaxed().MatchString(m.Content)
+		return m.Command == "PRIVMSG" && !kitty.Self(m) && xurls.Relaxed().MatchString(m.Content)
 	},
 	Action: func(bot *kitty.Bot, m *kitty.Message) {
-		if kitty.Self(m) {
-			bot.Info("Self detected")
-			return
-		}
 		bytes, err := freeSpace(mp3Dir)
 		if err != nil {
 			bot.Error("df", "error", err)
