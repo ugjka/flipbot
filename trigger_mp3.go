@@ -80,10 +80,7 @@ type ytdlOptions struct {
 
 func (yt *ytdlOptions) Fetch() (string, error) {
 	options := []string{
-		"--no-part"
-		"--no-continue",
-		"--no-part",
-		"--no-cache-dir",
+		"--no-mtime",
 		"--embed-thumbnail",
 		"--add-metadata",
 		"-x",
