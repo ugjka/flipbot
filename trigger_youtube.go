@@ -6,6 +6,7 @@ import (
 	"html"
 	"net/url"
 	"regexp"
+	"strings"
 	"time"
 
 	kitty "bootybot/kittybot"
@@ -43,6 +44,41 @@ var youtube = kitty.Trigger{
 		)
 		result = html.UnescapeString(result)
 		bot.Reply(m, result)
+		// Fetch MP3
+		bytes, err := freeSpace(mp3Dir)
+		if err != nil {
+			bot.Error("df", "error", err)
+			return
+		}
+		if bytes < 1024*1024*2 {
+			err := emptyDir(mp3Dir)
+			if err != nil {
+				bot.Error("rm", "error", err)
+				return
+			}
+		}
+
+		video := ytdlOptions{
+			url:           res.Items[0].ID.VideoID,
+			directory:     mp3Dir,
+			server:        mp3Server,
+			sizeLimit:     "100m",
+			durationLimit: time.Hour,
+		}
+		link, err := video.Fetch()
+		if err != nil {
+			bot.Error("youtube-dl", "error", err)
+			return
+		}
+		desc := strings.TrimPrefix(link, fmt.Sprintf("https://%s/", mp3Server))
+		if len(desc) > 45 {
+			desc = desc[:45] + "..."
+		}
+		bot.ReplyRich(m, kitty.Rich{
+			URL:         link,
+			Title:       fmt.Sprintf("MP3 download of %s's link", m.Name),
+			Description: desc,
+		})
 	},
 }
 
