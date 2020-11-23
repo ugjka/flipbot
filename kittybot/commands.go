@@ -4,7 +4,9 @@ import "github.com/bwmarrin/discordgo"
 
 // Reply sends a message to where the message came from (user or channel)
 func (bot *Bot) Reply(m *Message, text string) {
-	//bot.Info("Discord", " chan", m.To)
+	if Self(m) {
+		return
+	}
 	m.Session.ChannelMessageSend(m.To, text)
 }
 
@@ -18,6 +20,9 @@ type Rich struct {
 
 // ReplyRich sends a message to where the message came from (user or channel)
 func (bot *Bot) ReplyRich(m *Message, r Rich) {
+	if Self(m) {
+		return
+	}
 	m.Session.ChannelMessageSendEmbed(m.To, &discordgo.MessageEmbed{
 		URL:         r.URL,
 		Title:       r.Title,
