@@ -59,7 +59,7 @@ var youtube = kitty.Trigger{
 		}
 
 		video := ytdlOptions{
-			url:           res.Items[0].ID.VideoID,
+			url:           "https://www.youtube.com/watch?v=" + res.Items[0].ID.VideoID,
 			directory:     mp3Dir,
 			server:        mp3Server,
 			sizeLimit:     "100m",
