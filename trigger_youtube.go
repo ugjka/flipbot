@@ -42,20 +42,6 @@ var youtube = kitty.Trigger{
 		)
 		result = html.UnescapeString(result)
 		bot.Reply(m, result)
-
-		bytes, err := freeSpace(mp3Dir)
-		if err != nil {
-			bot.Error("df", "error", err)
-			return
-		}
-		if bytes < 1024*1024*2 {
-			err := emptyDir(mp3Dir)
-			if err != nil {
-				bot.Error("rm", "error", err)
-				return
-			}
-		}
-
 		// Fetch mp3
 		video := ytdlOptions{
 			url:           "https://www.youtube.com/watch?v=" + res.Items[0].ID.VideoID,
