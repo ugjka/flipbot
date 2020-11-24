@@ -37,13 +37,6 @@ func TestYtdlFetch(t *testing.T) {
 	yt.Fetch()
 }
 
-func TestEmptyDir(t *testing.T) {
-	err := emptyDir("tmp")
-	if err != nil {
-		t.Errorf("can't empty dir: %v", err)
-	}
-}
-
 func TestYtdlVideoDuration(t *testing.T) {
 	tt := []struct {
 		url      string
