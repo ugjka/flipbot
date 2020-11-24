@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"testing"
 	"time"
 )
@@ -35,7 +34,7 @@ func TestYtdlFetch(t *testing.T) {
 		sizeLimit:     "100m",
 		durationLimit: youtubeMaxDLDur,
 	}
-	log.Println(yt.Fetch())
+	yt.Fetch()
 }
 
 func TestEmptyDir(t *testing.T) {

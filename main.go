@@ -94,6 +94,12 @@ func main() {
 	}
 	defer logCTR.Close()
 
+	ytErrLog.File, err = os.OpenFile("ytdl_err.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		panic(err)
+	}
+	defer ytErrLog.Close()
+
 	go func() {
 		<-stop
 		db.Close()
