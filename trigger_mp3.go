@@ -20,18 +20,6 @@ var youtubedl = kitty.Trigger{
 		return m.Command == "PRIVMSG" && xurls.Relaxed().MatchString(m.Content)
 	},
 	Action: func(bot *kitty.Bot, m *kitty.Message) {
-		bytes, err := freeSpace(mp3Dir)
-		if err != nil {
-			bot.Error("df", "error", err)
-			return
-		}
-		if bytes < 1024*1024*2 {
-			err := emptyDir(mp3Dir)
-			if err != nil {
-				bot.Error("rm", "error", err)
-				return
-			}
-		}
 		url := xurls.Relaxed().FindStringSubmatch(m.Content)[0]
 		res, err := http.Get(url)
 		if err == nil {
@@ -179,34 +167,4 @@ func ytdlFilename(url string) (string, error) {
 	dots := strings.Split(stdout.String(), ".")
 	dots[len(dots)-1] = "mp3"
 	return strings.Join(dots, "."), nil
-}
-
-func freeSpace(dir string) (int, error) {
-	cmd := exec.Command("df", "--output=avail", dir)
-	buf := bytes.NewBuffer(nil)
-	cmd.Stdout = buf
-	err := cmd.Run()
-	if err != nil {
-		return 0, err
-	}
-	var size int
-	_, err = fmt.Sscanf(strings.Split(buf.String(), "\n")[1], "%d", &size)
-	if err != nil {
-		return 0, err
-	}
-	return size, nil
-}
-
-func emptyDir(dir string) error {
-	if dir == "/" {
-		return fmt.Errorf("trying to delete root dir")
-	}
-	files, err := ioutil.ReadDir(dir)
-	if err != nil {
-		return err
-	}
-	for _, file := range files {
-		os.Remove(dir + "/" + file.Name())
-	}
-	return nil
 }
