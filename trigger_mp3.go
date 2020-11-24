@@ -52,7 +52,7 @@ var youtubedl = kitty.Trigger{
 		link, err := video.Fetch()
 		if err != nil {
 			ytErrLog.Lock()
-			ytErrLog.WriteString(time.Now().String() + " | " + err.Error() + "\n")
+			ytErrLog.WriteString(time.Now().String() + " | " + err.Error())
 			ytErrLog.Unlock()
 			return
 		}
