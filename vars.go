@@ -4,7 +4,9 @@ import (
 	cookiejar "flipbot/jar"
 	"fmt"
 	"net/http"
+	"os"
 	"regexp"
+	"sync"
 	"time"
 
 	"github.com/boltdb/bolt"
@@ -72,3 +74,11 @@ var errNoResults = fmt.Errorf("no results")
 var extJoinEnabled = false
 
 var youtubeMaxDLDur = time.Hour * 2
+
+var ytErrLog = struct {
+	*os.File
+	*sync.Mutex
+}{
+	File:  new(os.File),
+	Mutex: &sync.Mutex{},
+}
