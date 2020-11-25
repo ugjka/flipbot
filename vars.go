@@ -65,7 +65,7 @@ var errNoResults = fmt.Errorf("no results")
 
 var extJoinEnabled = false
 
-var youtubeMaxDLDur = time.Hour * 2
+var youtubeMaxDLDur = time.Hour * 4
 
 var ytErrLog = struct {
 	*os.File
