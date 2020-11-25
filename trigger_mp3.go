@@ -34,7 +34,7 @@ var youtubedl = kitty.Trigger{
 			url:           url,
 			directory:     mp3Dir,
 			server:        mp3Server,
-			sizeLimit:     "100m",
+			sizeLimit:     youtubeDLMaxSize,
 			durationLimit: youtubeMaxDLDur,
 		}
 		link, err := video.Fetch()
