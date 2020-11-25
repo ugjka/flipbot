@@ -31,7 +31,7 @@ func TestYtdlFetch(t *testing.T) {
 		url:           "https://www.youtube.com/watch?v=HJOHoiPGpac",
 		directory:     "tmp",
 		server:        "mp3.ugjka.net",
-		sizeLimit:     "100m",
+		sizeLimit:     youtubeDLMaxSize,
 		durationLimit: youtubeMaxDLDur,
 	}
 	yt.Fetch()
