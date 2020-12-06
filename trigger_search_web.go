@@ -3,9 +3,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"net/url"
 	"os/exec"
 	"regexp"
+	"strings"
 
 	kitty "bootybot/kittybot"
 
@@ -126,11 +128,15 @@ func googleNews(q string) (res GooglerNewsResults, err error) {
 func duck(s string) (out string, err error) {
 	m := url.Values{}
 	m.Add("q", s)
-	m.Add("b", "")
-	m.Add("kl", "")
-	m.Add("df", "")
 
-	res, err := httpClient.PostForm("https://html.duckduckgo.com/html/", m)
+	req, err := http.NewRequest("POST", "https://html.duckduckgo.com/html", strings.NewReader(m.Encode()))
+	if err != nil {
+		return
+	}
+	req.Header.Set("User-Agent", "IRC/Discord bot github.com/ugjka")
+	req.Header.Set("Referer", "https://html.duckduckgo.com/")
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	res, err := httpClient.Do(req)
 	if err != nil {
 		return
 	}
