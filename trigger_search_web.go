@@ -12,7 +12,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-var duckerTrig = regexp.MustCompile(`(?i)^\s*!+(?:d|(?:ducker|ddg|duck|duckduckgo)\w*)\s+(\S.*)$`)
+var duckerTrig = regexp.MustCompile(`(?i)^\s*!+(?:ducker|ddg|duck|duckduckgo)\w*\s+(\S.*)$`)
 var ducker = kitty.Trigger{
 	Condition: func(bot *kitty.Bot, m *kitty.Message) bool {
 		return m.Command == "PRIVMSG" && duckerTrig.MatchString(m.Content)
