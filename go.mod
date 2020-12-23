@@ -1,4 +1,4 @@
-module flipbot
+module sexban
 
 go 1.15
 

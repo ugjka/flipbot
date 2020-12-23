@@ -1,11 +1,11 @@
 package main
 
 import (
-	mar "flipbot/markov"
 	"fmt"
 	"math/rand"
 	"os/exec"
 	"regexp"
+	mar "sexban/markov"
 	"strings"
 	"time"
 	"unicode/utf8"

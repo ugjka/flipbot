@@ -1,12 +1,12 @@
 package main
 
 import (
-	cookiejar "flipbot/jar"
-	"flipbot/subwatch"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"os/signal"
+	cookiejar "sexban/jar"
+	"sexban/subwatch"
 	"strings"
 	"syscall"
 	"time"

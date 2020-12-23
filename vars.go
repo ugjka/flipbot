@@ -1,10 +1,10 @@
 package main
 
 import (
-	cookiejar "flipbot/jar"
 	"fmt"
 	"net/http"
 	"regexp"
+	cookiejar "sexban/jar"
 	"time"
 
 	"github.com/boltdb/bolt"
