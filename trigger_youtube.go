@@ -6,7 +6,6 @@ import (
 	"html"
 	"net/url"
 	"regexp"
-	"strings"
 	"time"
 
 	kitty "bootybot/kittybot"
@@ -45,30 +44,21 @@ var youtube = kitty.Trigger{
 		result = html.UnescapeString(result)
 		bot.Reply(m, result)
 		// Fetch mp3
-		video := ytdlOptions{
-			url:           "https://www.youtube.com/watch?v=" + res.Items[0].ID.VideoID,
-			directory:     mp3Dir,
-			server:        mp3Server,
-			sizeLimit:     youtubeDLMaxSize,
-			durationLimit: youtubeMaxDLDur,
-		}
-		link, err := video.Fetch()
-		if err != nil {
-			ytErrLog.Lock()
-			ytErrLog.WriteString(time.Now().Format(time.RFC3339) + " | " + err.Error())
-			ytErrLog.Unlock()
-			return
-		}
-		desc := strings.TrimPrefix(link, fmt.Sprintf("https://%s/", mp3Server))
-		if len(desc) > 45 {
-			desc = desc[:45] + "..."
-		}
-		bot.ReplyRich(m, kitty.Rich{
-			URL:         link,
-			Title:       fmt.Sprintf("MP3 download of %s's link", m.Name),
-			Description: desc,
-			IconURL:     "https://raw.githubusercontent.com/ugjka/flipbot/bootybot/icon.png",
-		})
+		// video := ytdlOptions{
+		// 	url:           "https://www.youtube.com/watch?v=" + res.Items[0].ID.VideoID,
+		// 	directory:     mp3Dir,
+		// 	server:        mp3Server,
+		// 	sizeLimit:     youtubeDLMaxSize,
+		// 	durationLimit: youtubeMaxDLDur,
+		// }
+		// link, err := video.Fetch()
+		// if err != nil {
+		// 	ytErrLog.Lock()
+		// 	ytErrLog.WriteString(time.Now().Format(time.RFC3339) + " | " + err.Error())
+		// 	ytErrLog.Unlock()
+		// 	return
+		// }
+		// bot.Reply(m, link)
 	},
 }
 
