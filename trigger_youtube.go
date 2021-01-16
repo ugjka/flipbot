@@ -43,21 +43,21 @@ var youtube = kitty.Trigger{
 		result = html.UnescapeString(result)
 		bot.Reply(m, result)
 		// Fetch mp3
-		video := ytdlOptions{
-			url:           "https://www.youtube.com/watch?v=" + res.Items[0].ID.VideoID,
-			directory:     mp3Dir,
-			server:        mp3Server,
-			sizeLimit:     youtubeDLMaxSize,
-			durationLimit: youtubeMaxDLDur,
-		}
-		link, err := video.Fetch()
-		if err != nil {
-			ytErrLog.Lock()
-			ytErrLog.WriteString(time.Now().Format(time.RFC3339) + " | " + err.Error())
-			ytErrLog.Unlock()
-			return
-		}
-		bot.Reply(m, link)
+		// video := ytdlOptions{
+		// 	url:           "https://www.youtube.com/watch?v=" + res.Items[0].ID.VideoID,
+		// 	directory:     mp3Dir,
+		// 	server:        mp3Server,
+		// 	sizeLimit:     youtubeDLMaxSize,
+		// 	durationLimit: youtubeMaxDLDur,
+		// }
+		// link, err := video.Fetch()
+		// if err != nil {
+		// 	ytErrLog.Lock()
+		// 	ytErrLog.WriteString(time.Now().Format(time.RFC3339) + " | " + err.Error())
+		// 	ytErrLog.Unlock()
+		// 	return
+		// }
+		// bot.Reply(m, link)
 	},
 }
 
